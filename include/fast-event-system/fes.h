@@ -270,18 +270,19 @@ public:
 		_queue.emplace(priority, delay_point, data...);
 	}
 	
+	void update()
+	{
+		while(!_queue.empty())
+		{
+			_dispatch();
+		}
+	}
+
 	bool dispatch()
 	{
 		if(!_queue.empty())
 		{
-			auto t1 = std::chrono::high_resolution_clock::now();
-			auto& top = _queue.top();
-			if(t1 >= top._timestamp)
-			{
-				dispatch(top, gens<sizeof...(Args)>{} );
-				_queue.pop();
-				return true;
-			}
+			return _dispatch();
 		}
 		return false;
 	}
@@ -318,6 +319,19 @@ protected:
 		_output(std::get<S>(top._data)...);
 	}
 
+	bool _dispatch()
+	{
+		auto t1 = std::chrono::high_resolution_clock::now();
+		auto& top = _queue.top();
+		if (t1 >= top._timestamp)
+		{
+			dispatch(top, gens < sizeof...(Args) > {});
+			_queue.pop();
+			return true;
+		}
+		return false;
+	}
+
 protected:
 	callback<Args... > _output;
 	container_type _queue;
@@ -339,12 +353,19 @@ public:
 		_queue.emplace(data...);
 	}
 	
+	void update()
+	{
+		while(!_queue.empty())
+		{
+			_dispatch();
+		}
+	}
+
 	bool dispatch()
 	{
 		if(!_queue.empty())
 		{
-			dispatch(_queue.front(), gens<sizeof...(Args)>{} );
-			_queue.pop();
+			_dispatch();
 			return true;
 		}
 		return false;
@@ -376,6 +397,12 @@ protected:
 	inline void dispatch(const typename container_type::value_type& top, seq<S...>)
 	{
 		_output(std::get<S>(top)...);
+	}
+
+	void _dispatch()
+	{
+		dispatch(_queue.front(), gens < sizeof...(Args) > {});
+		_queue.pop();
 	}
 
 protected:
