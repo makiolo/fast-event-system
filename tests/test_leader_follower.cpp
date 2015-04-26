@@ -21,81 +21,59 @@ namespace lead {
 template <typename T> using CommandTalker = std::function<void(T&)>;
 template <typename T> using CompositeCommandTalker = std::function<CommandTalker<T>(const CommandTalker<T>&)>;
 
-template <typename SELF, typename T>
+template <typename T>
 class scheduler
 {
 public:
-	using command_other = CommandTalker<T> ;
-	using command_reflexion = CommandTalker<SELF> ;
-	using container_other = fes::queue_delayer<command_other>;
-	using container_reflexion = fes::queue_delayer<command_reflexion>;
-	
-	scheduler(const std::string& name)
-		: _name(name)
-		, _busy_other(false)
-		, _busy_me(false)
-	{
-		_conn_me = _commands_me.connect(std::bind(&scheduler::planificator_me, this, std::placeholders::_1));
-	}
-	~scheduler()
-	{
-		
-	}
+	using command = CommandTalker<T>;
+
+	explicit scheduler()
+		: _busy(false) { ; }
+	~scheduler() { ;  }
 
 	scheduler(const scheduler&) = delete;
 	scheduler& operator=(const scheduler&) = delete;
 	
-	void add_follower(T& talker)
+	void add_follower(T& follower)
 	{
-		_conns.emplace_back(_commands_other.connect(std::bind(&scheduler::planificator_other, this, std::ref(talker), std::placeholders::_1)));
+		_conns.emplace_back(_commands.connect(std::bind(&scheduler::planificator, this, std::ref(follower), std::placeholders::_1)));
 	}
 	
-	void planificator_me(const command_reflexion& cmd)
+	void planificator(T& self, const command& cmd)
 	{
 		std::thread th([&]()
 		{
-			cmd(static_cast<SELF&>(*this));
-			_busy_me = false;
+			cmd(self);
+			_busy = false;
 		});
 		th.detach();
 	}
 
-	void planificator_other(T& talker, const command_other& cmd)
+	inline void call(const command& command, int milli = 0, int priority = 0)
 	{
-		std::thread th([&]()
-		{
-			cmd(talker);
-			_busy_other = false;
-		});
-		th.detach();
-	}
-
-	inline void call_async(const command_reflexion& command, int milli = 0, int priority = 0)
-	{
-		_commands_me(priority, std::chrono::milliseconds(milli), command);
-	}
-
-	inline void call_followers(const command_other& command, int milli = 0, int priority = 0)
-	{
-		_commands_other(priority, std::chrono::milliseconds(milli), command);
+		_commands(priority, std::chrono::milliseconds(milli), command);
 	}
 	
 	void update()
 	{
-		if (!_busy_other)
+		if (!_busy)
 		{
-			_busy_other = _commands_other.dispatch();
-		}
-		if (!_busy_me)
-		{
-			_busy_me = _commands_me.dispatch();
+			_busy = _commands.dispatch();
 		}
 	}
+protected:
+	std::vector<fes::shared_connection<command> > _conns;
+	fes::queue_delayer<command> _commands;
+	std::atomic<bool> _busy;
+};
 
-	inline void sleep(int milli)
-	{
-		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
-	}
+class syncronizer
+{
+public:
+	syncronizer() { ; }
+	~syncronizer() { ; }
+	syncronizer(const syncronizer&) = delete;
+	syncronizer& operator=(const syncronizer&) = delete;
 
 	void signal()
 	{
@@ -104,25 +82,66 @@ public:
 	
 	void wait()
 	{
-		std::unique_lock<std::mutex> context(_signal_lock);
+		std::unique_lock<std::mutex> context(_signal_mutex);
 		_signal.wait(context);
 	}
-protected:
-	std::string _name;
-	// me self
-	fes::shared_connection<command_reflexion> _conn_me;
-	container_reflexion _commands_me;
-	std::atomic<bool> _busy_me;
-	// others
-	std::vector<fes::shared_connection<command_other> > _conns;
-	container_other _commands_other;
-	std::atomic<bool> _busy_other;
-	// 
+protected:	
 	std::condition_variable _signal;
-	std::mutex _signal_lock;
+	std::mutex _signal_mutex;
 };
 
-}
+template <typename SELF, typename FOLLOWERS>
+class talker
+{
+public:
+	using command_others = typename scheduler<FOLLOWERS>::command;
+	using command_me = typename scheduler<SELF>::command;
+	
+	talker()
+	{
+		// CRTP
+		_planner_me.add_follower(static_cast<SELF&>(*this));
+	}
+	~talker()
+	{
+		
+	}
+
+	talker(const talker&) = delete;
+	talker& operator=(const talker&) = delete;
+	
+	void add_follower(FOLLOWERS& talker)
+	{
+		_planner_others.add_follower(talker);
+	}
+
+	inline void call_me(const command_me& command, int milli = 0, int priority = 0)
+	{
+		_planner_me.call(command, milli, priority);
+	}
+	
+	inline void call_others(const command_others& command, int milli = 0, int priority = 0)
+	{
+		_planner_others.call(command, milli, priority);
+	}
+	
+	void update()
+	{
+		_planner_others.update();
+		_planner_me.update();
+	}
+	
+	inline void sleep(int milli)
+	{
+		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
+	}
+	
+protected:
+	scheduler<FOLLOWERS> _planner_others;
+	scheduler<SELF> _planner_me;
+};
+
+} // end namespace
 
 class Context
 {
@@ -151,23 +170,27 @@ public:
 		}
 		std::cout << std::endl;
 	}
+
+	lead::syncronizer& get_talking() { return _talking; }
+
 protected:
 	std::mutex _lock;
+	lead::syncronizer _talking;
 };
 
-class Buyer;
+class PersonA;
 
-class ShopKeeper : public lead::scheduler<ShopKeeper, Buyer>
+class PersonB : public lead::talker<PersonB, PersonA>
 {
 public:
-	explicit ShopKeeper(const std::string& name, Context& context)
-		: scheduler(name)
+	explicit PersonB(const std::string& name, Context& context)
+		: _name(name)
 		, _context(context)
 	{
 		
 	}
 	
-	~ShopKeeper() { ; }
+	~PersonB() { ; }
 	
 	void say(const std::string& text, int delay = 10)
 	{
@@ -175,26 +198,28 @@ public:
 	}
 protected:
 	Context& _context;
+	std::string _name;
 };
 
 
-class Buyer : public lead::scheduler<Buyer, ShopKeeper>
+class PersonA : public lead::talker<PersonA, PersonB>
 {
 public:
-	explicit Buyer(const std::string& name, Context& context)
-		: scheduler(name)
+	explicit PersonA(const std::string& name, Context& context)
+		: _name(name)
 		, _context(context)
 	{
 		
 	}
-	~Buyer() { ; }	
-
+	~PersonA() { ; }	
+	
 	void say(const std::string& text, int delay = 10)
 	{
 		_context.print(_name, text, delay);
 	}
 protected:
 	Context& _context;
+	std::string _name;
 };
 
 /*
@@ -224,61 +249,59 @@ int main()
 
 	{
 		Context context;
-		Buyer buyer("tu", context);
-		ShopKeeper shopkeeper("shopkeeper", context);
-		shopkeeper.add_follower(buyer);
-		
-		buyer.call_async([&](Buyer& self) {
-			self.say("Te despiertas en la carcel. No te acuerdas de nada.");
+		PersonA person1("Person A", context);
+		PersonB person2("Person B", context);
+		/*
+		 Person A: "What are you doing now?"
+		 Person B: "I'm playing pool with my friends at a pool hall."
+		 Person A: "I didn't know you play pool.  Are you having fun?"
+		 Person B: "I'm having a great time.  How about you?  What are you doing?"
+		 Person A: "I'm taking a break from my homework. There seems to be no end to the amount of work I have to do."
+		 Person B: "I'm glad I'm not in your shoes."
+		*/
+		person1.call_me([&](PersonA& self) {
+			self.say("What are you doing now ? ");
 			self.sleep(100);
-			self.say("	1. Examinar la celda");
+			context.get_talking().signal();
+		});
+		person2.call_me([&](PersonB& self) {
+			context.get_talking().wait();
+			self.say("I'm playing pool with my friends at a pool hall.");
 			self.sleep(100);
-			self.say("	2. Seguir durmiendo");
+			context.get_talking().signal();
+		});
+		person1.call_me([&](PersonA& self) {
+			context.get_talking().wait();
+			self.say("I didn't know you play pool.  Are you having fun?");
 			self.sleep(100);
-
-			int choose = -1;
-			while (choose == -1)
-			{
-				/*
-				if (!(std::cin >> choose))
-				{
-					std::cout << "Option not is a number" << std::endl;
-				}
-				*/
-				choose = 1;
-				if (choose == 1)
-				{
-					self.call_async([&](Buyer& self) {
-						self.say("Has elegido: Examinar la habitacion");
-						self.sleep(100);
-						self.say("Solo hay una manta sucia y un orinal");
-						self.sleep(100);
-					});
-				}
-				else if (choose == 2)
-				{
-					self.call_async([&](Buyer& self) {
-						self.say("Has elegido: seguir durmiendo!");
-						self.sleep(100);
-						self.say("ZzZzZz ...", 500);
-						self.sleep(200);
-					});
-				}
-				else
-				{
-					std::cout << "Invalid option" << std::endl;
-				}
-			}
-
+			context.get_talking().signal();
+		});
+		person2.call_me([&](PersonB& self) {
+			context.get_talking().wait();
+			self.say("I'm having a great time.  How about you?  What are you doing?");
+			self.sleep(100);
+			context.get_talking().signal();
+		});
+		person1.call_me([&](PersonA& self) {
+			context.get_talking().wait();
+			self.say("I'm taking a break from my homework.");
+			self.say("There seems to be no end to the amount of work I have to do.");
+			self.sleep(100);
+			context.get_talking().signal();
+		});
+		person2.call_me([&](PersonB& self) {
+			context.get_talking().wait();
+			self.say("I'm glad I'm not in your shoes.");
+			self.sleep(100);
 		});
 		
 		
 		for (int i = 0; i < 9000; ++i)
 		{
-			buyer.update();
-			shopkeeper.update();
+			person1.update();
+			person2.update();
 			//
-			shopkeeper.sleep(1);
+			person2.sleep(1);
 		}
 	}
 	return(0);

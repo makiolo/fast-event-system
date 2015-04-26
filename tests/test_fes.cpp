@@ -31,7 +31,7 @@ public:
 
 	void update()
 	{
-		_channel.dispatch();
+		_channel.update();
 	}
 	
 	TYPE& get_channel() {return _channel;}
