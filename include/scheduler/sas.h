@@ -69,8 +69,7 @@ public:
 	
 	talker()
 	{
-		// CRTP
-		_planner_me.add_follower(static_cast<SELF&>(*this));
+		add_followme(*this);
 	}
 	~talker()
 	{
@@ -80,19 +79,25 @@ public:
 	talker(const talker&) = delete;
 	talker& operator=(const talker&) = delete;
 	
+	template <typename R>
+	void add_followme(R& self)
+	{
+		_planner_me.add_follower(static_cast<SELF&>(self));
+	}
+
 	void add_follower(FOLLOWERS& talker)
 	{
 		_planner_others.add_follower(talker);
-	}
-
-	inline void call_me(const command_me& command, int milli = 0, int priority = 0)
-	{
-		_planner_me.call(command, milli, priority);
 	}
 	
 	inline void call_others(const command_others& command, int milli = 0, int priority = 0)
 	{
 		_planner_others.call(command, milli, priority);
+	}
+
+	inline void call_me(const command_me& command, int milli = 0, int priority = 0)
+	{
+		_planner_me.call(command, milli, priority);
 	}
 	
 	void update()
@@ -114,24 +119,29 @@ protected:
 class syncronizer
 {
 public:
-	syncronizer() { ; }
+	syncronizer() {
+		//_m.lock();
+	}
 	~syncronizer() { ; }
 	syncronizer(const syncronizer&) = delete;
 	syncronizer& operator=(const syncronizer&) = delete;
 
 	void signal()
 	{
-		_signal.notify_one();
+		//_signal.notify_one();
+		//_m.unlock();
 	}
 	
 	void wait()
 	{
-		std::unique_lock<std::mutex> context(_signal_mutex);
-		_signal.wait(context);
+		//std::unique_lock<std::mutex> context(_signal_mutex);
+		//_signal.wait(context);
+		//_m.lock();
 	}
 protected:	
-	std::condition_variable _signal;
-	std::mutex _signal_mutex;
+	std::recursive_mutex _m;
+	//std::condition_variable _signal;
+	//std::mutex _signal_mutex;
 };
 
 } // end namespace
