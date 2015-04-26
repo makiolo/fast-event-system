@@ -10,7 +10,7 @@ This fast event system allows calls between two interfaces decoupled (sync or as
 
 ## Quality assurance
 
-* Code tested in travis on gcc (4.7, 4.8, 4.9), clang (3.3, 3.4) and Visual Studio (2013).
+* Code tested in travis on gcc (4.7, 4.8, 4.9), clang (3.3, 3.4 and 3.6) and Visual Studio (2013).
 * Test cases relationated with problems crossing boundaries of dynamic libraries.
 
 ## License
