@@ -44,7 +44,8 @@ public:
 
 	inline void call(const command& command, int milli = 0, int priority = 0)
 	{
-		_commands(priority, std::chrono::milliseconds(milli), command);
+		//_commands(priority, std::chrono::milliseconds(milli), command);
+		_commands(command);
 	}
 	
 	void update()
@@ -56,7 +57,8 @@ public:
 	}
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
-	fes::queue_delayer<command> _commands;
+	//fes::queue_delayer<command> _commands;
+	fes::queue_fast<command> _commands;
 	std::atomic<bool> _busy;
 };
 
