@@ -160,11 +160,14 @@ int main()
 			context.get_talking().wait();
 			self.say("I'm glad I'm not in your shoes.");
 			self.sleep(10);
+			context.get_talking().signal();
 		}, 0, 1);
 		person1.call_me([&](PersonA& self) {
 			self.say("7.");
+			context.get_talking().wait();
 			self.say("bye person2");
 			self.sleep(10);
+			context.get_talking().signal();
 		}, 0, -1);
 		person2.call_me([&](PersonB& self) {
 			self.say("8.");
