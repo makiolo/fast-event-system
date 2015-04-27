@@ -205,7 +205,8 @@ public:
 	{
 		
 	}
-
+	
+	/*
 	message<Args...>& operator=(message<Args...>&& other) noexcept
 	{
 		_priority = other._priority;
@@ -222,6 +223,7 @@ public:
 	{
 
 	}
+	*/
 	
 	message<Args...>& operator=(const message<Args...>& other)
 	{
