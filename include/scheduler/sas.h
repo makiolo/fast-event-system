@@ -130,20 +130,20 @@ public:
 
 	void signal()
 	{
-		//_signal.notify_one();
+		_signal.notify_one();
 		//_m.unlock();
 	}
 	
 	void wait()
 	{
-		//std::unique_lock<std::mutex> context(_signal_mutex);
-		//_signal.wait(context);
+		std::unique_lock<std::mutex> context(_signal_mutex);
+		_signal.wait(context);
 		//_m.lock();
 	}
 protected:	
-	std::recursive_mutex _m;
-	//std::condition_variable _signal;
-	//std::mutex _signal_mutex;
+	//std::recursive_mutex _m;
+	std::condition_variable _signal;
+	std::mutex _signal_mutex;
 };
 
 } // end namespace
