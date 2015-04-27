@@ -122,7 +122,7 @@ class syncronizer
 {
 public:
 	syncronizer() {
-		//_m.lock();
+		_m.lock();
 	}
 	~syncronizer() { ; }
 	syncronizer(const syncronizer&) = delete;
@@ -130,20 +130,20 @@ public:
 
 	void signal()
 	{
-		_signal.notify_one();
-		//_m.unlock();
+		//_signal.notify_one();
+		_m.unlock();
 	}
 	
 	void wait()
 	{
-		std::unique_lock<std::mutex> context(_signal_mutex);
-		_signal.wait(context);
-		//_m.lock();
+		//std::unique_lock<std::mutex> context(_signal_mutex);
+		//_signal.wait(context);
+		_m.lock();
 	}
 protected:	
-	//std::recursive_mutex _m;
-	std::condition_variable _signal;
-	std::mutex _signal_mutex;
+	std::mutex _m;
+	//std::condition_variable _signal;
+	//std::mutex _signal_mutex;
 };
 
 } // end namespace
