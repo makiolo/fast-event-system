@@ -199,31 +199,52 @@ struct message
 		
 	}
 
-	message(message&& other) noexcept
+	message(message&& other)
 		: _priority(std::move(other._priority))
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
 	{
 		
 	}
-	
+
+	/*
 	message& operator=(const message& other)
 	{
-		message(other)._swap(*this);
+		message(other).swap(*this);
 		return *this;
 	}
 
-	message& operator=(message&& other) noexcept
+	Copy-swap idiom
+	http://stackoverflow.com/questions/276173/what-are-your-favorite-c-coding-style-idioms/2034447#2034447
+	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
+	*/
+
+#if 1
+	message& operator=(message other)
 	{
-		message(std::move(other))._swap(*this);
+		swap(other);
 		return *this;
 	}
-	
-	void _swap(message& other) noexcept
+#else
+	message& operator=(const message& other)
 	{
-		std::swap(_priority, other._priority);
-		std::swap(_timestamp, other._timestamp);
-		std::swap(_data, other._data);
+		message(other).swap(*this);
+		return *this;
+	}
+
+	message& operator=(message&& other)
+	{
+		message(std::move(other)).swap(*this);
+		return *this;
+	}
+#endif
+
+	void swap(message& other) throw()
+	{
+		using std::swap;
+		swap(_priority, other._priority);
+		swap(_timestamp, other._timestamp);
+		swap(_data, other._data);
 	}
 
 	~message()
