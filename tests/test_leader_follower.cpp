@@ -106,8 +106,8 @@ protected:
 
 int main()
 {
-	//std::ios_base::sync_with_stdio(false);
-
+	std::ios_base::sync_with_stdio(false);
+	
 	{
 		Context context;
 		PersonA person1("Person A", context);
@@ -124,49 +124,48 @@ int main()
 			self.say("1. What are you doing now ? ");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 6);
+		});
 		person2.call_me([&](PersonB& self) {
 			context.get_talking().wait();
 			self.say("2. I'm playing pool with my friends at a pool hall.");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 5);
+		});
 		person1.call_me([&](PersonA& self) {
 			context.get_talking().wait();
 			self.say("3. I didn't know you play pool.  Are you having fun?");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 4);
+		});
 		person2.call_me([&](PersonB& self) {
 			context.get_talking().wait();
 			self.say("4. I'm having a great time.  How about you?  What are you doing?");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 3);
+		});
 		person1.call_me([&](PersonA& self) {
 			context.get_talking().wait();
-			self.say("5. I'm taking a break from my homework.");
-			self.say("There seems to be no end to the amount of work I have to do.");
+			self.say("5. I'm taking a break from my homework. There seems to be no end to the amount of work I have to do.");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 2);
+		});
 		person2.call_me([&](PersonB& self) {
 			context.get_talking().wait();
 			self.say("6. I'm glad I'm not in your shoes.");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, 1);
+		});
 		person1.call_me([&](PersonA& self) {
 			context.get_talking().wait();
 			self.say("7. bye person2");
 			self.sleep(10);
 			context.get_talking().signal();
-		}, 0, -1);
+		});
 		person2.call_me([&](PersonB& self) {
 			context.get_talking().wait();
 			self.say("8. bye person1");
 			self.sleep(10);
-		}, 0, -2);
+		});
 		
 		for (int i = 0; i < 9000; ++i)
 		{
