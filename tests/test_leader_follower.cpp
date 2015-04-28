@@ -121,67 +121,57 @@ int main()
 		 Person B: "I'm glad I'm not in your shoes."
 		*/
 		person1.call_me([&](PersonA& self) {
-			self.say("1.");
-			self.say("What are you doing now ? ");
+			self.say("1. What are you doing now ? ");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 6);
 		person2.call_me([&](PersonB& self) {
-			self.say("2.");
 			context.get_talking().wait();
-			self.say("I'm playing pool with my friends at a pool hall.");
+			self.say("2. I'm playing pool with my friends at a pool hall.");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 5);
 		person1.call_me([&](PersonA& self) {
-			self.say("3.");
 			context.get_talking().wait();
-			self.say("I didn't know you play pool.  Are you having fun?");
+			self.say("3. I didn't know you play pool.  Are you having fun?");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 4);
 		person2.call_me([&](PersonB& self) {
-			self.say("4.");
 			context.get_talking().wait();
-			self.say("I'm having a great time.  How about you?  What are you doing?");
+			self.say("4. I'm having a great time.  How about you?  What are you doing?");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 3);
 		person1.call_me([&](PersonA& self) {
-			self.say("5.");
 			context.get_talking().wait();
-			self.say("I'm taking a break from my homework.");
+			self.say("5. I'm taking a break from my homework.");
 			self.say("There seems to be no end to the amount of work I have to do.");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 2);
 		person2.call_me([&](PersonB& self) {
-			self.say("6.");
 			context.get_talking().wait();
-			self.say("I'm glad I'm not in your shoes.");
+			self.say("6. I'm glad I'm not in your shoes.");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, 1);
 		person1.call_me([&](PersonA& self) {
-			self.say("7.");
 			context.get_talking().wait();
-			self.say("bye person2");
+			self.say("7. bye person2");
 			self.sleep(10);
 			context.get_talking().signal();
 		}, 0, -1);
 		person2.call_me([&](PersonB& self) {
-			self.say("8.");
 			context.get_talking().wait();
-			self.say("bye person1");
+			self.say("8. bye person1");
 			self.sleep(10);
 		}, 0, -2);
-		
 		
 		for (int i = 0; i < 9000; ++i)
 		{
 			person1.update();
 			person2.update();
-			//
 			person2.sleep(1);
 		}
 	}
