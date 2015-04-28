@@ -7,8 +7,9 @@
 #ifndef _WIN32
 #include <semaphore.h>
 #else
-
+#include <windows.h>
 #endif
+
 // std
 #include <functional>
 #include <future>
@@ -18,14 +19,11 @@
 
 namespace sas {
 
-template <typename T> using CommandTalker = std::function<void(T&)>;
-template <typename T> using CompositeCommandTalker = std::function<CommandTalker<T>(const CommandTalker<T>&)>;
-
 template <typename T>
 class scheduler
 {
 public:
-	using command = CommandTalker<T>;
+	using command = std::function<void(T&)>;
 	
 	explicit scheduler()
 		: _busy(false) { ; }
@@ -53,20 +51,19 @@ public:
 	inline void call(const command& command, int milli = 0, int priority = 0)
 	{
 		_commands(priority, std::chrono::milliseconds(milli), command);
-		//_commands(command);
 	}
 	
 	void update()
 	{
 		if (!_busy)
 		{
+			// dispatch return true if some is dispatched
 			_busy = _commands.dispatch();
 		}
 	}
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
 	fes::queue_delayer<command> _commands;
-	//fes::queue_fast<command> _commands;
 	std::atomic<bool> _busy;
 };
 
@@ -85,7 +82,7 @@ public:
 	{
 		
 	}
-
+	
 	talker(const talker&) = delete;
 	talker& operator=(const talker&) = delete;
 	
@@ -127,6 +124,8 @@ public:
 	{
 #ifndef _WIN32
 		(void) sem_init(&_sem, 0, concurrency);
+#else
+		_sem = CreateSemaphore(NULL, 0, concurrency, NULL);
 #endif
 	}
 	
@@ -134,6 +133,8 @@ public:
 	{
 #ifndef _WIN32
 		(void) sem_destroy(&_sem);
+#else
+		CloseHandle(_sem);
 #endif
 	}
 	
@@ -144,6 +145,12 @@ public:
 	{
 #ifndef _WIN32
 		(void) sem_wait(&_sem);
+#else
+		DWORD dwWaitResult = WaitForSingleObject(_sem, INFINITE);
+		if (dwWaitResult == WAIT_FAILED)
+		{
+			std::cerr << "Error en el lock()" << std::endl;
+		}
 #endif
 	}
 	
@@ -151,6 +158,11 @@ public:
 	{
 #ifndef _WIN32
 		(void) sem_post(&_sem);
+#else
+		if (ReleaseSemaphore(_sem, 1, NULL) == 0)
+		{
+			std::cerr << "Error in unlock()" << std::endl;
+		}
 #endif
 	}
 
@@ -172,6 +184,8 @@ public:
 protected:
 #ifndef _WIN32
 	sem_t _sem;
+#else
+	HANDLE _sem;
 #endif
 };
 

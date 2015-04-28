@@ -23,6 +23,10 @@
 #include <queue>
 #include <fast-event-system/common.h>
 
+#ifdef _WIN32
+#define noexcept _NOEXCEPT
+#endif
+
 namespace fes {
 
 template <typename ... Args>
@@ -43,7 +47,6 @@ public:
 	
 	void disconnect()
 	{
-		// call deleter
 		_deleter();
 	}
 
@@ -154,7 +157,7 @@ public:
 			_registered.erase(it);
 		});
 	}
-
+	
 	void operator()(const Args& ... data)
 	{
 		for(auto& reg : _registered)
@@ -178,9 +181,8 @@ protected:
 };
 
 template <typename ... Args>
-class message
+struct message
 {
-public:
 	message(int priority, std::chrono::system_clock::time_point timestamp, const Args&... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
@@ -196,16 +198,34 @@ public:
 	{
 		
 	}
+
+	message(message&& other) noexcept
+		: _priority(std::move(other._priority))
+		, _timestamp(std::move(other._timestamp))
+		, _data(std::move(other._data))
+	{
+		
+	}
 	
 	message& operator=(const message& other)
 	{
-		_priority = other._priority;
-		_timestamp = other._timestamp;
-		_data = other._data;
+		message(other)._swap(*this);
+		return *this;
+	}
 
+	message& operator=(message&& other) noexcept
+	{
+		message(std::move(other))._swap(*this);
 		return *this;
 	}
 	
+	void _swap(message& other) noexcept
+	{
+		std::swap(_priority, other._priority);
+		std::swap(_timestamp, other._timestamp);
+		std::swap(_data, other._data);
+	}
+
 	~message()
 	{
 		
@@ -241,7 +261,7 @@ public:
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.push(message<Args...>(priority, delay_point, data...));
+		_queue.emplace(priority, delay_point, data...);
 	}
 	
 	void update()
@@ -260,12 +280,7 @@ public:
 		}
 		return false;
 	}
-	
-	const typename container_type::value_type& top() const
-	{
-		return _queue.top();
-	}
-	
+		
 	bool empty() const
 	{
 		return _queue.empty();
@@ -296,7 +311,7 @@ protected:
 	bool _dispatch()
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
-		auto& t = top();
+		auto& t = _queue.top();
 		if(t1 >= t._timestamp)
 		{
 			dispatch(t, gens<sizeof...(Args)>{});
