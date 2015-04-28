@@ -23,22 +23,6 @@
 #include <queue>
 #include <fast-event-system/common.h>
 
-#if (__cplusplus == 201103) || ((__clang__ == 1) && (__clang_minor__ != 6))
-namespace std
-{
-	template <bool B, typename T = void> using enable_if_t = typename std::enable_if<B, T>::type;
-	
-	template<typename T, typename... Args>
-	std::unique_ptr<T> make_unique(Args&&... args)
-	{
-		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-	}
-}
-#endif
-#ifdef _MSC_VER
-#define noexcept _NOEXCEPT
-#endif
-
 namespace fes {
 
 template <typename ... Args>
@@ -257,7 +241,7 @@ public:
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.emplace(priority, delay_point, data...);
+		_queue.push(message<Args...>(priority, delay_point, data...));
 	}
 	
 	void update()
