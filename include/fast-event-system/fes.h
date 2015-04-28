@@ -102,6 +102,9 @@ public:
 		}
 	}
 
+	connection(const connection&) = delete;
+	connection& operator=(const connection&) = delete;
+
 protected:
 	shared_connection<Args ...> _connection;
 };
@@ -130,6 +133,10 @@ public:
 		
 	}
 
+	~method() { ; }
+	method(const method&) = delete;
+	method& operator=(const method&) = delete;
+
 	void operator()(const Args&... data)
 	{
 		_method(data...);
@@ -145,10 +152,10 @@ class callback
 public:
 	using list_methods = std::list<method<Args...> >;
 	
-	callback()
-	{
-		
-	}
+	callback() { ; }
+	~callback() { ; }
+	callback(const callback&) = delete;
+	callback& operator=(const callback&) = delete;
 	
 	template <typename T>
 	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
@@ -198,6 +205,7 @@ public:
 		
 	}
 
+	/*
 	message(message<Args...>&& other) noexcept
 		: _priority(other._priority)
 		, _timestamp(other._timestamp)
@@ -205,6 +213,7 @@ public:
 	{
 		
 	}
+	*/
 	
 	/*
 	message<Args...>& operator=(message<Args...>&& other) noexcept
@@ -260,10 +269,10 @@ class queue_delayer
 public:
 	using container_type = std::priority_queue<message<Args...>, std::deque<message<Args...> > >;
 	
-	queue_delayer()
-	{
-		
-	}
+	queue_delayer() { ; }
+	~queue_delayer() { ; }
+	queue_delayer(const queue_delayer&) = delete;
+	queue_delayer& operator=(const queue_delayer&) = delete;
 
 	template <typename R, typename P>
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
@@ -303,13 +312,13 @@ public:
 	{
 		return _queue.size();
 	}
-
+	
 	template <typename T>
 	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
-
+	
 	inline shared_connection<Args...> connect(const std::function<void(const Args&...)>& method)
 	{
 		return _output.connect(method);
@@ -324,10 +333,10 @@ protected:
 	bool _dispatch()
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
-		auto& top = _queue.top();
-		if (t1 >= top._timestamp)
+		auto& t = top();
+		if(t1 >= t._timestamp)
 		{
-			dispatch(top, gens < sizeof...(Args) > {});
+			dispatch(t, gens<sizeof...(Args)>{});
 			_queue.pop();
 			return true;
 		}
@@ -345,10 +354,10 @@ class queue_fast
 public:
 	using container_type = std::queue<std::tuple<Args...>, std::deque<std::tuple<Args...> > >;
 	
-	queue_fast()
-	{
-		
-	}
+	queue_fast() { ; }
+	~queue_fast() { ; }
+	queue_fast(const queue_fast&) = delete;
+	queue_fast& operator=(const queue_fast&) = delete;
 	
 	void operator()(const Args& ... data)
 	{
@@ -403,7 +412,8 @@ protected:
 
 	void _dispatch()
 	{
-		dispatch(_queue.front(), gens < sizeof...(Args) > {});
+		auto& t = _queue.front();
+		dispatch(t, gens < sizeof...(Args) > {});
 		_queue.pop();
 	}
 

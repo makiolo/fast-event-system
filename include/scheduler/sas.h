@@ -4,7 +4,11 @@
 #define _SCHEDULER_ADVANCED_SIMPLE_
 
 // linux
+#ifndef _WIN32
 #include <semaphore.h>
+#else
+
+#endif
 // std
 #include <functional>
 #include <future>
@@ -48,8 +52,8 @@ public:
 
 	inline void call(const command& command, int milli = 0, int priority = 0)
 	{
-		//_commands(priority, std::chrono::milliseconds(milli), command);
-		_commands(command);
+		_commands(priority, std::chrono::milliseconds(milli), command);
+		//_commands(command);
 	}
 	
 	void update()
@@ -61,8 +65,8 @@ public:
 	}
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
-	//fes::queue_delayer<command> _commands;
-	fes::queue_fast<command> _commands;
+	fes::queue_delayer<command> _commands;
+	//fes::queue_fast<command> _commands;
 	std::atomic<bool> _busy;
 };
 
@@ -121,12 +125,16 @@ class syncronizer
 public:
 	syncronizer(int concurrency = 1)
 	{
+#ifndef _WIN32
 		(void) sem_init(&_sem, 0, concurrency);
+#endif
 	}
 	
 	~syncronizer()
 	{
+#ifndef _WIN32
 		(void) sem_destroy(&_sem);
+#endif
 	}
 	
 	syncronizer(const syncronizer&) = delete;
@@ -134,12 +142,16 @@ public:
 
 	inline void lock()
 	{
+#ifndef _WIN32
 		(void) sem_wait(&_sem);
+#endif
 	}
 	
 	inline void unlock()
 	{
+#ifndef _WIN32
 		(void) sem_post(&_sem);
+#endif
 	}
 
 	inline void wait(int count = 1)
@@ -158,10 +170,9 @@ public:
 		}
 	}
 protected:
+#ifndef _WIN32
 	sem_t _sem;
-	//std::mutex _m;
-	//std::condition_variable _signal;
-	//std::mutex _signal_mutex;
+#endif
 };
 
 } // end namespace
