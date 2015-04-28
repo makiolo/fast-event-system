@@ -30,9 +30,10 @@ public:
 	scheduler(const scheduler&) = delete;
 	scheduler& operator=(const scheduler&) = delete;
 	
-	void add_follower(T& follower)
+	template <typename R>
+	void add_follower(R& follower)
 	{
-		_conns.emplace_back(_commands.connect(std::bind(&scheduler::planificator, this, std::ref(follower), std::placeholders::_1)));
+		_conns.emplace_back(_commands.connect(std::bind(&scheduler::planificator, this, std::ref(static_cast<T&>(follower)), std::placeholders::_1)));
 	}
 	
 	void planificator(T& self, const command& cmd)
@@ -74,7 +75,7 @@ public:
 	
 	talker()
 	{
-		add_followme(*this);
+		_planner_me.add_follower(*this);
 	}
 	~talker()
 	{
@@ -84,12 +85,6 @@ public:
 	talker(const talker&) = delete;
 	talker& operator=(const talker&) = delete;
 	
-	template <typename R>
-	void add_followme(R& self)
-	{
-		_planner_me.add_follower(static_cast<SELF&>(self));
-	}
-
 	void add_follower(FOLLOWERS& talker)
 	{
 		_planner_others.add_follower(talker);
