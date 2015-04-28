@@ -121,27 +121,47 @@ protected:
 class syncronizer
 {
 public:
-	syncronizer() {
-		_m.lock();
+	syncronizer(int concurrency = 1)
+	{
+		(void) sem_init(&_sem, 0, concurrency);
 	}
-	~syncronizer() { ; }
+	
+	~syncronizer()
+	{
+		(void) sem_destroy(&_sem);
+	}
+	
 	syncronizer(const syncronizer&) = delete;
 	syncronizer& operator=(const syncronizer&) = delete;
 
-	void signal()
+	inline void lock()
 	{
-		//_signal.notify_one();
-		_m.unlock();
+		(void) sem_wait(&_sem);
 	}
 	
-	void wait()
+	inline void unlock()
 	{
-		//std::unique_lock<std::mutex> context(_signal_mutex);
-		//_signal.wait(context);
-		_m.lock();
+		(void) sem_post(&_sem);
 	}
-protected:	
-	std::mutex _m;
+
+	inline void wait(int count = 1)
+	{
+		for(int i = 0; i<count; ++i)
+		{
+			lock();
+		}
+	}
+	
+	inline void signal(int count = 1)
+	{
+		for(int i = 0; i<count; ++i)
+		{
+			unlock();
+		}
+	}
+protected:
+	sem_t _sem;
+	//std::mutex _m;
 	//std::condition_variable _signal;
 	//std::mutex _signal_mutex;
 };
