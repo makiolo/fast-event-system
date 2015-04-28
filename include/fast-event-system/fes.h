@@ -204,37 +204,16 @@ public:
 	{
 		
 	}
-
-	/*
-	message(message<Args...>&& other) noexcept
-		: _priority(other._priority)
-		, _timestamp(other._timestamp)
-		, _data(std::move(other._data))
-	{
-		
-	}
-	*/
 	
-	/*
-	message<Args...>& operator=(message<Args...>&& other) noexcept
-	{
-		_priority = other._priority;
-		_timestamp = other._timestamp;
-		_data = std::move(other._data);
-
-		return *this;
-	}
-
-	message(const message<Args...>& other)
+	message(const message& other)
 		: _priority(other._priority)
 		, _timestamp(other._timestamp)
 		, _data(other._data)
 	{
-
+		
 	}
-	*/
 	
-	message<Args...>& operator=(const message<Args...>& other)
+	message& operator=(const message& other)
 	{
 		_priority = other._priority;
 		_timestamp = other._timestamp;
@@ -248,7 +227,7 @@ public:
 		
 	}
 
-	bool operator<(const message<Args...>& other) const
+	bool operator<(const message& other) const
 	{
 		if (_timestamp < other._timestamp)
 			return false;
@@ -267,7 +246,7 @@ template <typename ... Args>
 class queue_delayer
 {
 public:
-	using container_type = std::priority_queue<message<Args...>, std::deque<message<Args...> > >;
+	using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> > >;
 	
 	queue_delayer() { ; }
 	~queue_delayer() { ; }
