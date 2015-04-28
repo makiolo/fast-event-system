@@ -3,6 +3,9 @@
 #ifndef _SCHEDULER_ADVANCED_SIMPLE_
 #define _SCHEDULER_ADVANCED_SIMPLE_
 
+// linux
+#include <semaphore.h>
+// std
 #include <functional>
 #include <future>
 #include <atomic>
