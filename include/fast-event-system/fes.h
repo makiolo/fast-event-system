@@ -251,6 +251,8 @@ struct message
 
 	bool operator<(const message& other) const
 	{
+		std::cout << "sort message, priority " << _priority << std::endl;
+		
 		if (_timestamp < other._timestamp)
 			return false;
 		else if (_timestamp > other._timestamp)
