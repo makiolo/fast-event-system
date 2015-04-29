@@ -85,7 +85,7 @@ public:
 	{
 		if (_connection)
 		{
-			//_connection->disconnect();
+			_connection->disconnect();
 		}
 	}
 
@@ -324,9 +324,9 @@ public:
 	}
 protected:
 	template<int ...S>
-	inline void dispatch(const typename container_type::value_type& top, seq<S...>)
+	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
 	{
-		_output(std::get<S>(top._data)...);
+		_output(std::get<S>(top)...);
 	}
 
 	bool _dispatch()
@@ -335,7 +335,7 @@ protected:
 		auto& t = _queue.top();
 		if(t1 >= t._timestamp)
 		{
-			dispatch(t, gens<sizeof...(Args)>{});
+			dispatch(t._data, gens<sizeof...(Args)>{});
 			_queue.pop();
 			return true;
 		}
@@ -358,9 +358,9 @@ public:
 	queue_fast(const queue_fast&) = delete;
 	queue_fast& operator=(const queue_fast&) = delete;
 	
-	void operator()(const Args& ... data)
+	void operator()(const Args&& ... data)
 	{
-		_queue.emplace(data...);
+		_queue.emplace(std::forward<const Args>(data)...);
 	}
 	
 	void update()
@@ -404,7 +404,7 @@ public:
 
 protected:	
 	template<int ...S>
-	inline void dispatch(const typename container_type::value_type& top, seq<S...>)
+	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
 	{
 		_output(std::get<S>(top)...);
 	}
