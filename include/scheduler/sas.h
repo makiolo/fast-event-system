@@ -48,9 +48,9 @@ public:
 		th.detach();
 	}
 
-	inline void call(const command&& command, int milli = 0, int priority = 0)
+	inline void call(const command&& cmd, int milli = 0, int priority = 0)
 	{
-		_commands(priority, std::chrono::milliseconds(milli), std::forward<const command>(command));
+		_commands(priority, std::chrono::milliseconds(milli), std::forward<const command>(cmd));
 	}
 	
 	void update()
