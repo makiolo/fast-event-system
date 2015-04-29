@@ -30,9 +30,6 @@
 namespace fes {
 
 template <typename ... Args>
-class method;
-
-template <typename ... Args>
 class internal_connection
 {
 public:
@@ -93,7 +90,7 @@ public:
 	connection& operator=(const connection&) = delete;
 
 protected:
-	shared_connection<Args ...> _connection;
+	shared_connection<Args...> _connection;
 };
 
 template <typename ... Args>
@@ -137,7 +134,7 @@ template <typename ... Args>
 class callback
 {
 public:
-	using list_methods = std::list<method<Args...> >;
+	using methods = std::vector<method<Args...> >;
 	
 	callback() { ; }
 	~callback() { ; }
@@ -177,7 +174,7 @@ protected:
 	}
 	
 protected:
-	list_methods _registered;
+	methods _registered;
 };
 
 template <typename ... Args>
@@ -219,7 +216,7 @@ struct message
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
 	*/
 
-#if 0
+#if 1
 	message& operator=(message other)
 	{
 		swap(other);
