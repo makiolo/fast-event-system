@@ -219,7 +219,7 @@ struct message
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
 	*/
 
-#if 1
+#if 0
 	message& operator=(message other)
 	{
 		swap(other);
