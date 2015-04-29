@@ -183,7 +183,7 @@ protected:
 template <typename ... Args>
 struct message
 {
-	message(int priority, std::chrono::system_clock::time_point timestamp, Args&& ... data)
+	message(int priority, std::chrono::system_clock::time_point timestamp, const Args&& ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
 		, _data(std::forward<Args>(data)...)
@@ -279,10 +279,10 @@ public:
 	queue_delayer& operator=(const queue_delayer&) = delete;
 
 	template <typename R, typename P>
-	void operator()(int priority, std::chrono::duration<R,P> delay, Args&& ... data)
+	void operator()(int priority, std::chrono::duration<R,P> delay, const Args&& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.emplace(priority, delay_point, std::forward<Args>(data)...);
+		_queue.emplace(priority, delay_point, std::forward<const Args>(data)...);
 	}
 	
 	void update()
