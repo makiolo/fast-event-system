@@ -199,7 +199,7 @@ struct message
 		
 	}
 
-	message(message&& other)
+	message(message&& other) noexcept
 		: _priority(std::move(other._priority))
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
@@ -232,14 +232,14 @@ struct message
 		return *this;
 	}
 
-	message& operator=(message&& other)
+	message& operator=(message&& other) noexcept
 	{
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
 #endif
 
-	void swap(message& other) throw()
+	void swap(message& other) noexcept
 	{
 		using std::swap;
 		swap(_priority, other._priority);
