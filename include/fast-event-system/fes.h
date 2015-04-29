@@ -85,7 +85,7 @@ public:
 	{
 		if (_connection)
 		{
-			_connection->disconnect();
+			//_connection->disconnect();
 		}
 	}
 
