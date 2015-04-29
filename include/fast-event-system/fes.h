@@ -183,10 +183,10 @@ protected:
 template <typename ... Args>
 struct message
 {
-	message(int priority, std::chrono::system_clock::time_point timestamp, const Args&... data)
+	message(int priority, std::chrono::system_clock::time_point timestamp, Args&& ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		, _data(data...)
+		, _data(std::forward<Args>(data)...)
 	{
 		
 	}
