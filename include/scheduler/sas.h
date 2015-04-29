@@ -48,9 +48,9 @@ public:
 		th.detach();
 	}
 
-	inline void call(const command& command, int milli = 0, int priority = 0)
+	inline void call(command&& command, int milli = 0, int priority = 0)
 	{
-		_commands(priority, std::chrono::milliseconds(milli), command);
+		_commands(priority, std::chrono::milliseconds(milli), std::forward<command>(command));
 	}
 	
 	void update()
@@ -91,14 +91,14 @@ public:
 		_planner_others.add_follower(talker);
 	}
 	
-	inline void call_others(const command_others& command, int milli = 0, int priority = 0)
+	inline void call_others(command_others&& command, int milli = 0, int priority = 0)
 	{
-		_planner_others.call(command, milli, priority);
+		_planner_others.call(std::forward<command_others>(command), milli, priority);
 	}
 
-	inline void call_me(const command_me& command, int milli = 0, int priority = 0)
+	inline void call_me(command_me&& command, int milli = 0, int priority = 0)
 	{
-		_planner_me.call(command, milli, priority);
+		_planner_me.call(std::forward<command_me>(command), milli, priority);
 	}
 	
 	void update()
