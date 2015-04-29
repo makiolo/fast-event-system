@@ -326,7 +326,7 @@ protected:
 	template<int ...S>
 	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
 	{
-		_output(std::get<S>(top)...);
+		_output(std::move(std::get<S>(top)...));
 	}
 
 	bool _dispatch()
@@ -406,7 +406,7 @@ protected:
 	template<int ...S>
 	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
 	{
-		_output(std::get<S>(top)...);
+		_output(std::move(std::get<S>(top)...));
 	}
 
 	void _dispatch()
