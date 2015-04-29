@@ -279,10 +279,10 @@ public:
 	queue_delayer& operator=(const queue_delayer&) = delete;
 
 	template <typename R, typename P>
-	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
+	void operator()(int priority, std::chrono::duration<R,P> delay, Args&& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.emplace(priority, delay_point, data...);
+		_queue.emplace(priority, delay_point, std::forward<Args>(data)...);
 	}
 	
 	void update()
