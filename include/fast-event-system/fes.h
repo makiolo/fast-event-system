@@ -152,9 +152,9 @@ public:
 	
 	inline shared_connection<Args...> connect(const std::function<void(const Args&...)>& method)
 	{
-		auto it = _registered.emplace_back(method);
+		_registered.emplace_back(method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			_registered.erase(it);
+			//_registered.erase(it);
 		});
 	}
 	
@@ -170,9 +170,9 @@ protected:
 	template <typename T, int ... Is>
 	inline shared_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
-		auto it = _registered.emplace_back(std::bind(ptr_func, obj, placeholder_template<Is>{}...));
+		_registered.emplace_back(std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			_registered.erase(it);
+			//_registered.erase(it);
 		});
 	}
 	
