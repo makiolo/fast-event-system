@@ -24,9 +24,9 @@ public:
 	}
 
 	template <typename R, typename P>
-	void operator()(int priority, std::chrono::duration<R,P> delay, const std::string& data)
+	void operator()(int priority, std::chrono::duration<R,P> delay, std::string&& data)
 	{
-		_channel(priority, delay, data);
+		_channel(priority, delay, std::forward<std::string>(data));
 	}
 
 	void update()
