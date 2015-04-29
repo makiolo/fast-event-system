@@ -124,9 +124,9 @@ public:
 	method(const method&) = delete;
 	method& operator=(const method&) = delete;
 
-	void operator()(const Args&... data)
+	void operator()(const Args&& ... data)
 	{
-		_method(data...);
+		_method(std::forward<const Args>(data)...);
 	}
 		
 protected:
@@ -158,11 +158,11 @@ public:
 		});
 	}
 	
-	void operator()(const Args& ... data)
+	void operator()(const Args&& ... data)
 	{
 		for(auto& reg : _registered)
 		{
-			reg(data...);
+			reg(std::forward<const Args>(data)...);
 		}
 	}
 
