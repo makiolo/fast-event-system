@@ -18,9 +18,9 @@ public:
 	Producer() {}
 	~Producer() {}
 
-	void operator()(const std::string& data)
+	void operator()(const std::string&& data)
 	{
-		_channel(data);
+		_channel(std::forward<const std::string>(data));
 	}
 
 	template <typename R, typename P>
