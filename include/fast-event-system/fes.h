@@ -250,18 +250,6 @@ struct message
 	{
 		
 	}
-
-	bool operator<(const message& other) const
-	{
-		std::cout << "sort message, priority " << _priority << std::endl;
-		/*
-		if (_timestamp < other._timestamp)
-			return false;
-		else if (_timestamp > other._timestamp)
-			return true;
-		*/
-		return (_priority < other._priority);
-	}
 	
 	int _priority;
 	std::chrono::system_clock::time_point _timestamp;
@@ -269,10 +257,27 @@ struct message
 };
 
 template <typename ... Args>
+struct message_comp : public std::binary_function<message<Args...>, message<Args...>, bool>
+{
+    bool operator() (const message<Args...>& one, const message<Args...>& other)
+    {
+    	std::cout << "sort message, priority " << one._priority << std::endl;
+	/*
+	if (_timestamp < other._timestamp)
+		return false;
+	else if (_timestamp > other._timestamp)
+		return true;
+	*/
+    	// true is one is considered to go before other
+        return other._priority < one._priority;
+    }
+};
+
+template <typename ... Args>
 class queue_delayer
 {
 public:
-	using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> > >;
+	using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> >, message_comp<Args...> >;
 	
 	queue_delayer() { ; }
 	~queue_delayer() { ; }
