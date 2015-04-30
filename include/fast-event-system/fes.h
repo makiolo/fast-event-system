@@ -252,14 +252,14 @@ struct message_comp
     bool operator() (const message<Args...>& one, const message<Args...>& other)
     {
 	if (one._timestamp < other._timestamp)
-		return true;
-	else if (one._timestamp > other._timestamp)
 		return false;
+	else if (one._timestamp > other._timestamp)
+		return true;
 	
 	if(one._priority < other._priority)
-		return false;
-	else if(one._priority > other._priority)
 		return true;
+	else if(one._priority > other._priority)
+		return false;
 	
 	return false;
     }
@@ -270,7 +270,7 @@ class queue_delayer
 {
 public:
 	//using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> >, message_comp<Args...> >;
-	using container_type = std::queue<message<Args...>, std::deque<message<Args...> > >;
+	using container_type = std::vector<message<Args...> >;
 	
 	queue_delayer() { ; }
 	~queue_delayer() { ; }
@@ -281,7 +281,7 @@ public:
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args&& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.emplace(priority, delay_point, std::forward<const Args>(data)...);
+		_queue.emplace_back(priority, delay_point, std::forward<const Args>(data)...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 	
@@ -332,12 +332,11 @@ protected:
 	bool _dispatch()
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
-		//auto& t = _queue.top();
-		auto& t = _queue.front();
+		auto& t = _queue.back();
 		if(t1 >= t._timestamp)
 		{
 			dispatch(t._data, gens<sizeof...(Args)>{});
-			_queue.pop();
+			_queue.pop_back();
 			return true;
 		}
 		return false;
