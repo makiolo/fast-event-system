@@ -185,7 +185,8 @@ struct message
 	message(int priority, std::chrono::system_clock::time_point timestamp, const Args&& ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		, _data(std::forward<const Args>(data)...)
+		//, _data(std::forward<const Args>(data)...)
+		, _data(std::move(data)...)
 	{
 		std::cout << "constructor message" << std::endl;
 	}
