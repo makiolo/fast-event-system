@@ -261,14 +261,20 @@ struct message_comp : public std::binary_function<message<Args...>, message<Args
 {
     bool operator() (const message<Args...>& one, const message<Args...>& other)
     {
-    	//std::cout << "sort message, priority " << one._priority << std::endl;
+	// normal order
 	if (one._timestamp < other._timestamp)
 		return true;
 	else if (one._timestamp > other._timestamp)
 		return false;
 	
-    	// true is one is considered to go before other
-        return one._priority < other._priority;
+	// inverse order	
+	if(one._priority < other._priority)
+		return false;
+	else if(one._priority > other._priority)
+		return true;
+	
+	return false;
+
     }
 };
 
