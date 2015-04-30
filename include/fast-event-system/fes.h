@@ -82,7 +82,7 @@ public:
 	{
 		if (_connection)
 		{
-			//_connection->disconnect();
+			_connection->disconnect();
 		}
 	}
 
@@ -153,7 +153,7 @@ public:
 	{
 		_registered.emplace_back(method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -171,7 +171,7 @@ protected:
 	{
 		_registered.emplace_back(std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -218,7 +218,7 @@ struct message
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
 	*/
 
-#if 1
+#if 0
 	message& operator=(message other)
 	{
 		swap(other);
@@ -256,25 +256,23 @@ struct message
 	std::tuple<Args...> _data;
 };
 
+// must complain strict weak order
 template <typename ... Args>
-struct message_comp : public std::binary_function<message<Args...>, message<Args...>, bool>
+struct message_comp
 {
     bool operator() (const message<Args...>& one, const message<Args...>& other)
     {
-	// normal order
 	if (one._timestamp < other._timestamp)
 		return true;
 	else if (one._timestamp > other._timestamp)
 		return false;
 	
-	// inverse order	
 	if(one._priority < other._priority)
 		return false;
 	else if(one._priority > other._priority)
 		return true;
 	
 	return false;
-
     }
 };
 
