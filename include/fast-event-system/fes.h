@@ -82,7 +82,7 @@ public:
 	{
 		if (_connection)
 		{
-			_connection->disconnect();
+			//_connection->disconnect();
 		}
 	}
 
@@ -97,7 +97,9 @@ template <typename ... Args>
 class method
 {
 public:
-	method(const std::function<void(const Args&...)>& method)
+	using function = std::function<void(const Args&...)>;
+
+	method(const function& method)
 		: _method(method)
 	{
 		
@@ -121,20 +123,20 @@ public:
 	method(const method&) = delete;
 	method& operator=(const method&) = delete;
 
-	void operator()(const Args&& ... data)
+	void operator()(const Args&& ... data) const
 	{
 		_method(std::forward<const Args>(data)...);
 	}
 		
 protected:
-	std::function<void(const Args&...)> _method;
+	function _method;
 };
 
 template <typename ... Args>
 class callback
 {
 public:
-	using methods = std::vector<method<Args...> >;
+	using methods = std::list<method<Args...> >;
 	
 	callback() { ; }
 	~callback() { ; }
@@ -144,10 +146,10 @@ public:
 	template <typename T>
 	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
-		return _connect(obj, ptr_func, make_int_sequence < sizeof...(Args) > {});
+		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
 	
-	inline shared_connection<Args...> connect(const std::function<void(const Args&...)>& method)
+	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		_registered.emplace_back(method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
@@ -155,7 +157,7 @@ public:
 		});
 	}
 	
-	void operator()(const Args&& ... data)
+	void operator()(const Args&& ... data) const
 	{
 		for(auto& reg : _registered)
 		{
@@ -210,7 +212,7 @@ struct message
 		message(other).swap(*this);
 		return *this;
 	}
-
+	
 	Copy-swap idiom
 	http://stackoverflow.com/questions/276173/what-are-your-favorite-c-coding-style-idioms/2034447#2034447
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
@@ -317,13 +319,13 @@ public:
 		return _output.connect(obj, ptr_func);
 	}
 	
-	inline shared_connection<Args...> connect(const std::function<void(const Args&...)>& method)
+	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
 	}
 protected:
 	template<int ...S>
-	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
+	inline void dispatch(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::move(std::get<S>(top)...));
 	}
@@ -396,14 +398,14 @@ public:
 		return _output.connect(obj, ptr_func);
 	}
 
-	inline shared_connection<Args...> connect(const std::function<void(const Args&...)>& method)
+	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
 	}
 
 protected:	
 	template<int ...S>
-	inline void dispatch(const std::tuple<Args...>& top, seq<S...>)
+	inline void dispatch(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::move(std::get<S>(top)...));
 	}
