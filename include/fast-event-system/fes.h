@@ -182,13 +182,12 @@ protected:
 template <typename ... Args>
 struct message
 {
-	message(int priority, std::chrono::system_clock::time_point timestamp, const Args&& ... data)
+	message(int priority, std::chrono::system_clock::time_point timestamp, const Args ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		//, _data(std::forward<const Args>(data)...)
 		, _data(std::move(data)...)
 	{
-		std::cout << "constructor message" << std::endl;
+		//std::cout << "constructor message" << std::endl;
 	}
 	
 	message(const message& other)
@@ -204,7 +203,7 @@ struct message
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
 	{
-		std::cout << "constructor move" << std::endl;
+		//std::cout << "constructor move" << std::endl;
 	}
 
 	/*
@@ -215,21 +214,21 @@ struct message
 
 	message& operator=(const message& other)
 	{
-		std::cout << "operator= copy" << std::endl;
+		//std::cout << "operator= copy" << std::endl;
 		message(other).swap(*this);
 		return *this;
 	}
 
 	message& operator=(message&& other) noexcept
 	{
-		std::cout << "operator= move" << std::endl;
+		//std::cout << "operator= move" << std::endl;
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
 
 	void swap(message& other) noexcept
 	{
-		std::cout << "swap" << std::endl;
+		//std::cout << "swap" << std::endl;
 		using std::swap;
 		swap(_priority, other._priority);
 		swap(_timestamp, other._timestamp);
@@ -238,7 +237,7 @@ struct message
 
 	~message()
 	{
-		std::cout << "destructor" << std::endl;
+		//std::cout << "destructor" << std::endl;
 	}
 	
 	int _priority;
@@ -276,7 +275,7 @@ public:
 	~queue_delayer() { ; }
 	queue_delayer(const queue_delayer&) = delete;
 	queue_delayer& operator=(const queue_delayer&) = delete;
-
+	
 	template <typename R, typename P>
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args&& ... data)
 	{
