@@ -151,9 +151,9 @@ public:
 	
 	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
-		_registered.emplace_back(method);
+		auto it = _registered.emplace(_registered.end(), method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -169,9 +169,9 @@ protected:
 	template <typename T, int ... Is>
 	inline shared_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
-		_registered.emplace_back(std::bind(ptr_func, obj, placeholder_template<Is>{}...));
+		auto it = _registered.emplace(_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -187,7 +187,7 @@ struct message
 		, _timestamp(timestamp)
 		, _data(std::forward<const Args>(data)...)
 	{
-		
+		std::cout << "constructor message" << std::endl;
 	}
 	
 	message(const message& other)
@@ -195,7 +195,7 @@ struct message
 		, _timestamp(other._timestamp)
 		, _data(other._data)
 	{
-		
+		std::cout << "constructor copy" << std::endl;
 	}
 
 	message(message&& other) noexcept
@@ -203,43 +203,32 @@ struct message
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
 	{
-		
+		std::cout << "constructor move" << std::endl;
 	}
 
 	/*
-	message& operator=(const message& other)
-	{
-		message(other).swap(*this);
-		return *this;
-	}
-	
 	Copy-swap idiom
 	http://stackoverflow.com/questions/276173/what-are-your-favorite-c-coding-style-idioms/2034447#2034447
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
 	*/
 
-#if 0
-	message& operator=(message other)
-	{
-		swap(other);
-		return *this;
-	}
-#else
 	message& operator=(const message& other)
 	{
+		std::cout << "operator= copy" << std::endl;
 		message(other).swap(*this);
 		return *this;
 	}
 
 	message& operator=(message&& other) noexcept
 	{
+		std::cout << "operator= move" << std::endl;
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
-#endif
 
 	void swap(message& other) noexcept
 	{
+		std::cout << "swap" << std::endl;
 		using std::swap;
 		swap(_priority, other._priority);
 		swap(_timestamp, other._timestamp);
@@ -248,7 +237,7 @@ struct message
 
 	~message()
 	{
-		
+		std::cout << "destructor" << std::endl;
 	}
 	
 	int _priority;
