@@ -146,7 +146,7 @@ public:
 	inline void lock()
 	{
 #ifndef _WIN32
-		(void) sem_wait(&_sem);
+		//(void) sem_wait(&_sem);
 #else
 		DWORD dwWaitResult = WaitForSingleObject(_sem, INFINITE);
 		if (dwWaitResult == WAIT_FAILED)
@@ -159,7 +159,7 @@ public:
 	inline void unlock()
 	{
 #ifndef _WIN32
-		(void) sem_post(&_sem);
+		//(void) sem_post(&_sem);
 #else
 		if (ReleaseSemaphore(_sem, 1, NULL) == 0)
 		{
