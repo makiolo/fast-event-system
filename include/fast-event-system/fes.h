@@ -197,7 +197,7 @@ struct message
 	{
 		std::cout << "constructor copy" << std::endl;
 	}
-
+	
 	message(message&& other) noexcept
 		: _priority(std::move(other._priority))
 		, _timestamp(std::move(other._timestamp))
@@ -205,27 +205,27 @@ struct message
 	{
 		//std::cout << "constructor move" << std::endl;
 	}
-
+	
 	/*
 	Copy-swap idiom
 	http://stackoverflow.com/questions/276173/what-are-your-favorite-c-coding-style-idioms/2034447#2034447
 	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
 	*/
-
+	
 	message& operator=(const message& other)
 	{
 		//std::cout << "operator= copy" << std::endl;
 		message(other).swap(*this);
 		return *this;
 	}
-
+	
 	message& operator=(message&& other) noexcept
 	{
 		//std::cout << "operator= move" << std::endl;
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
-
+	
 	void swap(message& other) noexcept
 	{
 		//std::cout << "swap" << std::endl;
@@ -234,7 +234,7 @@ struct message
 		swap(_timestamp, other._timestamp);
 		swap(_data, other._data);
 	}
-
+	
 	~message()
 	{
 		//std::cout << "destructor" << std::endl;
@@ -269,7 +269,8 @@ template <typename ... Args>
 class queue_delayer
 {
 public:
-	using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> >, message_comp<Args...> >;
+	//using container_type = std::priority_queue<message<Args...>, std::vector<message<Args...> >, message_comp<Args...> >;
+	using container_type = std::queue<message<Args...>, std::deque<message<Args...> > >;
 	
 	queue_delayer() { ; }
 	~queue_delayer() { ; }
@@ -281,6 +282,7 @@ public:
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
 		_queue.emplace(priority, delay_point, std::forward<const Args>(data)...);
+		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 	
 	void update()
@@ -330,7 +332,8 @@ protected:
 	bool _dispatch()
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
-		auto& t = _queue.top();
+		//auto& t = _queue.top();
+		auto& t = _queue.front();
 		if(t1 >= t._timestamp)
 		{
 			dispatch(t._data, gens<sizeof...(Args)>{});
