@@ -153,7 +153,7 @@ public:
 	{
 		_registered.emplace_back(method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			_registered.erase(it);
+			//_registered.erase(it);
 		});
 	}
 	
@@ -171,7 +171,7 @@ protected:
 	{
 		_registered.emplace_back(std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			_registered.erase(it);
+			//_registered.erase(it);
 		});
 	}
 	
