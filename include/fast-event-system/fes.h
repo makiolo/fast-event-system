@@ -269,7 +269,7 @@ struct message_comp : public std::binary_function<message<Args...>, message<Args
 		return true;
 	*/
     	// true is one is considered to go before other
-        return other._priority < one._priority;
+        return one._priority < other._priority;
     }
 };
 
