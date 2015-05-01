@@ -8,6 +8,7 @@ if(WIN32)
 else()
 	add_definitions(-fno-rtti)
 	add_definitions(-fno-exceptions)
+	add_definitions(-g -O0)
 endif()
 
 INCLUDE_DIRECTORIES(include/)

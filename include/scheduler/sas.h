@@ -123,9 +123,10 @@ class syncronizer
 {
 public:
 	syncronizer(int concurrency = 1)
+		: _signal(0)
 	{
 #ifndef _WIN32
-		(void) sem_init(&_sem, 0, concurrency);
+		//(void) sem_init(&_sem, 0, concurrency);
 #else
 		_sem = CreateSemaphore(NULL, 0, concurrency, NULL);
 #endif
@@ -134,7 +135,7 @@ public:
 	~syncronizer()
 	{
 #ifndef _WIN32
-		(void) sem_destroy(&_sem);
+		//(void) sem_destroy(&_sem);
 #else
 		CloseHandle(_sem);
 #endif
@@ -143,10 +144,13 @@ public:
 	syncronizer(const syncronizer&) = delete;
 	syncronizer& operator=(const syncronizer&) = delete;
 
-	inline void lock()
+	inline void wait()
 	{
 #ifndef _WIN32
-		(void) sem_wait(&_sem);
+		_signal = _signal - 1;
+
+		std::unique_lock<std::mutex> context(_cond_mutex);
+		_cond.wait(context, [&](){return _signal < 0;});
 #else
 		DWORD dwWaitResult = WaitForSingleObject(_sem, INFINITE);
 		if (dwWaitResult == WAIT_FAILED)
@@ -156,10 +160,11 @@ public:
 #endif
 	}
 	
-	inline void unlock()
+	inline void signal()
 	{
 #ifndef _WIN32
-		(void) sem_post(&_sem);
+		_signal = _signal + 1;
+		_cond.notify_all();
 #else
 		if (ReleaseSemaphore(_sem, 1, NULL) == 0)
 		{
@@ -168,24 +173,14 @@ public:
 #endif
 	}
 
-	inline void wait(int count = 1)
-	{
-		for(int i = 0; i<count; ++i)
-		{
-			lock();
-		}
-	}
-	
-	inline void signal(int count = 1)
-	{
-		for(int i = 0; i<count; ++i)
-		{
-			unlock();
-		}
-	}
 protected:
 #ifndef _WIN32
-	sem_t _sem;
+	//sem_t _sem;
+	std::condition_variable _cond;
+	std::mutex _cond_mutex;
+	std::atomic<int> _signal;
+	//
+	std::mutex _cond2_mutex;
 #else
 	HANDLE _sem;
 #endif
@@ -194,3 +189,4 @@ protected:
 } // end namespace
 
 #endif // _SCHEDULER_ADVANCED_SIMPLE_
+

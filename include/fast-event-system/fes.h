@@ -153,7 +153,7 @@ public:
 	{
 		auto it = _registered.emplace(_registered.end(), method);
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -171,7 +171,7 @@ protected:
 	{
 		auto it = _registered.emplace(_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		return std::make_shared<internal_connection<Args ...> >([&](){
-			//_registered.erase(it);
+			_registered.erase(it);
 		});
 	}
 	
@@ -187,7 +187,7 @@ struct message
 		, _timestamp(timestamp)
 		, _data(std::move(data)...)
 	{
-		std::cout << "constructor message" << std::endl;
+		//std::cout << "constructor message" << std::endl;
 	}
 	
 	message(const message& other)
@@ -195,7 +195,7 @@ struct message
 		, _timestamp(other._timestamp)
 		, _data(other._data)
 	{
-		std::cout << "constructor copy" << std::endl;
+		//std::cout << "constructor copy" << std::endl;
 	}
 	
 	message(message&& other) noexcept
@@ -203,7 +203,7 @@ struct message
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
 	{
-		std::cout << "constructor move" << std::endl;
+		//std::cout << "constructor move" << std::endl;
 	}
 	
 	/*
@@ -214,21 +214,21 @@ struct message
 	
 	message& operator=(const message& other)
 	{
-		std::cout << "operator= copy" << std::endl;
+		//std::cout << "operator= copy" << std::endl;
 		message(other).swap(*this);
 		return *this;
 	}
 	
 	message& operator=(message&& other) noexcept
 	{
-		std::cout << "operator= move" << std::endl;
+		//std::cout << "operator= move" << std::endl;
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
 	
 	void swap(message& other) noexcept
 	{
-		std::cout << "swap" << std::endl;
+		//std::cout << "swap" << std::endl;
 		using std::swap;
 		swap(_priority, other._priority);
 		swap(_timestamp, other._timestamp);
@@ -237,7 +237,7 @@ struct message
 	
 	~message()
 	{
-		std::cout << "destructor" << std::endl;
+		//std::cout << "destructor" << std::endl;
 	}
 	
 	int _priority;
@@ -423,3 +423,4 @@ protected:
 } // end namespace
 
 #endif
+
