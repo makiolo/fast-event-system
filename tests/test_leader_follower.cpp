@@ -21,8 +21,6 @@ public:
 
 	void print(const std::string& name, const std::string& text, int delay = 10)
 	{
-		std::unique_lock<std::mutex> context(_lock);
-		
 		std::cout << "<" << name << "> ";
 		for(const char& c : text)
 		{
@@ -31,9 +29,6 @@ public:
 		}
 		std::cout << std::endl;
 	}
-
-protected:
-	std::mutex _lock;
 };
 
 class PersonA;
@@ -85,15 +80,15 @@ int main()
 	std::ios_base::sync_with_stdio(false);
 	
 	{
-		//auto pool = std::make_shared<fes::thread_pool>(std::thread::hardware_concurrency());
-		auto pool = std::make_shared<fes::thread_pool>(1);
+		//auto processor = std::make_shared<sas::processor>(std::thread::hardware_concurrency());
+		auto processor = std::make_shared<sas::processor>(1);
 		
 		Context context;
 		PersonA person1("Person A", context);
 		PersonB person2("Person B", context);
 		
-		person1.set_thread_pool(pool);
-		person2.set_thread_pool(pool);
+		person1.set_processor(processor);
+		person2.set_processor(processor);
 		
 		/*
 		Order expected:
@@ -111,37 +106,37 @@ int main()
 		// person A
 		person1.call_me([&](PersonA& self) {
 			self.say("1. What are you doing now ? ");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 4);
 		person1.call_me([&](PersonA& self) {
 			self.say("3. I didn't know you play pool.  Are you having fun?");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 3);
 		person1.call_me([&](PersonA& self) {
 			self.say("5. I'm taking a break from my homework. There seems to be no end to the amount of work I have to do.");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 2);
 		person1.call_me([&](PersonA& self) {
 			self.say("7. bye person B");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 1);
 		
 		// person B
 		person2.call_me([&](PersonB& self) {
 			self.say("2. I'm playing pool with my friends at a pool hall.");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 4);
 		person2.call_me([&](PersonB& self) {
 			self.say("4. I'm having a great time.  How about you?  What are you doing?");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 3);
 		person2.call_me([&](PersonB& self) {
 			self.say("6. I'm glad I'm not in your shoes.");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 2);
 		person2.call_me([&](PersonB& self) {
 			self.say("8. bye person A");
-			self.sleep(10);
+			self.sleep(100);
 		}, 0, 1);
 		
 		for (int i = 0; i < 9000; ++i)

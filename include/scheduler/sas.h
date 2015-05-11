@@ -19,6 +19,87 @@
 
 namespace sas {
 
+class processor
+{
+public:
+    processor(size_t);
+    ~processor();
+	
+	void enqueue(const std::function<void()>& func);
+	
+private:
+    // need to keep track of threads so we can join them
+    std::vector< std::thread > _workers;
+    // the task queue
+    std::queue< std::function<void()> > _tasks;
+    
+    // synchronization
+    std::mutex _queue_mutex;
+    std::condition_variable _condition;
+    bool _stop;
+};
+ 
+inline processor::processor(size_t threads) : _stop(false)
+{
+	for (size_t i = 0; i < threads; ++i)
+	{
+		_workers.emplace_back(
+			[this]
+			{
+				for (;;)
+				{
+					std::function<void()> task;
+
+					{
+						std::unique_lock<std::mutex> lock(this->_queue_mutex);
+						this->_condition.wait(lock,
+							[this]{ return this->_stop || !this->_tasks.empty(); });
+						if (this->_stop && this->_tasks.empty())
+							return;
+						task = std::move(this->_tasks.front());
+						this->_tasks.pop();
+					}
+
+					task();
+				}
+			}
+		);
+	}
+}
+
+void processor::enqueue(const std::function<void()>& func)
+{
+	auto packaged_func = std::make_shared< std::packaged_task<void()> >(std::bind(func));
+    {
+        std::unique_lock<std::mutex> lock(_queue_mutex);
+
+        if(_stop)
+            throw std::runtime_error("enqueue on stopped thread_pool");
+
+		_tasks.emplace(
+			[packaged_func]()
+			{
+				(*packaged_func)();
+			}
+		);
+    }
+    _condition.notify_one();
+}
+
+// the destructor joins all threads
+inline processor::~processor()
+{
+    {
+        std::unique_lock<std::mutex> lock(_queue_mutex);
+        _stop = true;
+    }
+    _condition.notify_all();
+	for (auto &worker : _workers)
+	{
+		worker.join();
+	}
+}
+
 template <typename T>
 class scheduler
 {
@@ -26,11 +107,11 @@ public:
 	using command = std::function<void(T&)>;
 	
 	explicit scheduler()
-		: _busy(false)
+		: busy(false)
 	{ ; }
-	explicit scheduler(const std::shared_ptr<fes::thread_pool>& pool)
-		: _busy(false)
-		, _pool(pool)
+	explicit scheduler(const std::shared_ptr<sas::processor>& pool)
+		: busy(false)
+		, _processor(pool)
 	{ ; }
 	~scheduler() { ; }
 	
@@ -45,12 +126,14 @@ public:
 	
 	void planificator(T& self, const command& cmd)
 	{
-		// return future
-		_pool->enqueue([&](T& self)
-		{
-			cmd(self);
-			_busy = false;
-		}, std::ref(self));
+		auto packaged_cmd = std::make_shared< std::packaged_task<void()> >(std::bind(cmd, std::ref(self)));
+		_processor->enqueue(
+			[packaged_cmd, this]()
+			{
+				(*packaged_cmd)();
+				this->busy = false;
+			}
+		);
 	}
 
 	inline void call(const command&& cmd, int milli = 0, int priority = 0)
@@ -60,24 +143,27 @@ public:
 	
 	void update()
 	{
-		if (!_busy)
+		if (!busy)
 		{
 			// dispatch return true if some is dispatched
-			_busy = _commands.dispatch();
+			busy = _commands.dispatch();
 		}
 	}
 	
 	// inject depends
-	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	void set_processor(const std::shared_ptr<sas::processor>& pool)
 	{
-		_pool = pool;
+		_processor = pool;
 	}
 	
+public:
+	std::atomic<bool> busy;
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
 	fes::queue_delayer<command> _commands;
-	std::atomic<bool> _busy;
-	std::shared_ptr<fes::thread_pool> _pool;
+    std::condition_variable _condition;
+    std::mutex _condition_mutex;
+	std::shared_ptr<sas::processor> _processor;
 };
 
 template <typename SELF, typename FOLLOWERS>
@@ -127,10 +213,10 @@ public:
 	}
 	
 	// inject depends
-	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	void set_processor(const std::shared_ptr<sas::processor>& pool)
 	{
-		_planner_others.set_thread_pool(pool);
-		_planner_me.set_thread_pool(pool);
+		_planner_others.set_processor(pool);
+		_planner_me.set_processor(pool);
 	}
 	
 protected:
@@ -138,14 +224,12 @@ protected:
 	scheduler<SELF> _planner_me;
 };
 
+#if 0
+
 class syncronizer
 {
 public:
 	syncronizer(int concurrency = 1)
-
-#ifndef _WIN32
-		: _signal(0)
-#endif
 	{
 #ifndef _WIN32
 		(void) sem_init(&_sem, 0, concurrency);
@@ -206,6 +290,8 @@ protected:
 	HANDLE _sem;
 #endif
 };
+
+#endif
 
 } // end namespace
 
