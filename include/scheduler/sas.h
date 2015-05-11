@@ -26,9 +26,14 @@ public:
 	using command = std::function<void(T&)>;
 	
 	explicit scheduler()
-		: _busy(false) { ; }
+		: _busy(false)
+	{ ; }
+	explicit scheduler(const std::shared_ptr<fes::thread_pool>& pool)
+		: _busy(false)
+		, _pool(pool)
+	{ ; }
 	~scheduler() { ; }
-
+	
 	scheduler(const scheduler&) = delete;
 	scheduler& operator=(const scheduler&) = delete;
 	
@@ -40,18 +45,17 @@ public:
 	
 	void planificator(T& self, const command& cmd)
 	{
-		std::thread th([&]()
+		// return future
+		_pool->enqueue([&](T& self)
 		{
 			cmd(self);
 			_busy = false;
-		});
-		th.detach();
+		}, std::ref(self));
 	}
 
 	inline void call(const command&& cmd, int milli = 0, int priority = 0)
 	{
 		_commands(priority, std::chrono::milliseconds(milli), std::forward<const command>(cmd));
-		//_commands(std::forward<const command>(cmd));
 	}
 	
 	void update()
@@ -62,11 +66,15 @@ public:
 			_busy = _commands.dispatch();
 		}
 	}
+	
+	// inject depends
+	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool) {_pool = pool;}
+	
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
 	fes::queue_delayer<command> _commands;
-	//fes::queue_fast<command> _commands;
 	std::atomic<bool> _busy;
+	std::shared_ptr<fes::thread_pool> _pool;
 };
 
 template <typename SELF, typename FOLLOWERS>
