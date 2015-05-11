@@ -1,6 +1,7 @@
 // Ricardo Marmolejo Garcia
 // 15-04-2015
 
+#include <thread>
 #include <scheduler/sas.h>
 
 class Context
@@ -87,9 +88,15 @@ int main()
 	std::ios_base::sync_with_stdio(false);
 	
 	{
+		auto pool = std::make_shared<fes::thread_pool>(std::thread::hardware_concurrency());
+		
 		Context context;
 		PersonA person1("Person A", context);
 		PersonB person2("Person B", context);
+		
+		person1.set_thread_pool(pool);
+		person2.set_thread_pool(pool);
+		
 		/*
 		Order expected:
 
