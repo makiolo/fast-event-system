@@ -68,7 +68,10 @@ public:
 	}
 	
 	// inject depends
-	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool) {_pool = pool;}
+	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	{
+		_pool = pool;
+	}
 	
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
@@ -84,10 +87,11 @@ public:
 	using command_others = typename scheduler<FOLLOWERS>::command;
 	using command_me = typename scheduler<SELF>::command;
 	
-	talker()
+	explicit talker()
 	{
 		_planner_me.add_follower(*this);
 	}
+	
 	~talker()
 	{
 		
@@ -120,6 +124,13 @@ public:
 	inline void sleep(int milli)
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
+	}
+	
+	// inject depends
+	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	{
+		_planner_others.set_thread_pool(pool);
+		_planner_me.set_thread_pool(pool);
 	}
 	
 protected:
