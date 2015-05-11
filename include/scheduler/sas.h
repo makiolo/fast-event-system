@@ -26,9 +26,14 @@ public:
 	using command = std::function<void(T&)>;
 	
 	explicit scheduler()
-		: _busy(false) { ; }
+		: _busy(false)
+	{ ; }
+	explicit scheduler(const std::shared_ptr<fes::thread_pool>& pool)
+		: _busy(false)
+		, _pool(pool)
+	{ ; }
 	~scheduler() { ; }
-
+	
 	scheduler(const scheduler&) = delete;
 	scheduler& operator=(const scheduler&) = delete;
 	
@@ -40,18 +45,17 @@ public:
 	
 	void planificator(T& self, const command& cmd)
 	{
-		std::thread th([&]()
+		// return future
+		_pool->enqueue([&](T& self)
 		{
 			cmd(self);
 			_busy = false;
-		});
-		th.detach();
+		}, std::ref(self));
 	}
 
 	inline void call(const command&& cmd, int milli = 0, int priority = 0)
 	{
 		_commands(priority, std::chrono::milliseconds(milli), std::forward<const command>(cmd));
-		//_commands(std::forward<const command>(cmd));
 	}
 	
 	void update()
@@ -62,11 +66,18 @@ public:
 			_busy = _commands.dispatch();
 		}
 	}
+	
+	// inject depends
+	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	{
+		_pool = pool;
+	}
+	
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
 	fes::queue_delayer<command> _commands;
-	//fes::queue_fast<command> _commands;
 	std::atomic<bool> _busy;
+	std::shared_ptr<fes::thread_pool> _pool;
 };
 
 template <typename SELF, typename FOLLOWERS>
@@ -76,10 +87,11 @@ public:
 	using command_others = typename scheduler<FOLLOWERS>::command;
 	using command_me = typename scheduler<SELF>::command;
 	
-	talker()
+	explicit talker()
 	{
 		_planner_me.add_follower(*this);
 	}
+	
 	~talker()
 	{
 		
@@ -114,6 +126,13 @@ public:
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
 	}
 	
+	// inject depends
+	void set_thread_pool(const std::shared_ptr<fes::thread_pool>& pool)
+	{
+		_planner_others.set_thread_pool(pool);
+		_planner_me.set_thread_pool(pool);
+	}
+	
 protected:
 	scheduler<FOLLOWERS> _planner_others;
 	scheduler<SELF> _planner_me;
@@ -123,12 +142,13 @@ class syncronizer
 {
 public:
 	syncronizer(int concurrency = 1)
+
 #ifndef _WIN32
 		: _signal(0)
 #endif
 	{
 #ifndef _WIN32
-		//(void) sem_init(&_sem, 0, concurrency);
+		(void) sem_init(&_sem, 0, concurrency);
 #else
 		_sem = CreateSemaphore(NULL, 0, concurrency, NULL);
 #endif
@@ -137,7 +157,7 @@ public:
 	~syncronizer()
 	{
 #ifndef _WIN32
-		//(void) sem_destroy(&_sem);
+		(void) sem_destroy(&_sem);
 #else
 		CloseHandle(_sem);
 #endif
@@ -149,10 +169,9 @@ public:
 	inline void wait()
 	{
 #ifndef _WIN32
-		_signal = _signal - 1;
-
-		std::unique_lock<std::mutex> context(_cond_mutex);
-		_cond.wait(context, [&](){return _signal < 0;});
+		//_signal = _signal - 1;
+		//std::unique_lock<std::mutex> context(_cond_mutex);
+		//_cond.wait(context, [&](){return _signal < 0;});
 #else
 		DWORD dwWaitResult = WaitForSingleObject(_sem, INFINITE);
 		if (dwWaitResult == WAIT_FAILED)
@@ -165,8 +184,8 @@ public:
 	inline void signal()
 	{
 #ifndef _WIN32
-		_signal = _signal + 1;
-		_cond.notify_all();
+		//_signal = _signal + 1;
+		//_cond.notify_all();
 #else
 		if (ReleaseSemaphore(_sem, 1, NULL) == 0)
 		{
@@ -177,12 +196,12 @@ public:
 
 protected:
 #ifndef _WIN32
-	//sem_t _sem;
-	std::condition_variable _cond;
-	std::mutex _cond_mutex;
-	std::atomic<int> _signal;
+	sem_t _sem;
+	//std::condition_variable _cond;
+	//std::mutex _cond_mutex;
+	//std::atomic<int> _signal;
 	//
-	std::mutex _cond2_mutex;
+	//std::mutex _cond2_mutex;
 #else
 	HANDLE _sem;
 #endif
