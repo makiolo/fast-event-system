@@ -423,6 +423,8 @@ protected:
 	container_type _queue;
 };
 
+#if 0
+
 template <typename Args ...>
 class queue_interleace
 {
@@ -526,6 +528,8 @@ protected:
 	// first queue that leave your empty state
 	bool _fisrt_is_more_early_no_empty;
 };
+
+#endif
 
 } // end namespace
 
