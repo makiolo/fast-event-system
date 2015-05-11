@@ -123,7 +123,9 @@ class syncronizer
 {
 public:
 	syncronizer(int concurrency = 1)
+#ifndef _WIN32
 		: _signal(0)
+#endif
 	{
 #ifndef _WIN32
 		//(void) sem_init(&_sem, 0, concurrency);

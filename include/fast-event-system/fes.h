@@ -123,10 +123,17 @@ public:
 	method(const method&) = delete;
 	method& operator=(const method&) = delete;
 
+	void operator()(const Args& ... data) const
+	{
+		_method(data...);
+	}
+
+	/*
 	void operator()(const Args&& ... data) const
 	{
 		_method(std::forward<const Args>(data)...);
 	}
+	*/
 		
 protected:
 	function _method;
@@ -157,6 +164,14 @@ public:
 		});
 	}
 	
+	void operator()(const Args& ... data) const
+	{
+		for(auto& reg : _registered)
+		{
+			reg(data...);
+		}
+	}
+	/*
 	void operator()(const Args&& ... data) const
 	{
 		for(auto& reg : _registered)
@@ -164,6 +179,7 @@ public:
 			reg(std::forward<const Args>(data)...);
 		}
 	}
+	*/
 
 protected:	
 	template <typename T, int ... Is>
@@ -276,11 +292,20 @@ public:
 	queue_delayer(const queue_delayer&) = delete;
 	queue_delayer& operator=(const queue_delayer&) = delete;
 	
+	/*
 	template <typename R, typename P>
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args&& ... data)
 	{
 		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
 		_queue.emplace_back(priority, delay_point, std::forward<const Args>(data)...);
+		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
+	}
+	*/
+	template <typename R, typename P>
+	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
+	{
+		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
+		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 	
@@ -357,11 +382,17 @@ public:
 	queue_fast(const queue_fast&) = delete;
 	queue_fast& operator=(const queue_fast&) = delete;
 	
+	void operator()(const Args& ... data)
+	{
+		_queue.emplace(data...);
+	}
+	/*
 	void operator()(const Args&& ... data)
 	{
 		_queue.emplace(std::forward<const Args>(data)...);
 	}
-	
+	*/
+
 	void update()
 	{
 		while(!_queue.empty())
