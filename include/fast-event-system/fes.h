@@ -420,6 +420,110 @@ protected:
 	container_type _queue;
 };
 
+template <typename Args ...>
+class queue_interleace
+{
+public:
+	explicit queue_interleace()
+		: _empty_first(true)
+		, _empty_second(true)
+		, _fisrt_is_more_early_no_empty(true)
+	{
+		
+	}
+	
+	~queue_interleace()
+	{
+		
+	}
+	
+	void update_state()
+	{
+		_empty_first = _first.empty();
+		_empty_second = _second.empty();
+	}
+	
+	void push_first(const Args&& ... data)
+	{
+		if(_empty_second)
+		{
+			_fisrt_is_more_early_no_empty = true;
+		}
+		_first(std::forward<const Args>(data)...);
+		update_state();
+	}
+	
+	void push_second(const Args&& ... data)
+	{
+		if(_empty_first)
+		{
+			_fisrt_is_more_early_no_empty = false;
+		}
+		_second(std::forward<const Args>(data)...);
+		update_state();
+	}
+	
+	bool dispatch()
+	{
+		bool ok;
+		
+		if(_empty_first)
+		{
+			if(_empty_second)
+			{
+				// both empty, nothing to do
+				ok = false;
+			}
+			else
+			{
+				// firts empty, dispatch only second
+				ok = _second.dispatch();
+			}
+		}
+		else
+		{
+			if(_empty_second)
+			{
+				// second empty, dispatch only first
+				ok = _first.dispatch();
+			}
+			else
+			{
+				// alternation based in "fisrt_is_more_early_no_empty"
+				if(_fisrt_is_more_early_no_empty)
+				{
+					ok = _first.dispatch();
+				}
+				else
+				{
+					ok = _second.dispatch();
+				}
+				
+				// flip
+				_fisrt_is_more_early_no_empty = !_fisrt_is_more_early_no_empty;
+			}
+		}
+		update_state();
+		return ok;
+	}
+	
+	void update()
+	{
+		while(!_first.empty() && !_second.empty())
+		{
+			_dispatch();
+		}
+	}
+	
+protected:
+	queue_fast<Args...> _first;
+	queue_fast<Args...> _second;
+	bool _empty_first;
+	bool _empty_second;
+	// first queue that leave your empty state
+	bool _fisrt_is_more_early_no_empty;
+};
+
 } // end namespace
 
 #endif
