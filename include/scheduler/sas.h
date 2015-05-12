@@ -22,21 +22,23 @@ namespace sas {
 class processor
 {
 public:
-    processor(size_t);
-    ~processor();
+	processor(size_t);
+	~processor();
+	processor(const processor&) = delete;
+	processor& operator=(const processor&) = delete;
 	
 	void enqueue(const std::function<void()>& func);
 	
 private:
-    // need to keep track of threads so we can join them
-    std::vector< std::thread > _workers;
-    // the task queue
-    std::queue< std::function<void()> > _tasks;
-    
-    // synchronization
-    std::mutex _queue_mutex;
-    std::condition_variable _condition;
-    bool _stop;
+	// need to keep track of threads so we can join them
+	std::vector< std::thread > _workers;
+	// the task queue
+	std::queue< std::function<void()> > _tasks;
+	
+	// synchronization
+	std::mutex _queue_mutex;
+	std::condition_variable _condition;
+	bool _stop;
 };
  
 inline processor::processor(size_t threads) : _stop(false)
@@ -70,30 +72,31 @@ inline processor::processor(size_t threads) : _stop(false)
 void processor::enqueue(const std::function<void()>& func)
 {
 	auto packaged_func = std::make_shared< std::packaged_task<void()> >(std::bind(func));
-    {
-        std::unique_lock<std::mutex> lock(_queue_mutex);
-	
-	if(!stop)
 	{
-		_tasks.emplace(
-			[packaged_func]()
-			{
-				(*packaged_func)();
-			}
-		);
+		std::unique_lock<std::mutex> lock(_queue_mutex);
+		
+		if(!_stop)
+		{
+			_tasks.emplace(
+				[packaged_func]()
+				{
+					(*packaged_func)();
+				}
+			);
+		}
 	}
-    }
-    _condition.notify_one();
+	_condition.notify_one();
 }
 
 // the destructor joins all threads
 inline processor::~processor()
 {
-    {
-        std::unique_lock<std::mutex> lock(_queue_mutex);
-        _stop = true;
-    }
-    _condition.notify_all();
+	{
+		std::unique_lock<std::mutex> lock(_queue_mutex);
+		_stop = true;
+	}
+	_condition.notify_all();
+	
 	for (auto &worker : _workers)
 	{
 		worker.join();
