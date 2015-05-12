@@ -72,16 +72,16 @@ void processor::enqueue(const std::function<void()>& func)
 	auto packaged_func = std::make_shared< std::packaged_task<void()> >(std::bind(func));
     {
         std::unique_lock<std::mutex> lock(_queue_mutex);
-
-        if(_stop)
-            throw std::runtime_error("enqueue on stopped thread_pool");
-
+	
+	if(!stop)
+	{
 		_tasks.emplace(
 			[packaged_func]()
 			{
 				(*packaged_func)();
 			}
 		);
+	}
     }
     _condition.notify_one();
 }
