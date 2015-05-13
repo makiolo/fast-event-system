@@ -27,13 +27,13 @@ public:
 	processor(const processor&) = delete;
 	processor& operator=(const processor&) = delete;
 	
-	void enqueue(const std::function<void()>& func);
+	void enqueue(const std::shared_ptr< std::packaged_task<void()> >& func);
 	
 private:
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > _workers;
 	// the task queue
-	std::queue< std::function<void()> > _tasks;
+	std::queue< std::shared_ptr< std::packaged_task<void()> > > _tasks;
 	
 	// synchronization
 	std::mutex _queue_mutex;
@@ -50,39 +50,34 @@ inline processor::processor(size_t threads) : _stop(false)
 			{
 				for (;;)
 				{
-					std::function<void()> task;
-
+					std::shared_ptr< std::packaged_task<void()> > task;
+					
 					{
 						std::unique_lock<std::mutex> lock(this->_queue_mutex);
-						this->_condition.wait(lock,
-							[this]{ return this->_stop || !this->_tasks.empty(); });
+						this->_condition.wait(lock, [this]{ return this->_stop || !this->_tasks.empty(); });
 						if (this->_stop && this->_tasks.empty())
+						{
 							return;
+						}
 						task = std::move(this->_tasks.front());
 						this->_tasks.pop();
 					}
-
-					task();
+					
+					(*task)();
 				}
 			}
 		);
 	}
 }
 
-void processor::enqueue(const std::function<void()>& func)
+void processor::enqueue(const std::shared_ptr< std::packaged_task<void()> >& func)
 {
-	auto packaged_func = std::make_shared< std::packaged_task<void()> >(std::bind(func));
 	{
 		std::unique_lock<std::mutex> lock(_queue_mutex);
 		
 		if(!_stop)
 		{
-			_tasks.emplace(
-				[packaged_func]()
-				{
-					(*packaged_func)();
-				}
-			);
+			_tasks.emplace(func);
 		}
 	}
 	_condition.notify_one();
@@ -104,39 +99,40 @@ inline processor::~processor()
 }
 
 template <typename T>
-class scheduler
+class commands_queue
 {
 public:
 	using command = std::function<void(T&)>;
 	
-	explicit scheduler()
+	explicit commands_queue()
 		: busy(false)
 	{ ; }
-	explicit scheduler(const std::shared_ptr<sas::processor>& pool)
+	explicit commands_queue(const std::shared_ptr<sas::processor>& pool)
 		: busy(false)
 		, _processor(pool)
 	{ ; }
-	~scheduler() { ; }
+	~commands_queue() { ; }
 	
-	scheduler(const scheduler&) = delete;
-	scheduler& operator=(const scheduler&) = delete;
+	commands_queue(const commands_queue&) = delete;
+	commands_queue& operator=(const commands_queue&) = delete;
 	
 	template <typename R>
 	void add_follower(R& follower)
 	{
-		_conns.emplace_back(_commands.connect(std::bind(&scheduler::planificator, this, std::ref(static_cast<T&>(follower)), std::placeholders::_1)));
+		_conns.emplace_back(_commands.connect(std::bind(&commands_queue::planificator, this, std::ref(static_cast<T&>(follower)), std::placeholders::_1)));
 	}
 	
 	void planificator(T& self, const command& cmd)
 	{
 		auto packaged_cmd = std::make_shared< std::packaged_task<void()> >(std::bind(cmd, std::ref(self)));
-		_processor->enqueue(
+		auto packaged_pack_cmd = std::make_shared< std::packaged_task<void()> >(
 			[packaged_cmd, this]()
 			{
 				(*packaged_cmd)();
 				this->busy = false;
 			}
 		);
+		_processor->enqueue(packaged_pack_cmd);
 	}
 
 	inline void call(const command&& cmd, int milli = 0, int priority = 0)
@@ -163,18 +159,16 @@ public:
 	std::atomic<bool> busy;
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
-	fes::queue_delayer<command> _commands;
-    std::condition_variable _condition;
-    std::mutex _condition_mutex;
+	fes::async_delay<command> _commands;
 	std::shared_ptr<sas::processor> _processor;
 };
 
-template <typename SELF, typename FOLLOWERS>
+template <typename SELF, typename FOLLOWERS = SELF>
 class talker
 {
 public:
-	using command_others = typename scheduler<FOLLOWERS>::command;
-	using command_me = typename scheduler<SELF>::command;
+	using command_others = typename commands_queue<FOLLOWERS>::command;
+	using command_me = typename commands_queue<SELF>::command;
 	
 	explicit talker()
 	{
@@ -223,8 +217,8 @@ public:
 	}
 	
 protected:
-	scheduler<FOLLOWERS> _planner_others;
-	scheduler<SELF> _planner_me;
+	commands_queue<FOLLOWERS> _planner_others;
+	commands_queue<SELF> _planner_me;
 };
 
 #if 0

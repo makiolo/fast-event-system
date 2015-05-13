@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <fast-event-system/fes.h>
 
-template <typename TYPE = fes::callback<std::string> >
+template <typename TYPE = fes::sync<std::string> >
 class Producer
 {
 public:
@@ -39,7 +39,7 @@ protected:
 	TYPE _channel;
 };
 
-template <typename TYPE = fes::callback<std::string> >
+template <typename TYPE = fes::sync<std::string> >
 class Consumer
 {
 public:
@@ -74,9 +74,9 @@ protected:
 int main()
 {
 	{
-		Producer<fes::callback<std::string> > p;
-		Consumer<fes::callback<std::string> > c1;
-		Consumer<fes::callback<std::string> > c2;
+		Producer<fes::sync<std::string> > p;
+		Consumer<fes::sync<std::string> > c1;
+		Consumer<fes::sync<std::string> > c2;
 		{
 			c1.connect(p);
 			c2.connect(p);
@@ -86,9 +86,9 @@ int main()
 		}
 	}
 	{
-		Producer<fes::queue_fast<std::string> > p;
-		Consumer<fes::queue_fast<std::string> > c1;
-		Consumer<fes::queue_fast<std::string> > c2;
+		Producer<fes::async_fast<std::string> > p;
+		Consumer<fes::async_fast<std::string> > c1;
+		Consumer<fes::async_fast<std::string> > c2;
 		{
 			c1.connect(p);
 			c2.connect(p);
@@ -99,9 +99,9 @@ int main()
 		}
 	}
 	{
-		Producer<fes::queue_delayer<std::string> > p;
-		Consumer<fes::queue_delayer<std::string> > c1;
-		Consumer<fes::queue_delayer<std::string> > c2;
+		Producer<fes::async_delay<std::string> > p;
+		Consumer<fes::async_delay<std::string> > c1;
+		Consumer<fes::async_delay<std::string> > c2;
 		{
 			c1.connect(p);
 			c2.connect(p);
@@ -111,6 +111,25 @@ int main()
 			assert(c2.get_data() == "data");
 		}
 	}
+	
+	fes::async_fast<int> root;
+	fes::sync<int> node_a;
+	fes::sync<int> node_b;
+	
+	root.connect(node_a);
+	root.connect(node_b);
+
+	node_a.connect([](int data) {
+		std::cout << "A: data = " << data << std::endl;
+		assert(data == 111);
+	});
+	node_b.connect([](int data) {
+		std::cout << "B: data = " << data << std::endl;
+		assert(data == 111);
+	});
+
+	root(111);
+	root.update();
 	
 	return 0;
 }

@@ -2,8 +2,6 @@
 // http://creativecommons.org/licenses/by/4.0/
 //
 
-
-
 #ifndef _FAST_EVENT_SYSTEM_
 #define _FAST_EVENT_SYSTEM_
 
@@ -28,6 +26,7 @@
 #include <condition_variable>
 #include <future>
 #include <fast-event-system/common.h>
+#include <concurrentqueue/concurrentqueue.h>
 
 #ifdef _WIN32
 #define noexcept _NOEXCEPT
@@ -124,37 +123,34 @@ public:
 	{
 		
 	}
-
+	
+	method(const method& other) = delete;
+	method& operator=(const method& other) = delete;
 	~method() { ; }
-	method(const method&) = delete;
-	method& operator=(const method&) = delete;
 
 	void operator()(const Args& ... data) const
 	{
 		_method(data...);
 	}
-
-	/*
-	void operator()(const Args&& ... data) const
-	{
-		_method(std::forward<const Args>(data)...);
-	}
-	*/
 		
 protected:
 	function _method;
 };
 
+template <typename ... Args> class async_delay;
+template <typename ... Args> class async_fast;
+
 template <typename ... Args>
-class callback
+class sync
 {
 public:
 	using methods = std::list<method<Args...> >;
 	
-	callback() { ; }
-	~callback() { ; }
-	callback(const callback&) = delete;
-	callback& operator=(const callback&) = delete;
+	sync() { ; }
+	~sync() { ; }
+	
+	sync(const sync& other) = delete;
+	sync& operator=(const sync& other) = delete;
 	
 	template <typename T>
 	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
@@ -169,6 +165,28 @@ public:
 			_registered.erase(it);
 		});
 	}
+
+	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	{
+		return connect([&](const Args& ... data) {
+			callback(data...);
+		});
+	}
+	
+	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	{
+		return connect([&](const Args& ... data) {
+			queue(data...);
+		});
+	}
+	
+	template <typename R, typename P>
+	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	{
+		return connect([&](const Args& ... data) {
+			queue(priority, delay, data...);
+		});
+	}
 	
 	void operator()(const Args& ... data) const
 	{
@@ -177,15 +195,6 @@ public:
 			reg(data...);
 		}
 	}
-	/*
-	void operator()(const Args&& ... data) const
-	{
-		for(auto& reg : _registered)
-		{
-			reg(std::forward<const Args>(data)...);
-		}
-	}
-	*/
 
 protected:	
 	template <typename T, int ... Is>
@@ -209,7 +218,7 @@ struct message
 		, _timestamp(timestamp)
 		, _data(std::move(data)...)
 	{
-		//std::cout << "constructor message" << std::endl;
+		
 	}
 	
 	message(const message& other)
@@ -217,7 +226,7 @@ struct message
 		, _timestamp(other._timestamp)
 		, _data(other._data)
 	{
-		//std::cout << "constructor copy" << std::endl;
+
 	}
 	
 	message(message&& other) noexcept
@@ -225,32 +234,23 @@ struct message
 		, _timestamp(std::move(other._timestamp))
 		, _data(std::move(other._data))
 	{
-		//std::cout << "constructor move" << std::endl;
+
 	}
-	
-	/*
-	Copy-swap idiom
-	http://stackoverflow.com/questions/276173/what-are-your-favorite-c-coding-style-idioms/2034447#2034447
-	http://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom?rq=1
-	*/
 	
 	message& operator=(const message& other)
 	{
-		//std::cout << "operator= copy" << std::endl;
 		message(other).swap(*this);
 		return *this;
 	}
 	
 	message& operator=(message&& other) noexcept
 	{
-		//std::cout << "operator= move" << std::endl;
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
 	
 	void swap(message& other) noexcept
 	{
-		//std::cout << "swap" << std::endl;
 		using std::swap;
 		swap(_priority, other._priority);
 		swap(_timestamp, other._timestamp);
@@ -259,7 +259,7 @@ struct message
 	
 	~message()
 	{
-		//std::cout << "destructor" << std::endl;
+
 	}
 	
 	int _priority;
@@ -273,40 +273,31 @@ struct message_comp
 {
     bool operator() (const message<Args...>& one, const message<Args...>& other)
     {
-	if (one._timestamp < other._timestamp)
+		if (one._timestamp < other._timestamp)
+			return false;
+		else if (one._timestamp > other._timestamp)
+			return true;
+		
+		if(one._priority < other._priority)
+			return true;
+		else if(one._priority > other._priority)
+			return false;
+		
 		return false;
-	else if (one._timestamp > other._timestamp)
-		return true;
-	
-	if(one._priority < other._priority)
-		return true;
-	else if(one._priority > other._priority)
-		return false;
-	
-	return false;
     }
 };
 
 template <typename ... Args>
-class queue_delayer
+class async_delay
 {
 public:
 	using container_type = std::vector<message<Args...> >;
 	
-	queue_delayer() { ; }
-	~queue_delayer() { ; }
-	queue_delayer(const queue_delayer&) = delete;
-	queue_delayer& operator=(const queue_delayer&) = delete;
+	async_delay() { ; }
+	~async_delay() { ; }
+	async_delay(const async_delay&) = delete;
+	async_delay& operator=(const async_delay&) = delete;
 	
-	/*
-	template <typename R, typename P>
-	void operator()(int priority, std::chrono::duration<R,P> delay, const Args&& ... data)
-	{
-		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
-		_queue.emplace_back(priority, delay_point, std::forward<const Args>(data)...);
-		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
-	}
-	*/
 	template <typename R, typename P>
 	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
 	{
@@ -317,7 +308,7 @@ public:
 	
 	void update()
 	{
-		while(!_queue.empty())
+		while (!empty())
 		{
 			_dispatch();
 		}
@@ -325,7 +316,7 @@ public:
 
 	bool dispatch()
 	{
-		if(!_queue.empty())
+		if (!empty())
 		{
 			return _dispatch();
 		}
@@ -352,6 +343,28 @@ public:
 	{
 		return _output.connect(method);
 	}
+
+	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	{
+		return _output.connect([&](const Args& ... data) {
+			callback(data...);
+		});
+	}
+	
+	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	{
+		return _output.connect([&](const Args& ... data) {
+			queue(data...);
+		});
+	}
+
+	template <typename R, typename P>
+	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	{
+		return _output.connect([&](const Args& ... data) {
+			queue(priority, delay, data...);
+		});
+	}
 protected:
 	template<int ...S>
 	inline void dispatch(const std::tuple<Args...>& top, seq<S...>) const
@@ -373,53 +386,46 @@ protected:
 	}
 
 protected:
-	callback<Args... > _output;
+	sync<Args... > _output;
 	container_type _queue;
 };
 
 template <typename ... Args>
-class queue_fast
+class async_fast
 {
 public:
-	using container_type = std::queue<std::tuple<Args...>, std::deque<std::tuple<Args...> > >;
+	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...> >;
 	
-	queue_fast() { ; }
-	~queue_fast() { ; }
-	queue_fast(const queue_fast&) = delete;
-	queue_fast& operator=(const queue_fast&) = delete;
+	async_fast() { ; }
+	~async_fast() { ; }
+	async_fast(const async_fast&) = delete;
+	async_fast& operator=(const async_fast&) = delete;
 	
 	void operator()(const Args& ... data)
 	{
-		_queue.emplace(data...);
+		_queue.enqueue(std::make_tuple(data...));
 	}
-	/*
-	void operator()(const Args&& ... data)
-	{
-		_queue.emplace(std::forward<const Args>(data)...);
-	}
-	*/
-
+	
 	void update()
 	{
-		while(!_queue.empty())
+		while (!empty())
 		{
 			_dispatch();
 		}
 	}
-
+	
 	bool dispatch()
 	{
-		if(!_queue.empty())
+		if (!empty())
 		{
-			_dispatch();
-			return true;
+			return _dispatch();
 		}
 		return false;
 	}
 
-	bool empty() const
+	inline bool empty() const
 	{
-		return _queue.empty();
+		return (_queue.size_approx() <= 0);
 	}
 
 	size_t size() const
@@ -437,6 +443,28 @@ public:
 	{
 		return _output.connect(method);
 	}
+	
+	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	{
+		return _output.connect([&](const Args& ... data) {
+			callback(data...);
+		});
+	}
+	
+	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	{
+		return _output.connect([&](const Args& ... data) {
+			queue(data...);
+		});
+	}
+
+	template <typename R, typename P>
+	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	{
+		return _output.connect([&](const Args& ... data) {
+			queue(priority, delay, data...);
+		});
+	}
 
 protected:	
 	template<int ...S>
@@ -445,127 +473,22 @@ protected:
 		_output(std::move(std::get<S>(top)...));
 	}
 
-	void _dispatch()
+	bool _dispatch()
 	{
-		auto& t = _queue.front();
-		dispatch(t, gens < sizeof...(Args) > {});
-		_queue.pop();
+		std::tuple<Args...> t;
+		if (_queue.try_dequeue(t))
+		{
+			dispatch(t, gens < sizeof...(Args) > {});
+			return true;
+		}
+		return false;
 	}
 
 protected:
-	callback<Args...> _output;
+	sync<Args...> _output;
 	container_type _queue;
 };
-
-#if 0
-
-template <typename Args ...>
-class queue_interleace
-{
-public:
-	explicit queue_interleace()
-		: _empty_first(true)
-		, _empty_second(true)
-		, _fisrt_is_more_early_no_empty(true)
-	{
-		
-	}
-	
-	~queue_interleace()
-	{
-		
-	}
-	
-	void update_state()
-	{
-		_empty_first = _first.empty();
-		_empty_second = _second.empty();
-	}
-	
-	void push_first(const Args&& ... data)
-	{
-		if(_empty_second)
-		{
-			_fisrt_is_more_early_no_empty = true;
-		}
-		_first(std::forward<const Args>(data)...);
-		update_state();
-	}
-	
-	void push_second(const Args&& ... data)
-	{
-		if(_empty_first)
-		{
-			_fisrt_is_more_early_no_empty = false;
-		}
-		_second(std::forward<const Args>(data)...);
-		update_state();
-	}
-	
-	bool dispatch()
-	{
-		bool ok;
-		
-		if(_empty_first)
-		{
-			if(_empty_second)
-			{
-				// both empty, nothing to do
-				ok = false;
-			}
-			else
-			{
-				// firts empty, dispatch only second
-				ok = _second.dispatch();
-			}
-		}
-		else
-		{
-			if(_empty_second)
-			{
-				// second empty, dispatch only first
-				ok = _first.dispatch();
-			}
-			else
-			{
-				// alternation based in "fisrt_is_more_early_no_empty"
-				if(_fisrt_is_more_early_no_empty)
-				{
-					ok = _first.dispatch();
-				}
-				else
-				{
-					ok = _second.dispatch();
-				}
-				
-				// flip
-				_fisrt_is_more_early_no_empty = !_fisrt_is_more_early_no_empty;
-			}
-		}
-		update_state();
-		return ok;
-	}
-	
-	void update()
-	{
-		while(!_first.empty() && !_second.empty())
-		{
-			_dispatch();
-		}
-	}
-	
-protected:
-	queue_fast<Args...> _first;
-	queue_fast<Args...> _second;
-	bool _empty_first;
-	bool _empty_second;
-	// first queue that leave your empty state
-	bool _fisrt_is_more_early_no_empty;
-};
-
-#endif
 
 } // end namespace
 
 #endif
-
