@@ -135,9 +135,9 @@ public:
 		_processor->enqueue(packaged_pack_cmd);
 	}
 
-	inline void call(const command&& cmd, int milli = 0, int priority = 0)
+	inline void call(const command&& cmd, fes::deltatime milli = 0, int priority = 0)
 	{
-		_commands(priority, std::chrono::milliseconds(milli), std::forward<const command>(cmd));
+		_commands(priority, milli, std::forward<const command>(cmd));
 	}
 	
 	void update()
@@ -145,7 +145,7 @@ public:
 		if (!busy)
 		{
 			// dispatch return true if some is dispatched
-			busy = _commands.dispatch();
+			busy = _commands.dispatch_one();
 		}
 	}
 	
@@ -188,12 +188,12 @@ public:
 		_planner_others.add_follower(talker);
 	}
 	
-	inline void call_others(const command_others&& command, int milli = 0, int priority = 0)
+	inline void call_others(const command_others&& command, fes::deltatime milli = 0, int priority = 0)
 	{
 		_planner_others.call(std::forward<const command_others>(command), milli, priority);
 	}
 
-	inline void call_me(const command_me&& command, int milli = 0, int priority = 0)
+	inline void call_me(const command_me&& command, fes::deltatime milli = 0, int priority = 0)
 	{
 		_planner_me.call(std::forward<const command_me>(command), milli, priority);
 	}
@@ -221,76 +221,6 @@ protected:
 	commands_queue<SELF> _planner_me;
 };
 
-#if 0
-
-class syncronizer
-{
-public:
-	syncronizer(int concurrency = 1)
-	{
-#ifndef _WIN32
-		(void) sem_init(&_sem, 0, concurrency);
-#else
-		_sem = CreateSemaphore(NULL, 0, concurrency, NULL);
-#endif
-	}
-	
-	~syncronizer()
-	{
-#ifndef _WIN32
-		(void) sem_destroy(&_sem);
-#else
-		CloseHandle(_sem);
-#endif
-	}
-	
-	syncronizer(const syncronizer&) = delete;
-	syncronizer& operator=(const syncronizer&) = delete;
-
-	inline void wait()
-	{
-#ifndef _WIN32
-		//_signal = _signal - 1;
-		//std::unique_lock<std::mutex> context(_cond_mutex);
-		//_cond.wait(context, [&](){return _signal < 0;});
-#else
-		DWORD dwWaitResult = WaitForSingleObject(_sem, INFINITE);
-		if (dwWaitResult == WAIT_FAILED)
-		{
-			std::cerr << "Error en el lock()" << std::endl;
-		}
-#endif
-	}
-	
-	inline void signal()
-	{
-#ifndef _WIN32
-		//_signal = _signal + 1;
-		//_cond.notify_all();
-#else
-		if (ReleaseSemaphore(_sem, 1, NULL) == 0)
-		{
-			std::cerr << "Error in unlock()" << std::endl;
-		}
-#endif
-	}
-
-protected:
-#ifndef _WIN32
-	sem_t _sem;
-	//std::condition_variable _cond;
-	//std::mutex _cond_mutex;
-	//std::atomic<int> _signal;
-	//
-	//std::mutex _cond2_mutex;
-#else
-	HANDLE _sem;
-#endif
-};
-
-#endif
-
 } // end namespace
 
 #endif // _SCHEDULER_ADVANCED_SIMPLE_
-

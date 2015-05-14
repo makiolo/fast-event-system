@@ -27,12 +27,70 @@
 #include <future>
 #include <fast-event-system/common.h>
 #include <concurrentqueue/concurrentqueue.h>
+#include <ctime>
 
 #ifdef _WIN32
+#include <windows.h>
 #define noexcept _NOEXCEPT
 #endif
 
 namespace fes {
+
+// BEGIN workaround
+
+#ifdef _WIN32
+// std::chrono in windows is bugged:
+// https://connect.microsoft.com/VisualStudio/feedback/details/719443/c-chrono-headers-high-resolution-clock-does-not-have-high-resolution
+
+using marktime = double;
+using deltatime = double;
+
+bool init_clock();
+static double _freq;
+static __int64 _counter_start;
+static bool _init_clock = init_clock();
+/************************************************************************/
+// 1.0 = seconds
+// 1000.0 = milliseconds
+// 1000000.0 = microseconds
+// 1000000000.0 = nanoseconds
+/************************************************************************/
+static double accuracy = 1000.0;
+
+bool init_clock()
+{
+	LARGE_INTEGER li;
+	if(!QueryPerformanceFrequency(&li))
+	{
+		std::cerr << "QueryPerformanceFrequency failed!\n";
+	}
+
+	_freq = double(li.QuadPart) / accuracy;
+
+	QueryPerformanceCounter(&li);
+	_counter_start = li.QuadPart;
+	return true;
+}
+
+marktime high_resolution_clock()
+{
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return marktime(double(li.QuadPart - _counter_start) / _freq);
+}
+
+#else // gcc, clang ...
+
+using marktime = std::chrono::system_clock::time_point;
+using deltatime = std::chrono::milliseconds;
+
+marktime high_resolution_clock()
+{
+	return std::chrono::high_resolution_clock::now();
+}
+
+#endif
+// END workaround
 
 template <typename ... Args>
 class internal_connection
@@ -166,24 +224,23 @@ public:
 		});
 	}
 
-	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	inline shared_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&](const Args& ... data) {
+		return connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return connect([&](const Args& ... data) {
+		return connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 	
-	template <typename R, typename P>
-	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return connect([&](const Args& ... data) {
+		return connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
 		});
 	}
@@ -213,7 +270,7 @@ protected:
 template <typename ... Args>
 struct message
 {
-	message(int priority, std::chrono::system_clock::time_point timestamp, const Args ... data)
+	message(int priority, marktime timestamp, const Args ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
 		, _data(std::move(data)...)
@@ -263,7 +320,7 @@ struct message
 	}
 	
 	int _priority;
-	std::chrono::system_clock::time_point _timestamp;
+	marktime _timestamp;
 	std::tuple<Args...> _data;
 };
 
@@ -298,27 +355,28 @@ public:
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
 	
-	template <typename R, typename P>
-	void operator()(int priority, std::chrono::duration<R,P> delay, const Args& ... data)
+	void operator()(int priority, deltatime delay, const Args& ... data)
 	{
-		auto delay_point = std::chrono::high_resolution_clock::now() + delay;
+		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 	
-	void update()
+	void update(deltatime tmax = fes::deltatime(2))
 	{
-		while (!empty())
+		marktime timeout = high_resolution_clock() + tmax;
+		bool has_next = true;
+		while (!empty() && has_next && (high_resolution_clock() <= timeout))
 		{
-			_dispatch();
+			has_next = _dispatch_one();
 		}
 	}
 
-	bool dispatch()
+	bool dispatch_one()
 	{
 		if (!empty())
 		{
-			return _dispatch();
+			return _dispatch_one();
 		}
 		return false;
 	}
@@ -344,41 +402,39 @@ public:
 		return _output.connect(method);
 	}
 
-	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	inline shared_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 
-	template <typename R, typename P>
-	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
 		});
 	}
 protected:
 	template<int ...S>
-	inline void dispatch(const std::tuple<Args...>& top, seq<S...>) const
+	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::move(std::get<S>(top)...));
 	}
 
-	bool _dispatch()
+	bool _dispatch_one()
 	{
-		auto t1 = std::chrono::high_resolution_clock::now();
 		auto& t = _queue.back();
-		if(t1 >= t._timestamp)
+		if (high_resolution_clock() >= t._timestamp)
 		{
-			dispatch(t._data, gens<sizeof...(Args)>{});
+			dispatch_one(t._data, gens<sizeof...(Args)>{});
 			_queue.pop_back();
 			return true;
 		}
@@ -406,19 +462,21 @@ public:
 		_queue.enqueue(std::make_tuple(data...));
 	}
 	
-	void update()
+	void update(deltatime tmax = fes::deltatime(2))
 	{
-		while (!empty())
+		marktime timeout = high_resolution_clock() + tmax;
+		bool has_next = true;
+		while (!empty() && has_next && (high_resolution_clock() <= timeout))
 		{
-			_dispatch();
+			has_next = _dispatch_one();
 		}
 	}
 	
-	bool dispatch()
+	bool dispatch_one()
 	{
 		if (!empty())
 		{
-			return _dispatch();
+			return _dispatch_one();
 		}
 		return false;
 	}
@@ -430,7 +488,7 @@ public:
 
 	size_t size() const
 	{
-		return _queue.size();
+		return _queue.size_approx();
 	}
 
 	template <typename T>
@@ -444,41 +502,40 @@ public:
 		return _output.connect(method);
 	}
 	
-	inline shared_connection<Args...> connect(const sync<Args...>& callback)
+	inline shared_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(const async_fast<Args...>& queue)
+	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 
-	template <typename R, typename P>
-	inline shared_connection<Args...> connect(int priority, std::chrono::duration<R,P> delay, const async_delay<Args...>& queue)
+	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([&](const Args& ... data) {
+		return _output.connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
 		});
 	}
 
 protected:	
 	template<int ...S>
-	inline void dispatch(const std::tuple<Args...>& top, seq<S...>) const
+	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::move(std::get<S>(top)...));
 	}
 
-	bool _dispatch()
+	bool _dispatch_one()
 	{
 		std::tuple<Args...> t;
 		if (_queue.try_dequeue(t))
 		{
-			dispatch(t, gens < sizeof...(Args) > {});
+			dispatch_one(t, gens < sizeof...(Args) > {});
 			return true;
 		}
 		return false;
