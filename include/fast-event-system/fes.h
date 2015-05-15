@@ -55,7 +55,7 @@ fast_event_system_API marktime high_resolution_clock();
 #else // gcc, clang ...
 
 using marktime = std::chrono::system_clock::time_point;
-using deltatime = fes::deltatime;
+using deltatime = std::chrono::milliseconds;
 
 marktime high_resolution_clock()
 {
