@@ -66,8 +66,12 @@ foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 				CONFIGURATIONS ${BUILD_TYPE})
 endforeach()
 
+ADD_LIBRARY(fast_event_system SHARED src/fast-event-system/fes.cpp)
+
 ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
+target_link_libraries(test_leader_follower fast_event_system)
 ADD_TEST(NAME test_leader_follower COMMAND test_leader_follower WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 ADD_EXECUTABLE(test_fes tests/test_fes.cpp)
+target_link_libraries(test_fes fast_event_system)
 ADD_TEST(NAME test_fes COMMAND test_fes WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

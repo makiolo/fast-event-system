@@ -28,9 +28,13 @@
 #include <fast-event-system/common.h>
 #include <concurrentqueue/concurrentqueue.h>
 #include <ctime>
+#include <fast-event-system/api.h>
 
 #ifdef _WIN32
-#include <windows.h>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
 #define noexcept _NOEXCEPT
 #endif
 
@@ -46,43 +50,12 @@ using marktime = double;
 using deltatime = double;
 
 bool init_clock();
-static double _freq;
-static __int64 _counter_start;
-static bool _init_clock = init_clock();
-/************************************************************************/
-// 1.0 = seconds
-// 1000.0 = milliseconds
-// 1000000.0 = microseconds
-// 1000000000.0 = nanoseconds
-/************************************************************************/
-static double accuracy = 1000.0;
-
-bool init_clock()
-{
-	LARGE_INTEGER li;
-	if(!QueryPerformanceFrequency(&li))
-	{
-		std::cerr << "QueryPerformanceFrequency failed!\n";
-	}
-
-	_freq = double(li.QuadPart) / accuracy;
-
-	QueryPerformanceCounter(&li);
-	_counter_start = li.QuadPart;
-	return true;
-}
-
-marktime high_resolution_clock()
-{
-	LARGE_INTEGER li;
-	QueryPerformanceCounter(&li);
-	return marktime(double(li.QuadPart - _counter_start) / _freq);
-}
+fes_API marktime high_resolution_clock();
 
 #else // gcc, clang ...
 
 using marktime = std::chrono::system_clock::time_point;
-using deltatime = std::chrono::milliseconds;
+using deltatime = fes::deltatime;
 
 marktime high_resolution_clock()
 {
@@ -362,7 +335,7 @@ public:
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 	
-	void update(deltatime tmax = fes::deltatime(2))
+	void update(deltatime tmax = fes::deltatime(1))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
 		bool has_next = true;
@@ -462,7 +435,7 @@ public:
 		_queue.enqueue(std::make_tuple(data...));
 	}
 	
-	void update(deltatime tmax = fes::deltatime(2))
+	void update(deltatime tmax = fes::deltatime(1))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
 		bool has_next = true;
