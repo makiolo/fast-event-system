@@ -8,10 +8,8 @@ if(WIN32)
 else()
 	add_definitions(-fno-rtti)
 	add_definitions(-fno-exceptions)
-	add_definitions(-g -O0)
 endif()
 
-INCLUDE_DIRECTORIES(include/)
 if (NOT DEFINED EXTRA_DEF)
 	include(CheckCXXCompilerFlag)
 	#CHECK_CXX_COMPILER_FLAG("-std=c++1z" COMPILER_SUPPORTS_CXX1Z)
@@ -66,7 +64,24 @@ foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 				CONFIGURATIONS ${BUILD_TYPE})
 endforeach()
 
+INCLUDE_DIRECTORIES(include/)
 ADD_LIBRARY(fast_event_system SHARED src/fast-event-system/fes.cpp)
+
+file(GLOB HEADER_CODE include/scheduler/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/fast-event-system/scheduler")
+
+file(GLOB HEADER_CODE include/fast-event-system/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/fast-event-system/fast-event-system")
+            
+file(GLOB HEADER_CODE include/concurrentqueue/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/fast-event-system/concurrentqueue")
+            
+file(GLOB HEADER_CODE include/concurrentqueue/internal/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/fast-event-system/concurrentqueue/internal")
 
 ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
 target_link_libraries(test_leader_follower fast_event_system)

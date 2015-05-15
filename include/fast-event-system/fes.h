@@ -50,7 +50,7 @@ using marktime = double;
 using deltatime = double;
 
 bool init_clock();
-fes_API marktime high_resolution_clock();
+fast_event_system_API marktime high_resolution_clock();
 
 #else // gcc, clang ...
 
