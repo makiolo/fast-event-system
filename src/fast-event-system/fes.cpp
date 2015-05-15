@@ -2,6 +2,8 @@
 
 namespace fes {
 
+#ifdef _WIN32
+
 static double _freq;
 static __int64 _counter_start;
 static bool _init_clock = init_clock();
@@ -32,5 +34,7 @@ fes::marktime high_resolution_clock()
 	QueryPerformanceCounter(&li);
 	return fes::marktime(double(li.QuadPart - _counter_start) / _freq);
 }
+
+#endif
 
 }
