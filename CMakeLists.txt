@@ -65,7 +65,7 @@ foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endforeach()
 
 INCLUDE_DIRECTORIES(include/)
-ADD_LIBRARY(fast_event_system SHARED src/fast-event-system/fes.cpp)
+ADD_LIBRARY(fast_event_system SHARED src/fast-event-system/fes.cpp src/scheduler/sas.cpp)
 
 file(GLOB HEADER_CODE include/scheduler/*.h)
 install(    FILES ${HEADER_CODE}
