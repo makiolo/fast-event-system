@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <scheduler/sas.h>
+#include <animator/interpolation.h>
 
 class Context
 {
@@ -28,6 +29,17 @@ public:
 			sleep(delay);
 		}
 		std::cout << std::endl;
+	}
+
+	void hello_world(float a)
+	{
+		float i = 0.0f;
+		while (i < a)
+		{
+			std::cout << " ";
+			i += 1.0f;
+		}
+		std::cout << "X\r";
 	}
 };
 
@@ -83,12 +95,20 @@ int main()
 		//auto processor = std::make_shared<sas::processor>(std::thread::hardware_concurrency());
 		auto processor = std::make_shared<sas::processor>(1);
 		
+		sas::animations_queue<Context> anim;
 		Context context;
 		PersonA person1("Person A", context);
 		PersonB person2("Person B", context);
 		
 		person1.set_processor(processor);
 		person2.set_processor(processor);
+		anim.set_processor(processor);
+
+		anim.add_follower(context);
+		anim.call([&](Context& self, float interp)
+		{
+			self.hello_world(interp);
+		}, 0, 78, 1000, fes::deltatime(0), 10);
 		
 		/*
 		Order expected:
@@ -141,6 +161,7 @@ int main()
 		
 		for (int i = 0; i < 9000; ++i)
 		{
+			anim.update();
 			person1.update();
 			person2.update();
 			person2.sleep(1);

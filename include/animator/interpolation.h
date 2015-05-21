@@ -3,9 +3,9 @@
 
 template <class T> T lerp( T A, T B, float d);
 template <class T> float ilerp( T A, T B, T C );
-template <class T> T smooth_step_interp( T A, T B, float d );
-template <class T> T smooth_step_squared_interp( T A, T B, float d );
-template <class T> T smooth_step_cubed_interp( T A, T B, float d );
+template <class T> T smoothstep( T A, T B, float d );
+template <class T> T smoothstep_squared( T A, T B, float d );
+template <class T> T smoothstep_cubed( T A, T B, float d );
 template <class T> T slow_acceleration_squared_interp( T A, T B, float d );
 template <class T> T slow_decelleration_squared_interp( T A, T B, float d );
 template <class T> T slow_acceleration_cubed_interp( T A, T B, float d );
@@ -39,7 +39,7 @@ float ilerp( T A, T B, T C )
 }
 
 template <class T>
-T smooth_step_interp( T A, T B, float d )
+T smoothstep( T A, T B, float d )
 {
 	clamp( d, 0.f, 1.f );
 	d = d * d * (3 - 2 * d);
@@ -51,19 +51,19 @@ T smooth_step_interp( T A, T B, float d )
 }
 
 template <class T>
-T smooth_step_squared_interp( T A, T B, float d )
+T smoothstep_squared( T A, T B, float d )
 {
 	clamp( d, 0.f, 1.f );
 	
-	return smooth_step_interp( A, B, d * d );
+	return smoothstep( A, B, d * d );
 }
 
 template <class T>
-T smooth_step_cubed_interp( T A, T B, float d )
+T smoothstep_cubed( T A, T B, float d )
 {
 	clamp( d, 0.f, 1.f );
 	
-	return smooth_step_interp( A, B, d * d * d );
+	return smoothstep( A, B, d * d * d );
 }
 
 
