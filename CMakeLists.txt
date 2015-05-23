@@ -82,6 +82,10 @@ install(    FILES ${HEADER_CODE}
 file(GLOB HEADER_CODE include/concurrentqueue/internal/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/concurrentqueue/internal")
+            
+file(GLOB HEADER_CODE include/animator/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/fast-event-system/animator")
 
 ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
 target_link_libraries(test_leader_follower fast-event-system)
