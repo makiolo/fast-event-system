@@ -35,6 +35,13 @@ fes::marktime high_resolution_clock()
 	return fes::marktime(double(li.QuadPart - _counter_start) / _freq);
 }
 
+#else
+
+fes::marktime high_resolution_clock()
+{
+	return std::chrono::high_resolution_clock::now();
+}
+
 #endif
 
 }
