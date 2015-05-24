@@ -105,7 +105,7 @@ int main()
 		{
 			c1.connect(p);
 			c2.connect(p);
-			p(0, 0, "data");
+			p(0, fes::deltatime(0), "data");
 			p.update();
 			assert(c1.get_data() == "data");
 			assert(c2.get_data() == "data");
@@ -113,6 +113,7 @@ int main()
 	}
 #endif
 	
+#if 0
 	fes::async_delay<int> root;
 	fes::async_delay<int> node_a;
 	fes::async_delay<int> node_b;
@@ -151,6 +152,7 @@ int main()
 
 	assert(called1 == true);
 	assert(called2 == true);
+#endif
 	
 	return 0;
 }
