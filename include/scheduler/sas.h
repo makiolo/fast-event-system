@@ -143,7 +143,7 @@ public:
 			{
 				const int FPS = 60;
 				const int FRAMETIME = 1000 / FPS;
-				double marktime = fes::high_resolution_clock();
+				auto marktime = fes::high_resolution_clock();
 				int sleeptime = 0;
 				float timeline = 0.0f;
 				while (true)
@@ -161,7 +161,7 @@ public:
 					}
 
 					marktime += FRAMETIME;
-					sleeptime = int(marktime - fes::high_resolution_clock());
+					sleeptime = static_cast<int>(marktime - fes::high_resolution_clock());
 					if (sleeptime >= 0) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(sleeptime));
 					}
