@@ -1,6 +1,9 @@
 #ifndef _INTERPOLATIONS_H_
 #define _INTERPOLATIONS_H_
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 template <class T> T lerp( T A, T B, float d);
 template <class T> float ilerp( T A, T B, T C );
 template <class T> T smoothstep( T A, T B, float d );
@@ -126,7 +129,7 @@ T sin_interp( T A, T B, float d )
 {
 	clamp( d, 0.f, 1.f );
 	
-	d = d * PI * 0.5f;
+	d = d * M_PI * 0.5f;
 	
 	T X = B * d + A * ( 1 - d );
 	
