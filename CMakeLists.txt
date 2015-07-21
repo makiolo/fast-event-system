@@ -94,3 +94,8 @@ ADD_TEST(NAME test_leader_follower COMMAND test_leader_follower WORKING_DIRECTOR
 ADD_EXECUTABLE(test_fes tests/test_fes.cpp)
 target_link_libraries(test_fes fast-event-system)
 ADD_TEST(NAME test_fes COMMAND test_fes WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+ADD_EXECUTABLE(test_autoasociative_memory tests/test_autoasociative_memory.cpp)
+target_link_libraries(test_autoasociative_memory fast-event-system)
+ADD_TEST(NAME test_autoasociative_memory COMMAND test_autoasociative_memory WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+

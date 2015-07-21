@@ -456,7 +456,7 @@ public:
 		return (_queue.size_approx() <= 0);
 	}
 
-	size_t size() const
+	inline size_t size() const
 	{
 		return _queue.size_approx();
 	}
@@ -492,7 +492,17 @@ public:
 			queue(priority, delay, data...);
 		});
 	}
-
+	
+	void set_weight(Int index, float weight)
+	{
+		_weight[index] = weight;
+	}
+	
+	float get_weight(Int index) const
+	{
+		return _weight.at(index);
+	}
+	
 protected:	
 	template<int ...S>
 	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
@@ -514,6 +524,7 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
+	std::map<Int, float> _weight;
 };
 
 } // end namespace
