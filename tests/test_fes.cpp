@@ -9,7 +9,9 @@
 #include <sstream>
 #include <queue>
 #include <assert.h>
+#include <cstdlib>
 #include <fast-event-system/fes.h>
+#include <animator/interpolation.h>
 
 template <typename TYPE = fes::sync<std::string> >
 class Producer
@@ -72,7 +74,7 @@ protected:
 
 int main()
 {
-#if 1
+#if 0
 	{
 		Producer<fes::sync<std::string> > p;
 		Consumer<fes::sync<std::string> > c1;
@@ -152,6 +154,50 @@ int main()
 
 	assert(called1 == true);
 	assert(called2 == true);
+#endif
+	
+#if 1
+	// fixed deltatime clock
+
+	double freq = 5.0f; // Hz
+	double period = 1000 / freq;
+	double timeline_past = 0.0f;
+	double timeline_present = 0.0f;
+	double timeline_future = 0.0f;
+	double radius = period;
+	timeline_past -= radius;
+	timeline_future += radius;
+	
+	fes::async_delay<> clock;
+	fes::shared_connection<> conn = clock.connect([&]() {
+		radius = timeline_present - timeline_past;
+		timeline_past = timeline_present;
+		timeline_present = timeline_future;
+		timeline_future += radius;
+		std::cout << "timeline = " << timeline_present << std::endl;
+	});
+	clock.connect(0, fes::deltatime(period), clock);
+	clock();
+	
+	double realtime = 0.0;
+	auto begin = fes::high_resolution_clock();
+	double end;
+	double dt = period;
+	while (true)
+	{
+		float d = realtime / timeline_future;
+		clamp( d, 0.0f, 1.0f ); // really need clamp ?
+		
+		auto interp = smoothstep(timeline_present, timeline_future, d);
+		std::cout << "t = " << interp << std::endl;
+
+		clock.update();
+
+		end = begin;
+		dt = end - begin;
+		realtime += dt;
+		begin = fes::high_resolution_clock();
+	}
 #endif
 	
 	return 0;

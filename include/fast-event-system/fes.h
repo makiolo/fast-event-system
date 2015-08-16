@@ -68,6 +68,7 @@ class internal_connection
 public:
 	internal_connection(const std::function<void(void)>& deleter)
 		: _deleter(deleter)
+		, _connected(true)
 	{
 		
 	}
@@ -77,7 +78,16 @@ public:
 	
 	void disconnect()
 	{
-		_deleter();
+		if (_connected)
+		{
+			_deleter();
+			_connected = false;
+		}
+	}
+
+	void fake_disconnect()
+	{
+		_connected = false;
 	}
 
 	~internal_connection()
@@ -87,6 +97,7 @@ public:
 	
 protected:
 	std::function<void(void)> _deleter;
+	bool _connected;
 };
 template <typename ... Args> using shared_connection = std::shared_ptr<internal_connection<Args...> >;
 
@@ -174,8 +185,14 @@ class sync
 public:
 	using methods = std::list<method<Args...> >;
 	
-	sync() { ; }
-	~sync() { ; }
+	sync() = default;
+	~sync()
+	{
+		for (auto& c : _conns)
+		{
+			c->fake_disconnect();
+		}
+	}
 	
 	sync(const sync& other) = delete;
 	sync& operator=(const sync& other) = delete;
@@ -189,9 +206,11 @@ public:
 	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		auto it = _registered.emplace(_registered.end(), method);
-		return std::make_shared<internal_connection<Args ...> >([&](){
+		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >([&]() {
 			_registered.erase(it);
 		});
+		_conns.emplace_back(conn);
+		return conn;
 	}
 
 	inline shared_connection<Args...> connect(sync<Args...>& callback)
@@ -225,16 +244,19 @@ public:
 
 protected:	
 	template <typename T, int ... Is>
-	inline shared_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
+	shared_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
 		auto it = _registered.emplace(_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
-		return std::make_shared<internal_connection<Args ...> >([&](){
+		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >([&](){
 			_registered.erase(it);
 		});
+		_conns.emplace_back(conn);
+		return conn;
 	}
 	
 protected:
 	methods _registered;
+	std::vector<shared_connection<Args...> > _conns;
 };
 
 template <typename ... Args>
@@ -257,8 +279,8 @@ struct message
 	}
 	
 	message(message&& other) noexcept
-		: _priority(std::move(other._priority))
-		, _timestamp(std::move(other._timestamp))
+		: _priority(other._priority)
+		, _timestamp(other._timestamp)
 		, _data(std::move(other._data))
 	{
 
@@ -320,8 +342,8 @@ class async_delay
 public:
 	using container_type = std::vector<message<Args...> >;
 	
-	async_delay() { ; }
-	~async_delay() { ; }
+	async_delay() = default;
+	~async_delay() = default;
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
 	
@@ -330,6 +352,11 @@ public:
 		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
+	}
+
+	inline void operator()(const Args& ... data)
+	{
+		operator()(0, fes::deltatime(0), data...);
 	}
 	
 	void update(deltatime tmax = fes::deltatime(1))
@@ -351,12 +378,12 @@ public:
 		return false;
 	}
 		
-	bool empty() const
+	inline bool empty() const
 	{
 		return _queue.empty();
 	}
 	
-	size_t size() const
+	inline size_t size() const
 	{
 		return _queue.size();
 	}
@@ -392,11 +419,12 @@ public:
 			queue(priority, delay, data...);
 		});
 	}
+
 protected:
 	template<int ...S>
-	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
+	inline void dispatch_one(std::tuple<Args...> top, seq<S...>) const
 	{
-		_output(std::move(std::get<S>(top)...));
+		_output(std::get<S>(top)...);
 	}
 
 	bool _dispatch_one()
@@ -422,8 +450,8 @@ class async_fast
 public:
 	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...> >;
 	
-	async_fast() { ; }
-	~async_fast() { ; }
+	async_fast() = default;
+	~async_fast() = default;
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
 	
@@ -456,7 +484,7 @@ public:
 		return (_queue.size_approx() <= 0);
 	}
 
-	size_t size() const
+	inline size_t size() const
 	{
 		return _queue.size_approx();
 	}
@@ -495,9 +523,9 @@ public:
 
 protected:	
 	template<int ...S>
-	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
+	inline void dispatch_one(std::tuple<Args...> top, seq<S...>) const
 	{
-		_output(std::move(std::get<S>(top)...));
+		_output(std::get<S>(top)...);
 	}
 
 	bool _dispatch_one()
