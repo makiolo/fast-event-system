@@ -17,7 +17,7 @@ if (NOT DEFINED EXTRA_DEF)
 	CHECK_CXX_COMPILER_FLAG("-std=c++1y" COMPILER_SUPPORTS_CXX1Y)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-
+	
 	#if(COMPILER_SUPPORTS_CXX1Z)
 	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 	#message("-- C++1z Enabled")
@@ -65,7 +65,8 @@ foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endforeach()
 
 INCLUDE_DIRECTORIES(include/)
-ADD_LIBRARY(fast-event-system SHARED src/fast-event-system/fes.cpp src/scheduler/sas.cpp)
+file(GLOB SOURCE_CODE src/multithread/*.cpp)
+ADD_LIBRARY(fast-event-system SHARED src/fast-event-system/fes.cpp src/scheduler/sas.cpp ${SOURCE_CODE})
 
 file(GLOB HEADER_CODE include/scheduler/*.h)
 install(    FILES ${HEADER_CODE}
@@ -86,6 +87,10 @@ install(    FILES ${HEADER_CODE}
 file(GLOB HEADER_CODE include/animator/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/animator")
+	    
+file(GLOB HEADER_CODE include/multithread/*.h)
+install(    FILES ${HEADER_CODE}
+            DESTINATION "include/multithread")
 
 ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
 target_link_libraries(test_leader_follower fast-event-system)
