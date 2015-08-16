@@ -78,7 +78,7 @@ public:
 		_processor->enqueue(packaged_pack_cmd);
 	}
 
-	inline void call(const command&& cmd, fes::deltatime milli = 0, int priority = 0)
+	inline void call(const command&& cmd, fes::deltatime milli = fes::deltatime(0), int priority = 0)
 	{
 		_commands(priority, milli, std::forward<const command>(cmd));
 	}
@@ -143,7 +143,8 @@ public:
 			{
 				const int FPS = 60;
 				const int FRAMETIME = 1000 / FPS;
-				auto marktime = fes::high_resolution_clock();
+				//float marktime = fes::high_resolution_clock();
+				float marktime = 0.0f; // TODO:
 				int sleeptime = 0;
 				float timeline = 0.0f;
 				while (true)
@@ -159,9 +160,10 @@ public:
 					{
 						break;
 					}
-
+					
 					marktime += FRAMETIME;
-					sleeptime = static_cast<int>(marktime - fes::high_resolution_clock());
+					//sleeptime = static_cast<int>(marktime - float(fes::high_resolution_clock()));
+					sleeptime = static_cast<int>(marktime - 0.0f);
 					if (sleeptime >= 0) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(sleeptime));
 					}
@@ -173,7 +175,7 @@ public:
 		_processor->enqueue(packaged_pack_cmd);
 	}
 
-	inline void call(const command& cmd, float start, float end, float totaltime, fes::deltatime milli = 0, int priority = 0)
+	inline void call(const command& cmd, float start, float end, float totaltime, fes::deltatime milli = fes::deltatime(0), int priority = 0)
 	{
 		_commands(priority, milli, std::make_tuple(cmd, start, end, totaltime));
 	}
@@ -226,12 +228,12 @@ public:
 		_planner_others.add_follower(talker);
 	}
 	
-	inline void call_others(const command_others&& command, fes::deltatime milli = 0, int priority = 0)
+	inline void call_others(const command_others&& command, fes::deltatime milli = fes::deltatime(0), int priority = 0)
 	{
 		_planner_others.call(std::forward<const command_others>(command), milli, priority);
 	}
 
-	inline void call_me(const command_me&& command, fes::deltatime milli = 0, int priority = 0)
+	inline void call_me(const command_me&& command, fes::deltatime milli = fes::deltatime(0), int priority = 0)
 	{
 		_planner_me.call(std::forward<const command_me>(command), milli, priority);
 	}

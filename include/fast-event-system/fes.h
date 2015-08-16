@@ -54,7 +54,7 @@ fast_event_system_API marktime high_resolution_clock();
 
 #else // gcc, clang ...
 
-using marktime = std::chrono::system_clock::time_point;
+using marktime = std::chrono::steady_clock::time_point;
 using deltatime = std::chrono::milliseconds;
 
 marktime high_resolution_clock();
@@ -520,7 +520,17 @@ public:
 			queue(priority, delay, data...);
 		});
 	}
-
+	
+	void set_weight(Int index, float weight)
+	{
+		_weight[index] = weight;
+	}
+	
+	float get_weight(Int index) const
+	{
+		return _weight.at(index);
+	}
+	
 protected:	
 	template<int ...S>
 	inline void dispatch_one(std::tuple<Args...> top, seq<S...>) const
@@ -542,6 +552,7 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
+	std::map<Int, float> _weight;
 };
 
 } // end namespace

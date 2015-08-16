@@ -104,11 +104,14 @@ int main()
 		person2.set_processor(processor);
 		anim.set_processor(processor);
 
+#ifdef _WIN32
 		anim.add_follower(context);
 		anim.call([&](Context& self, float interp)
 		{
 			self.hello_world(interp);
 		}, 0, 78, 1000, fes::deltatime(0), 10);
+		// Need fix std::chrono in clang
+#endif
 		
 		/*
 		Order expected:
@@ -161,7 +164,9 @@ int main()
 		
 		for (int i = 0; i < 9000; ++i)
 		{
+#ifdef _WIN32
 			anim.update();
+#endif
 			person1.update();
 			person2.update();
 			person2.sleep(1);
