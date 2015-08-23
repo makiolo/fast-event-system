@@ -14,7 +14,6 @@ int main2()
 	{
 		for(int j=0; j<NUM_NEURONS; ++j)
 		{
-			// 0 = todo fluye, eres joven
 			if(i==j)
 			{
 				neuron[i].set_weight(j, 1.0f);

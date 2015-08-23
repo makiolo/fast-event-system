@@ -9,7 +9,7 @@ namespace asyncply {
 #if defined(LINUX)
 		pthread_mutexattr_init( &_attr );
 		pthread_mutexattr_settype( &_attr, PTHREAD_MUTEX_NORMAL );
-		pthread_mutex_init(&mutex, &_attr);
+		pthread_mutex_init(&_mutex, &_attr);
 #elif defined(__APPLE__)
 
 #else

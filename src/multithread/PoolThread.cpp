@@ -79,7 +79,7 @@ namespace asyncply {
 
 	void pool_thread::Stop()
 	{
-		mutex::scoped_lock lock(_queue->get_mutex());
+		mutex::scoped_lock_t lock(_queue->get_mutex());
 
 		// Despides a los trabajadores
 		for (unsigned int i(0); i < _number_threads; ++i)

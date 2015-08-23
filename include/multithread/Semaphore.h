@@ -29,7 +29,7 @@ protected:
 class fast_event_system_API semaphore
 {
 public:
-	typedef scoped_lock<semaphore> scoped_lock;
+	using scoped_lock_t = scoped_lock<semaphore>;
 
 	semaphore(int concurrency = 1, bool isForSync = false);
 	~semaphore();
@@ -98,35 +98,13 @@ public:
 #endif
 	}
 
-	inline int get_value() const
-	{
-#if defined(LINUX)
-
-		int value;
-		(void) sem_getvalue(&_sem, &value);
-		return value;
-
-#elif defined(__APPLE__)
-
-		// apple no lo implementa (sem_getvalue)
-		return -1;
-
-#else
-		// En windows es complicado saber el valor de un semaforo
-		// Ver NtQuerySemaphore
-		return -1;
-#endif
-	}
-
 protected:
 
 #if defined(LINUX)
-	sem_t _sem;
+	mutable sem_t _sem;
 #elif defined(__APPLE__)
 	sem_t* _sem;
 	std::string _name_sem;
-public:
-	static int _count_sem;
 protected:
 #else
 	HANDLE _semaphore;

@@ -39,7 +39,8 @@ fes::marktime high_resolution_clock()
 
 fes::marktime high_resolution_clock()
 {
-	return std::chrono::high_resolution_clock::now();
+	//return std::chrono::high_resolution_clock::now();
+	return std::chrono::system_clock::now();
 }
 
 #endif

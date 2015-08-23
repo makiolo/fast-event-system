@@ -3,18 +3,14 @@
 #ifndef _SCHEDULER_ADVANCED_SIMPLE_
 #define _SCHEDULER_ADVANCED_SIMPLE_
 
-// linux
-#ifndef _WIN32
-#include <semaphore.h>
-#else
+#ifdef _WIN32
 #include <windows.h>
 #endif
-
-// std
 #include <functional>
 #include <future>
 #include <atomic>
 #include <mutex>
+#include <csignal>
 #include <fast-event-system/fes.h>
 #include <animator/interpolation.h>
 #include <Poco/Thread.h>
@@ -24,20 +20,20 @@
 #include <Poco/Condition.h>
 #include <Poco/Mutex.h>
 
-namespace sas {
+namespace asyncply {
 
 template <typename R>
 class task;
 
-template< typename Function>
-std::shared_ptr< task<typename std::result_of<Function()>::type> > await(Function&& f);
+template< typename Function> using shared_task = std::shared_ptr< task<typename std::result_of<Function()>::type> >;
+template< typename Function> shared_task<Function> run(Function&& f);
 
 template <typename R>
 class future
 {
 public:
-	future(Poco::Condition& compliment)
-		: _compliment( compliment )
+	future(Poco::Mutex& mutex)
+		: _mutex(mutex)
 		, _ready(false)
 	{
 		
@@ -45,15 +41,16 @@ public:
 
 	~future()
 	{
-		//auto r = get();
+		
 	}
 	
 	R& get()
 	{
+		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
+			_mutex.lock();
 			_ready = true;
-			_compliment.wait(_mutex);
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
@@ -64,10 +61,11 @@ public:
 
 	R& get(long milliseconds)
 	{
+		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
+			_mutex.lock();
 			_ready = true;
-			_compliment.wait(_mutex, milliseconds);
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
@@ -92,8 +90,8 @@ public:
 	}
 
 protected:
-	Poco::Condition& _compliment;
-	Poco::Mutex _mutex;
+	Poco::Mutex& _mutex;
+	Poco::Mutex _zone;
 	R _value;
 	std::exception_ptr _exception;
 	std::atomic<bool> _ready;
@@ -103,8 +101,8 @@ template <>
 class future<void>
 {
 public:
-	future(Poco::Condition& compliment)
-		: _compliment( compliment )
+	future(Poco::Mutex& mutex)
+		: _mutex(mutex)
 		, _ready(false)
 	{
 		
@@ -112,15 +110,16 @@ public:
 
 	~future()
 	{
-		//get();
+
 	}
 	
 	void get()
 	{
+		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
+			_mutex.lock();
 			_ready = true;
-			_compliment.wait(_mutex);
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
@@ -130,10 +129,11 @@ public:
 
 	void get(long milliseconds)
 	{
+		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
+			_mutex.lock();
 			_ready = true;
-			_compliment.wait(_mutex, milliseconds);
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
@@ -145,10 +145,10 @@ public:
 	{
 		_exception = p;
 	}
-
+	
 protected:
-	Poco::Condition& _compliment;
-	Poco::Mutex _mutex;
+	Poco::Mutex& _mutex;
+	Poco::Mutex _zone;
 	std::exception_ptr _exception;
 	std::atomic<bool> _ready;
 };
@@ -158,9 +158,9 @@ class promise
 {
 public:
 	promise()
-		: _future( std::make_shared<future<R> >(_compliment) )
+		: _future( std::make_shared<future<R> >(_mutex) )
 	{
-		
+		_mutex.lock();
 	}
 
 	std::shared_ptr< future<R> > get_future() const
@@ -185,12 +185,12 @@ public:
 
 	void signal()
 	{
-		_compliment.signal();
+		_mutex.unlock();
 	}
 
 protected:
 	std::shared_ptr< future<R> > _future;
-	Poco::Condition _compliment;
+	Poco::Mutex _mutex;
 };
 
 template <>
@@ -198,11 +198,11 @@ class promise<void>
 {
 public:
 	promise()
-		: _future( std::make_shared<future<void> >( _compliment ) )
+		: _future( std::make_shared<future<void> >( _mutex ) )
 	{
-		
+		_mutex.lock();
 	}
-
+	
 	std::shared_ptr< future<void> > get_future() const
 	{
 		return _future;
@@ -212,15 +212,15 @@ public:
 	{
 		_future->set_exception(p);
 	}
-
+	
 	void signal()
 	{
-		_compliment.signal();
+		_mutex.unlock();
 	}
-
+	
 protected:
 	std::shared_ptr< future<void> > _future;
-	Poco::Condition _compliment;
+	Poco::Mutex _mutex;
 };
 
 template <typename R>
@@ -238,7 +238,7 @@ public:
 	
 	~task()
 	{
-		get_future()->get();
+		
 	}
 
 	task(const task& te) = delete;
@@ -299,7 +299,7 @@ public:
 	
 	~task()
 	{
-		get_future()->get();
+		
 	}
 
 	task(const task& te) = delete;
@@ -345,7 +345,7 @@ protected:
 };
 
 template< typename Function>
-std::shared_ptr< task<typename std::result_of<Function()>::type> > await(Function&& f)
+shared_task<Function> run(Function&& f)
 {
 	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >(
 		[&]() -> typename std::result_of<Function()>::type
@@ -355,6 +355,26 @@ std::shared_ptr< task<typename std::result_of<Function()>::type> > await(Functio
 	);
 	Poco::ThreadPool::defaultPool().start( *job );
 	return job;
+}
+
+template<typename Function>
+void _parallel(Function&& f)
+{
+	run(std::forward<Function>(f));
+}
+
+template<typename Function, typename ... Functions>
+void _parallel(Function&& f, Functions&& ... fs)
+{
+	run(std::forward<Function>(f));
+	_parallel(std::forward<Functions>(fs)...);
+}
+
+template< typename ... Functions>
+void parallel(Functions&& ... fs)
+{
+	//std::vector< shared_task<Functions ...> > tasks;
+	_parallel(std::forward<Functions>(fs)...);
 }
 
 /*
@@ -385,7 +405,7 @@ CompositeLeaf repeat(int n)
 		using call_type = boost::coroutines::asymmetric_coroutine<void>::pull_type;
 		using yield_type = boost::coroutines::asymmetric_coroutine<void>::push_type;
 
-		await( sync_function, parm1, parm2
+		run( sync_function, parm1, parm2
 		).step(
 			[](yield_type& yield, return_type& ret) 
 			{
@@ -402,45 +422,6 @@ CompositeLeaf repeat(int n)
 		);
 */
 
-class fast_event_system_API processor
-{
-public:
-	processor(size_t threads)
-	{
-		Poco::ThreadPool::defaultPool().stopAll();
-		Poco::ThreadPool::defaultPool().addCapacity(threads);
-	}
-
-	// the destructor joins all threads
-	~processor()
-	{
-		Poco::ThreadPool::defaultPool().joinAll();
-	}
-
-	processor(const processor&) = delete;
-	processor& operator=(const processor&) = delete;
-	
-	// add work
-	template< typename Function>
-	std::shared_ptr< task<int> > enqueue(Function&& func)
-	{
-
-		auto job = await(
-			[&]() -> int
-			{
-				func();
-				return 1;
-			}
-		);
-		_tasks.push_back(job);
-		return job;
-	}
-	
-private:
-	// synchronization
-	std::vector< std::shared_ptr< task<int> > > _tasks;
-};
-
 template <typename T>
 class commands_queue
 {
@@ -450,17 +431,13 @@ public:
 	explicit commands_queue()
 		: busy(false)
 	{ ; }
-	explicit commands_queue(const std::shared_ptr<sas::processor>& pool)
-		: busy(false)
-		, _processor(pool)
-	{ ; }
 	~commands_queue() { ; }
 	
 	commands_queue(const commands_queue&) = delete;
 	commands_queue& operator=(const commands_queue&) = delete;
 	
 	template <typename R>
-	void add_follower(R& follower)
+	void connect(R& follower)
 	{
 #ifdef _DEBUG
 #define debug_cast dynamic_cast
@@ -472,8 +449,12 @@ public:
 	
 	void planificator(T& self, const command& cmd)
 	{
-		_job = await(
-			[&]()
+		if(_job)
+		{
+			_job->get_future()->get();
+		}
+		_job = run(
+			[cmd, &self]()
 			{
 				cmd(self);
 			}
@@ -482,7 +463,6 @@ public:
 			[this]()
 			{
 				this->busy = false;
-				_job = nullptr;
 			}
 		);
 	}
@@ -501,18 +481,11 @@ public:
 		}
 	}
 	
-	// inject depends
-	void set_processor(const std::shared_ptr<sas::processor>& pool)
-	{
-		_processor = pool;
-	}
-	
 public:
 	std::atomic<bool> busy;
 protected:
 	std::vector<fes::shared_connection<command> > _conns;
 	fes::async_delay<command> _commands;
-	std::shared_ptr<sas::processor> _processor;
 	std::shared_ptr< task<void> > _job;
 };
 
@@ -526,19 +499,20 @@ public:
 	explicit animations_queue()
 		: busy(false)
 	{ ; }
-	explicit animations_queue(const std::shared_ptr<sas::processor>& pool)
-		: busy(false)
-		, _processor(pool)
-	{ ; }
 	~animations_queue() { ; }
 	
 	animations_queue(const animations_queue&) = delete;
 	animations_queue& operator=(const animations_queue&) = delete;
 	
 	template <typename R>
-	void add_follower(R& follower)
+	void connect(R& follower)
 	{
-		_conns.emplace_back(_commands.connect(std::bind(&animations_queue::planificator, this, std::ref(dynamic_cast<T&>(follower)), std::placeholders::_1)));
+#ifdef _DEBUG
+#define debug_cast dynamic_cast
+#else
+#define debug_cast static_cast
+#endif
+		_conns.emplace_back(_commands.connect(std::bind(&animations_queue::planificator, this, std::ref(debug_cast<T&>(follower)), std::placeholders::_1)));
 	}
 	
 	void planificator(T& self, const animation& anim)
@@ -548,8 +522,12 @@ public:
 		float end = std::get<2>(anim);
 		float totaltime = std::get<3>(anim);
 
-		_job = await(
-			[this, start, end, totaltime, cmd, &self]()
+		if(_job)
+		{
+			_job->get_future()->get();
+		}
+		_job = run(
+			[start, end, totaltime, cmd, &self]()
 			{
 				const int FPS = 60;
 				const int FRAMETIME = 1000 / FPS;
@@ -578,9 +556,12 @@ public:
 						std::this_thread::sleep_for(std::chrono::milliseconds(sleeptime));
 					}
 				}
-
+			}
+		);
+		_job->then(
+			[this]()
+			{
 				this->busy = false;
-				return 1;
 			}
 		);
 	}
@@ -599,19 +580,12 @@ public:
 		}
 	}
 	
-	// inject depends
-	void set_processor(const std::shared_ptr<sas::processor>& pool)
-	{
-		_processor = pool;
-	}
-	
 public:
 	std::atomic<bool> busy;
 protected:
 	std::vector<fes::shared_connection<animation> > _conns;
 	fes::async_delay<animation> _commands;
-	std::shared_ptr<sas::processor> _processor;
-	std::shared_ptr< task<int> > _job;
+	std::shared_ptr< task< void > > _job;
 };
 
 template <typename SELF, typename FOLLOWERS = SELF>
@@ -623,7 +597,12 @@ public:
 	
 	explicit talker()
 	{
-		//_planner_me.add_follower<SELF>(*this);
+#ifdef _DEBUG
+#define debug_cast dynamic_cast
+#else
+#define debug_cast static_cast
+#endif
+		_planner_me.template connect<SELF>(debug_cast<SELF&>(*this));
 	}
 	
 	virtual ~talker()
@@ -634,9 +613,9 @@ public:
 	talker(const talker&) = delete;
 	talker& operator=(const talker&) = delete;
 	
-	void add_follower(FOLLOWERS& talker)
+	void connect(FOLLOWERS& talker)
 	{
-		_planner_others.add_follower<FOLLOWERS>(talker);
+		_planner_others.connect(talker);
 	}
 	
 	inline void call_others(const command_others& command, fes::deltatime milli = fes::deltatime(0), int priority = 0)
@@ -658,13 +637,6 @@ public:
 	inline void sleep(int milli)
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
-	}
-	
-	// inject depends
-	void set_processor(const std::shared_ptr<sas::processor>& pool)
-	{
-		_planner_others.set_processor(pool);
-		_planner_me.set_processor(pool);
 	}
 	
 protected:

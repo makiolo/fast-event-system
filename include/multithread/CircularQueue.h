@@ -12,9 +12,9 @@ namespace asyncply {
 	{
 	public:
 		circular_queue()
-			: _number_works(0)
-			, _top_index(0)
+			: _top_index(0)
 			, _bottom_index(0)
+			, _number_works(0)
 		{
 			
 		}
@@ -26,24 +26,24 @@ namespace asyncply {
 
 		void push(T* element)
 		{
-			mutex::scoped_lock lock(_mutex);
+			mutex::scoped_lock_t lock(_mutex);
 
 			assert(_number_works < MAX_ELEMENTS); // "Demasiados elementos en la cola circular, aumente el valor de MAX_ELEMENTS");
 
 			_queue[_top_index] = element;
-			_top_index = (_top_index++) % (MAX_ELEMENTS - 1);
+			_top_index = (_top_index + 1) % (MAX_ELEMENTS - 1);
 
 			++_number_works;
 		}
 
 		T* pop()
 		{
-			mutex::scoped_lock lock(_mutex);
+			mutex::scoped_lock_t lock(_mutex);
 
 			if (_number_works > 0)
 			{
 				T* element = _queue[_bottom_index];
-				_bottom_index = (_bottom_index++) % (MAX_ELEMENTS - 1);
+				_bottom_index = (_bottom_index + 1) % (MAX_ELEMENTS - 1);
 
 				--_number_works;
 
@@ -74,5 +74,5 @@ namespace asyncply {
 		mutex _mutex;
 		int _number_works;
 	};
-
 }
+

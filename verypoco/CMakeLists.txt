@@ -3,6 +3,8 @@ project(Foundation)
 
 set(LIBNAME "poco")
 set(POCO_LIBNAME "very${LIBNAME}")
+set(PROJECT_VERSION 1.0)
+set(SHARED_LIBRARY_VERSION 1.0)
 
 macro(POCO_SOURCES_PLAT out name platform)
     source_group("${name}\\Source Files" FILES ${ARGN})

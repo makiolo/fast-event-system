@@ -6,17 +6,20 @@
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
-#if defined(LINUX) || defined(__APPLE__)
-#include <semaphore.h>
-#include <pthread.h>
+#if defined(LINUX) || defined(__APPLE__) || defined(__GNUC__)
+	#include <semaphore.h>
+	#include <pthread.h>
+	#ifndef LINUX
+		#define LINUX
+	#endif
 #else
-#include <process.h>
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
-#endif
+	#include <process.h>
+	#ifdef _WIN32
+		#ifndef WIN32_LEAN_AND_MEAN
+			#define WIN32_LEAN_AND_MEAN
+		#endif
+		#include <Windows.h>
+	#endif
 #endif
 
 #include "fast-event-system/api.h"
@@ -26,12 +29,12 @@ namespace asyncply {
 	class thread;
 	class synchronizer;
 	class semaphore;
-	template <typename T> class scoped_lock;
 	class pool_thread;
 	template <typename T> class circular_queue;
 	class mutex;
 	class job;
 	class job_function;
+	template <typename T> class scoped_lock;
 }
 
 #include "CircularQueue.h"

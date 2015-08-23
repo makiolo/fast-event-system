@@ -17,8 +17,8 @@ namespace asyncply {
 #else
 	void* thread::HandleGlobalMyThread(void* parms)
 	{
-		thread* thread = static_cast<thread*>(parms);
-		thread->execute();
+		thread* t = static_cast<thread*>(parms);
+		t->execute();
 
 #ifdef JOINABLE // Joinable
 		pthread_exit(0);

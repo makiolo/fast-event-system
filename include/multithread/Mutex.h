@@ -1,17 +1,14 @@
-#pragma once
 #ifndef Mutex_H_
 #define Mutex_H_
 
-#if defined(__APPLE__)
 #include "Semaphore.h"
-#endif
 
 namespace asyncply {
 
 	class fast_event_system_API mutex
 	{
 	public:
-		typedef scoped_lock<mutex> scoped_lock;
+		using scoped_lock_t = scoped_lock<mutex>;
 
 		mutex();
 		~mutex();
@@ -44,12 +41,12 @@ namespace asyncply {
 			return pthread_mutex_trylock(&_mutex) == 0;
 #elif defined(__APPLE__)
 			// sin implementar
-			DUNE_ASSERT(0);
+			assert(0);
 #else
 			return TryEnterCriticalSection(&_section_critical) != 0;
 #endif
 		}
-
+		
 	protected:
 
 #if defined(LINUX)
