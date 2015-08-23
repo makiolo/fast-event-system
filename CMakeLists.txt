@@ -13,6 +13,7 @@ else()
 	#add_definitions(-fno-exceptions)
 	#add_definitions(-fpermissive)
 	add_definitions(-g3)
+	add_definitions(-Wall -Wextra -Werror)
 endif()
 
 if (NOT DEFINED EXTRA_DEF)
@@ -83,7 +84,7 @@ ADD_LIBRARY(fast-event-system SHARED src/fast-event-system/fes.cpp src/scheduler
 IF(WIN32)
 	TARGET_LINK_LIBRARIES(fast-event-system "${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/verypoco.lib")
 ELSE()
-	TARGET_LINK_LIBRARIES(fast-event-system verypoco)
+	TARGET_LINK_LIBRARIES(fast-event-system verypoco stdc++)
 ENDIF()
 
 file(GLOB HEADER_CODE include/scheduler/*.h)

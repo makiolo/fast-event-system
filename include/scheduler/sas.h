@@ -58,21 +58,6 @@ public:
 		}
 		return _value;
 	}
-
-	R& get(long milliseconds)
-	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		if (!_ready)
-		{
-			_mutex.lock();
-			_ready = true;
-			if (_exception)
-			{
-				std::rethrow_exception(_exception);
-			}
-		}
-		return _value;
-	}
 	
 	void set_value(const R& value)
 	{
@@ -114,20 +99,6 @@ public:
 	}
 	
 	void get()
-	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		if (!_ready)
-		{
-			_mutex.lock();
-			_ready = true;
-			if (_exception)
-			{
-				std::rethrow_exception(_exception);
-			}
-		}
-	}
-
-	void get(long milliseconds)
 	{
 		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
