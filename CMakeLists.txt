@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
 if(WIN32)
-	add_definitions(/GR-)
+	add_definitions(/EHsc)
+	#add_definitions(/GR-)
 	#add_definitions(/D_HAS_EXCEPTIONS=0)
 else()
 	add_definitions(-fno-rtti)
@@ -64,33 +65,46 @@ foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
 				CONFIGURATIONS ${BUILD_TYPE})
 endforeach()
 
+
+add_definitions(-DPOCO_OS_FAMILY_WINDOWS -DUNICODE -D_UNICODE)
+add_definitions(-DPOCO_NO_AUTOMATIC_LIBS -DPOCO_DLL)
+
 INCLUDE_DIRECTORIES(include/)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/verypoco/include)
 file(GLOB SOURCE_CODE src/multithread/*.cpp)
+source_group( "multithread_src" FILES ${SOURCE_CODE} )
 ADD_LIBRARY(fast-event-system SHARED src/fast-event-system/fes.cpp src/scheduler/sas.cpp ${SOURCE_CODE})
+TARGET_LINK_LIBRARIES(fast-event-system "${CMAKE_CURRENT_SOURCE_DIR}/build/Debug/verypoco.lib")
 
 file(GLOB HEADER_CODE include/scheduler/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/scheduler")
+source_group( "scheduler" FILES ${HEADER_CODE} )
 
 file(GLOB HEADER_CODE include/fast-event-system/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/fast-event-system")
+source_group( "fast-event-system" FILES ${HEADER_CODE} )
             
 file(GLOB HEADER_CODE include/concurrentqueue/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/concurrentqueue")
+source_group( "concurrentqueue" FILES ${HEADER_CODE} )
             
 file(GLOB HEADER_CODE include/concurrentqueue/internal/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/concurrentqueue/internal")
+source_group( "concurrentqueue_internal" FILES ${HEADER_CODE} )
             
 file(GLOB HEADER_CODE include/animator/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/animator")
+source_group( "fast-event-system_animator" FILES ${HEADER_CODE} )
 	    
 file(GLOB HEADER_CODE include/multithread/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/multithread")
+source_group( "multithread" FILES ${HEADER_CODE} )
 
 ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
 target_link_libraries(test_leader_follower fast-event-system)

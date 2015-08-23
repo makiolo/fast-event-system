@@ -211,7 +211,8 @@ if (${CMAKE_CXX_COMPILER_ID} MATCHES "SunPro")
     set_target_properties( "${LIBNAME}" PROPERTIES LINK_FLAGS "-library=stlport4")
 endif (${CMAKE_CXX_COMPILER_ID} MATCHES "SunPro")
 
-add_definitions( -D${LIBNAME}_EXPORTS)
+set( LIB_MODE SHARED )
+add_definitions( -Dpoco_EXPORTS -DPOCO_DLL)
 
 add_library( "${LIBNAME}" ${LIB_MODE} ${SRCS})
 add_library( "${POCO_LIBNAME}" ALIAS "${LIBNAME}")

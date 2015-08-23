@@ -1,4 +1,4 @@
-// design-patterns-cpp14 by Ricardo Marmolejo García is licensed under a Creative Commons Reconocimiento 4.0 Internacional License.
+// fes by Ricardo Marmolejo García is licensed under a Creative Commons Reconocimiento 4.0 Internacional License.
 // http://creativecommons.org/licenses/by/4.0/
 //
 
@@ -171,7 +171,7 @@ public:
 	{
 		_method(data...);
 	}
-		
+
 protected:
 	function _method;
 };
@@ -186,13 +186,7 @@ public:
 	using methods = std::list<method<Args...> >;
 	
 	sync() = default;
-	~sync()
-	{
-		for (auto& c : _conns)
-		{
-			c->fake_disconnect();
-		}
-	}
+	~sync() { ; }
 	
 	sync(const sync& other) = delete;
 	sync& operator=(const sync& other) = delete;
@@ -236,7 +230,7 @@ public:
 	
 	void operator()(const Args& ... data) const
 	{
-		for(auto& reg : _registered)
+		for (auto& reg : _registered)
 		{
 			reg(data...);
 		}
@@ -262,10 +256,10 @@ protected:
 template <typename ... Args>
 struct message
 {
-	message(int priority, marktime timestamp, const Args ... data)
+	message(int priority, marktime timestamp, const Args& ... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		, _data(std::move(data)...)
+		, _data(data...)
 	{
 		
 	}
@@ -422,9 +416,9 @@ public:
 
 protected:
 	template<int ...S>
-	inline void dispatch_one(std::tuple<Args...> top, seq<S...>) const
+	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
 	{
-		_output(std::get<S>(top)...);
+		_output( std::get<S>(top)... );
 	}
 
 	bool _dispatch_one()
@@ -521,19 +515,9 @@ public:
 		});
 	}
 	
-	void set_weight(Int index, float weight)
-	{
-		_weight[index] = weight;
-	}
-	
-	float get_weight(Int index) const
-	{
-		return _weight.at(index);
-	}
-	
 protected:	
 	template<int ...S>
-	inline void dispatch_one(std::tuple<Args...> top, seq<S...>) const
+	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
 	}
@@ -552,7 +536,6 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	std::map<Int, float> _weight;
 };
 
 } // end namespace

@@ -89,7 +89,7 @@
 	#endif
 
 	#if !defined(POCO_NO_AUTOMATIC_LIBS) && !defined(poco_EXPORTS)
-		#pragma comment(lib, "PocoFoundation" POCO_LIB_SUFFIX)
+		#pragma comment(lib, "verypoco" POCO_LIB_SUFFIX)
 	#endif
 #endif
 

@@ -4,6 +4,7 @@
 #include <thread>
 #include <scheduler/sas.h>
 #include <animator/interpolation.h>
+#include <Poco/Mutex.h>
 
 class Context
 {
@@ -22,6 +23,8 @@ public:
 
 	void print(const std::string& name, const std::string& text, int delay = 10)
 	{
+		//Poco::Mutex::ScopedLock lock(_mutex);
+
 		std::cout << "<" << name << "> ";
 		for(const char& c : text)
 		{
@@ -30,17 +33,8 @@ public:
 		}
 		std::cout << std::endl;
 	}
-
-	void hello_world(float a)
-	{
-		float i = 0.0f;
-		while (i < a)
-		{
-			std::cout << " ";
-			i += 1.0f;
-		}
-		std::cout << "X\r";
-	}
+protected:
+	//Poco::Mutex _mutex;
 };
 
 class PersonA;
@@ -52,10 +46,10 @@ public:
 		: _context(context)
 		, _name(name)
 	{
-		
+		_planner_me.add_follower<PersonB>(*this);
 	}
 	
-	~PersonB() { ; }
+	virtual ~PersonB() { ; }
 	
 	void say(const std::string& text, int delay = 10)
 	{
@@ -74,9 +68,9 @@ public:
 		: _context(context)
 		, _name(name)
 	{
-		
+		_planner_me.add_follower<PersonA>(*this);
 	}
-	~PersonA() { ; }	
+	virtual ~PersonA() { ; }	
 	
 	void say(const std::string& text, int delay = 10)
 	{
@@ -89,29 +83,12 @@ protected:
 
 int main()
 {
-	std::ios_base::sync_with_stdio(false);
-	
 	{
-		//auto processor = std::make_shared<sas::processor>(std::thread::hardware_concurrency());
-		auto processor = std::make_shared<sas::processor>(1);
-		
-		sas::animations_queue<Context> anim;
+		std::ios_base::sync_with_stdio(false);
+
 		Context context;
 		PersonA person1("Person A", context);
 		PersonB person2("Person B", context);
-		
-		person1.set_processor(processor);
-		person2.set_processor(processor);
-		anim.set_processor(processor);
-
-#ifdef _WIN32
-		anim.add_follower(context);
-		anim.call([&](Context& self, float interp)
-		{
-			self.hello_world(interp);
-		}, 0, 78, 1000, fes::deltatime(0), 10);
-		// Need fix std::chrono in clang
-#endif
 		
 		/*
 		Order expected:
@@ -130,71 +107,63 @@ int main()
 		person1.call_me([&](PersonA& self) {
 			self.say("1. What are you doing now ? ");
 			self.sleep(100);
-		}, fes::deltatime(0), 4);
+		}, fes::deltatime(10), 4);
 		person1.call_me([&](PersonA& self) {
 			self.say("3. I didn't know you play pool.  Are you having fun?");
 			self.sleep(100);
-		}, fes::deltatime(0), 3);
+		}, fes::deltatime(20), 3);
 		person1.call_me([&](PersonA& self) {
 			self.say("5. I'm taking a break from my homework. There seems to be no end to the amount of work I have to do.");
 			self.sleep(100);
-		}, fes::deltatime(0), 2);
+		}, fes::deltatime(30), 2);
 		person1.call_me([&](PersonA& self) {
 			self.say("7. bye person B");
 			self.sleep(100);
-		}, fes::deltatime(0), 1);
+		}, fes::deltatime(40), 1);
 		
 		// person B
 		person2.call_me([&](PersonB& self) {
 			self.say("2. I'm playing pool with my friends at a pool hall.");
 			self.sleep(100);
-		}, fes::deltatime(0), 4);
+		}, fes::deltatime(10), 4);
 		person2.call_me([&](PersonB& self) {
 			self.say("4. I'm having a great time.  How about you?  What are you doing?");
 			self.sleep(100);
-		}, fes::deltatime(0), 3);
+		}, fes::deltatime(20), 3);
 		person2.call_me([&](PersonB& self) {
 			self.say("6. I'm glad I'm not in your shoes.");
 			self.sleep(100);
-		}, fes::deltatime(0), 2);
+		}, fes::deltatime(30), 2);
 		person2.call_me([&](PersonB& self) {
 			self.say("8. bye person A");
 			self.sleep(100);
-		}, fes::deltatime(0), 1);
+		}, fes::deltatime(40), 1);
 		
 		for (int i = 0; i < 9000; ++i)
 		{
 #ifdef _WIN32
-			anim.update();
+			//anim.update();
 #endif
 			person1.update();
 			person2.update();
-			person2.sleep(1);
 		}
 	}
+	Poco::ThreadPool::defaultPool().joinAll();
 	return(0);
 }
 
-/*
-template <typename T> using CommandTalker = std::function<void(T&)>;
-template <typename T> using CompositeCommandTalker = std::function<CommandTalker<T>(const CommandTalker<T>&)>;
-
-sas::CommandTalker<Buyer> operator>>=(const sas::CompositeCommandTalker<Buyer>& a, const sas::CommandTalker<Buyer>& b)
+int main3()
 {
-	return a(b);
-}
-
-sas::CompositeCommandTalker<Buyer> repeat(int n)
-{
-	return [=](const sas::CommandTalker<Buyer>& f)
 	{
-		return [&](Buyer& self)
-		{
-			for(int cont = 0; cont < n; ++cont)
-			{
-				f(self);
-			}
-		};
-	};
+		auto job = sas::await([]() {
+			std::cout << "Hola mundo asincrono" << std::endl;
+			return 5;
+		});
+		job->then([](int data) {
+			std::cout << "esta es la segunda fase, recibo " << data << std::endl;
+		});
+	}
+	Poco::ThreadPool::defaultPool().joinAll();
+	return 0;
 }
-*/
+
