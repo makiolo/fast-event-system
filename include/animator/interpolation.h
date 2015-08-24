@@ -69,7 +69,6 @@ T smoothstep_cubed( T A, T B, float d )
 	return smoothstep( A, B, d * d * d );
 }
 
-/*
 template <class T>
 T slow_acceleration_squared_interp( T A, T B, float d )
 {
@@ -80,7 +79,6 @@ T slow_acceleration_squared_interp( T A, T B, float d )
 	
 	return X;
 }
-*/
 
 template <class T>
 T slow_decelleration_squared_interp( T A, T B, float d )
@@ -117,6 +115,7 @@ T slow_decelleration_cubed_interp( T A, T B, float d )
 	return X;
 }
 
+/*
 template <class T>
 T weighted_average_interp( T A, T B, T current )
 {
@@ -124,6 +123,7 @@ T weighted_average_interp( T A, T B, T current )
 	
 	return X;
 }
+*/
 
 template <class T>
 T sin_interp( T A, T B, float d )
