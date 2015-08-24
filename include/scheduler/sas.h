@@ -50,7 +50,7 @@ public:
 		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
-			_mutex.lock();
+			_mutex.wait();
 			_ready = true;
 			if (_exception)
 			{
@@ -104,7 +104,7 @@ public:
 		Poco::Mutex::ScopedLock lock(_zone);
 		if (!_ready)
 		{
-			_mutex.lock();
+			_mutex.wait();
 			_ready = true;
 			if (_exception)
 			{
@@ -163,7 +163,7 @@ public:
 
 	void signal()
 	{
-		_mutex.unlock();
+		_mutex.set();
 	}
 
 protected:
@@ -199,7 +199,7 @@ public:
 	
 	void signal()
 	{
-		_mutex.unlock();
+		_mutex.set();
 	}
 	
 protected:
