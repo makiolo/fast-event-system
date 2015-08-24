@@ -331,12 +331,13 @@ protected:
 template< typename Function>
 shared_task<Function> run(Function&& f)
 {
-	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >(
-		[&]() -> typename std::result_of<Function()>::type
-		{
-			return f();
-		}
-	);
+	/*
+	[&]() -> typename std::result_of<Function()>::type
+	{
+		return f();
+	}
+	*/
+	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >( std::bind( std::forward<Function>(f) ) );
 	Poco::ThreadPool::defaultPool().start( *job );
 	return job;
 }
@@ -357,7 +358,6 @@ void _parallel(Function&& f, Functions&& ... fs)
 template< typename ... Functions>
 void parallel(Functions&& ... fs)
 {
-	//std::vector< shared_task<Functions ...> > tasks;
 	_parallel(std::forward<Functions>(fs)...);
 }
 
@@ -437,12 +437,7 @@ public:
 		{
 			_job->get_future()->get();
 		}
-		_job = run(
-			[cmd, &self]()
-			{
-				cmd(self);
-			}
-		);
+		_job = asyncply::run( std::bind(cmd, std::ref(self)) );
 		_job->then(
 			[this]()
 			{
@@ -511,7 +506,7 @@ public:
 			_job->get_future()->get();
 		}
 		_job = run(
-			[start, end, totaltime, cmd, &self]()
+			[start, end, totaltime, &cmd, &self]()
 			{
 				const int FPS = 60;
 				const int FRAMETIME = 1000 / FPS;
