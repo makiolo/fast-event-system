@@ -19,6 +19,7 @@
 #include <Poco/RunnableAdapter.h>
 #include <Poco/Condition.h>
 #include <Poco/Mutex.h>
+#include <Poco/Semaphore.h>
 
 namespace asyncply {
 
@@ -32,7 +33,7 @@ template <typename R>
 class future
 {
 public:
-	future(Poco::Mutex& mutex)
+	future(Poco::Semaphore& mutex)
 		: _mutex(mutex)
 		, _ready(false)
 	{
@@ -75,7 +76,7 @@ public:
 	}
 
 protected:
-	Poco::Mutex& _mutex;
+	Poco::Semaphore& _mutex;
 	Poco::Mutex _zone;
 	R _value;
 	std::exception_ptr _exception;
@@ -86,7 +87,7 @@ template <>
 class future<void>
 {
 public:
-	future(Poco::Mutex& mutex)
+	future(Poco::Semaphore& mutex)
 		: _mutex(mutex)
 		, _ready(false)
 	{
@@ -118,7 +119,7 @@ public:
 	}
 	
 protected:
-	Poco::Mutex& _mutex;
+	Poco::Semaphore& _mutex;
 	Poco::Mutex _zone;
 	std::exception_ptr _exception;
 	std::atomic<bool> _ready;
@@ -130,13 +131,14 @@ class promise
 public:
 	promise()
 		: _future( std::make_shared<future<R> >(_mutex) )
+		, _mutex(0, 1)
 	{
-		_mutex.lock();
+		
 	}
 	
 	~promise()
 	{
-		_mutex.unlock();
+		
 	}
 
 	std::shared_ptr< future<R> > get_future() const
@@ -166,7 +168,7 @@ public:
 
 protected:
 	std::shared_ptr< future<R> > _future;
-	Poco::Mutex _mutex;
+	Poco::Semaphore _mutex;
 };
 
 template <>
@@ -175,13 +177,14 @@ class promise<void>
 public:
 	promise()
 		: _future( std::make_shared<future<void> >( _mutex ) )
+		, _mutex(0, 1)
 	{
-		_mutex.lock();
+		
 	}
 	
 	~promise()
 	{
-		_mutex.unlock();
+		
 	}
 	
 	std::shared_ptr< future<void> > get_future() const
@@ -201,7 +204,7 @@ public:
 	
 protected:
 	std::shared_ptr< future<void> > _future;
-	Poco::Mutex _mutex;
+	Poco::Semaphore _mutex;
 };
 
 template <typename R>
