@@ -133,6 +133,11 @@ public:
 	{
 		_mutex.lock();
 	}
+	
+	~promise()
+	{
+		_mutex.unlock();
+	}
 
 	std::shared_ptr< future<R> > get_future() const
 	{
@@ -172,6 +177,11 @@ public:
 		: _future( std::make_shared<future<void> >( _mutex ) )
 	{
 		_mutex.lock();
+	}
+	
+	~promise()
+	{
+		_mutex.unlock();
 	}
 	
 	std::shared_ptr< future<void> > get_future() const
