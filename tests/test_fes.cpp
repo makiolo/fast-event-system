@@ -152,8 +152,7 @@ int main()
 		}
 	}
 
-	assert(called1 == true);
-	assert(called2 == true);
+	exit(called1 && called2 ? 0 : 1);
 #endif
 	
 #if 0
