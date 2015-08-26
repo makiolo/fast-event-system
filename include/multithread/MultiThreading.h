@@ -1,5 +1,5 @@
-#ifndef _MULTITHREAD_H_
-#define _MULTITHREAD_H_
+#ifndef _MULTITHREADING_H_
+#define _MULTITHREADING_H_
 
 #include <iostream>
 #include <functional>
@@ -44,4 +44,4 @@ namespace asyncply {
 #include "Job.h"
 #include "JobFunction.h"
 
-#endif // _MULTITHREAD_H_
+#endif // _MULTITHREADING_H_

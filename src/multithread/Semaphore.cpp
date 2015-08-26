@@ -6,7 +6,6 @@ namespace asyncply {
 
 #if defined(__APPLE__)
 #include <sstream> // std::stringstream
-
 int semaphore::_count_sem = 0;
 #endif
 
@@ -62,24 +61,20 @@ semaphore::semaphore(int concurrency, bool isForSync)
 semaphore::~semaphore()
 {
 #if defined(LINUX)
-
 	(void) sem_destroy(&_sem);
-
 #elif defined(__APPLE__)
-
 	int code1 = sem_close(_sem);
 	int code2 = sem_unlink(_name_sem.c_str());
-	DUNE_ASSERT(code1 != -1);
-	DUNE_ASSERT(code2 != -1);
-
+	assert(code1 != -1);
+	assert(code2 != -1);
 #else
-
 	CloseHandle(_semaphore);
-
 #endif
 }
 
 #ifdef _WIN32
+
+#ifdef _DEBUG
 
 void PrintLastError()
 {
@@ -100,6 +95,8 @@ void PrintLastError()
 
 	LocalFree(lpMsgBuf);
 }
+
+#endif
 
 }
 

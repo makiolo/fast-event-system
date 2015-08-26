@@ -1,6 +1,5 @@
-#pragma once
-#ifndef Synchronizer_H_
-#define Synchronizer_H_
+#ifndef _SYNCRONIZER_H_
+#define _SYNCRONIZER_H_
 
 #include "Semaphore.h"
 
@@ -34,4 +33,4 @@ public:
 
 }
 
-#endif // Synchronizer_H_
+#endif // _SYNCRONIZER_H_

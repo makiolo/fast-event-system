@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _JOB_H_
+#define _JOB_H_
 
 namespace asyncply {
 
@@ -44,3 +45,6 @@ namespace asyncply {
 	};
 
 }
+
+#endif
+

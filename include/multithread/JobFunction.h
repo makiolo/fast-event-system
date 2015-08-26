@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _JOB_FUNCTION_H_
+#define _JOB_FUNCTION_H_
 
 #include "Job.h"
 
@@ -50,3 +51,6 @@ namespace asyncply {
 	};
 
 }
+
+#endif // _JOB_FUNCTION_H_
+

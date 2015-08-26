@@ -4,7 +4,9 @@
 namespace asyncply {
 
 #ifdef _WIN32
+#ifdef _DEBUG
 void PrintLastError();
+#endif
 #endif
 
 template <typename T>
@@ -57,17 +59,21 @@ public:
 		(void) sem_wait(_sem);
 
 #else
+#ifdef _DEBUG
 		DWORD dwWaitResult = WaitForSingleObject(_semaphore, INFINITE);
 		if (dwWaitResult == WAIT_FAILED)
 		{
 			PrintLastError();
 			std::cout << "Error en el lock()" << std::endl;
 		}
+#else
+		WaitForSingleObject(_semaphore, INFINITE);
+#endif
 #endif
 	}
 
 	///
-	/// @brief	Aumenta el semaforo. Libera la región critica.
+	/// Aumenta el semaforo. Libera la región critica.
 	///    signal(s)
 	///    {
 	///        if s == 0
@@ -90,27 +96,27 @@ public:
 		(void) sem_post(_sem);
 
 #else
+#ifdef _DEBUG
 		if (ReleaseSemaphore(_semaphore, 1, NULL) == 0)
 		{
 			PrintLastError();
 			std::cout << "Error en el unlock()" << std::endl;
 		}
+#else
+		ReleaseSemaphore(_semaphore, 1, NULL);
+#endif
 #endif
 	}
 
-	inline int get_value() const
+	int get_value() const
 	{
 #if defined(LINUX)
-
 		int value;
 		(void) sem_getvalue(&_sem, &value);
 		return value;
-
 #elif defined(__APPLE__)
-
 		// apple no lo implementa (sem_getvalue)
 		return -1;
-
 #else
 		// En windows es complicado saber el valor de un semaforo
 		// Ver NtQuerySemaphore
@@ -136,4 +142,4 @@ protected:
 
 }
 
-#endif /* _SEMAPHORE_H_ */
+#endif // _SEMAPHORE_H_

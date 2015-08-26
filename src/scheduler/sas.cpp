@@ -8,25 +8,24 @@ processor::processor(size_t threads) : _stop(false)
 	{
 		_workers.emplace_back(
 			[this]
-		{
-			for (;;)
 			{
-				std::shared_ptr< std::packaged_task<void()> > task;
-
+				for (;;)
 				{
-					std::unique_lock<std::mutex> lock(this->_queue_mutex);
-					this->_condition.wait(lock, [this]{ return this->_stop || !this->_tasks.empty(); });
-					if (this->_stop && this->_tasks.empty())
+					std::shared_ptr< std::packaged_task<void()> > task;
 					{
-						return;
+						std::unique_lock<std::mutex> lock(this->_queue_mutex);
+						this->_condition.wait(lock, [this]{ return this->_stop || !this->_tasks.empty(); });
+						if (this->_stop && this->_tasks.empty())
+						{
+							return;
+						}
+						task = std::move(this->_tasks.front());
+						this->_tasks.pop();
 					}
-					task = std::move(this->_tasks.front());
-					this->_tasks.pop();
-				}
 
-				(*task)();
+					(*task)();
+				}
 			}
-		}
 		);
 	}
 }
@@ -43,7 +42,6 @@ void processor::enqueue(const std::shared_ptr< std::packaged_task<void()> >& fun
 	_condition.notify_one();
 }
 
-// the destructor joins all threads
 processor::~processor()
 {
 	{

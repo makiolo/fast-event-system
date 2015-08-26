@@ -6,25 +6,25 @@ namespace asyncply {
 
 #ifdef _WIN32
 
-	DWORD thread::HandleGlobalMyThread(LPVOID parms)
-	{
-		thread* t = static_cast<thread*>(parms);
-		t->execute();
+DWORD thread::HandleGlobalMyThread(LPVOID parms)
+{
+	thread* t = static_cast<thread*>(parms);
+	t->execute();
 
-		return TRUE;
-	}
+	return TRUE;
+}
 
 #else
-	void* thread::HandleGlobalMyThread(void* parms)
-	{
-		thread* thread = static_cast<thread*>(parms);
-		thread->execute();
+void* thread::HandleGlobalMyThread(void* parms)
+{
+	thread* t = static_cast<thread*>(parms);
+	t>execute();
 
 #ifdef JOINABLE // Joinable
-		pthread_exit(0);
+	pthread_exit(0);
 #endif
-		return NULL;
-	}
+	return NULL;
+}
 #endif
 
 }

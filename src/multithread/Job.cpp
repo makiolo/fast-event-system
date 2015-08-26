@@ -4,26 +4,28 @@
 
 namespace asyncply {
 
-	void job::Execute()
+void job::Execute()
+{
+	if (_state == IN_QUEUE)
 	{
-		if (_state == IN_QUEUE)
-		{
-			// empieza
-			Start();
-			_state = RUNNING;
-		}
-		
-		do
-		{
-			// avanzar el algoritmo sliced
-			_state = Update();
-			
-			// dar oportunidad a otros hilos
-			//pthread_yield_np();
-		
-		} while (_state == RUNNING);
-		
-		// termina
-		Finish();
+		// empieza
+		Start();
+		_state = RUNNING;
 	}
+	
+	do
+	{
+		// avanzar el algoritmo sliced
+		_state = Update();
+		
+		// dar oportunidad a otros hilos
+		//pthread_yield_np();
+	
+	} while (_state == RUNNING);
+	
+	// termina
+	Finish();
 }
+
+}
+

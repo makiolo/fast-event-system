@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _POOL_THREAD_
+#define _POOL_THREAD_
 
 #include "Thread.h"
 
@@ -6,60 +7,64 @@
 
 namespace asyncply {
 
-	class fast_event_system_API pool_thread : public thread
+class fast_event_system_API pool_thread : public thread
+{
+public:
+	pool_thread(int numThreads = 4);
+	virtual ~pool_thread(void);
+
+	void Stop();
+
+	circular_queue<job>* get_queue() const
 	{
-	public:
-		pool_thread(int numThreads = 4);
-		virtual ~pool_thread(void);
+		return _queue;
+	}
 
-		void Stop();
+	void submit(job* j);
 
-		circular_queue<job>* get_queue() const
-		{
-			return _queue;
-		}
+	synchronizer* get_synchronizer_workers_finished() const
+	{
+		return _workers_finished;
+	}
 
-		void submit(job* j);
+	unsigned int get_number_threads() const
+	{
+		return _number_threads;
+	}
 
-		synchronizer* get_synchronizer_workers_finished() const
-		{
-			return _workers_finished;
-		}
+protected:
 
-		unsigned int get_number_threads() const
-		{
-			return _number_threads;
-		}
+	void Start();
 
-	protected:
+	virtual void execute();
 
-		void Start();
+protected:
+	friend class worker;
 
-		virtual void execute();
-
-	protected:
-		friend class worker;
-
-		unsigned int _number_threads;
-		bool _started;
-		worker* _workers[THREADCOUNT_MAX];
-		circular_queue<job>* _queue;
+	unsigned int _number_threads;
+	bool _started;
+	worker* _workers[THREADCOUNT_MAX];
+	circular_queue<job>* _queue;
 #ifdef _WIN32
-		DWORD _threads_id[THREADCOUNT_MAX];
-		HANDLE _threads[THREADCOUNT_MAX];
+	DWORD _threads_id[THREADCOUNT_MAX];
+	HANDLE _threads[THREADCOUNT_MAX];
 #else
-		pthread_t _threads[THREADCOUNT_MAX];
+	pthread_t _threads[THREADCOUNT_MAX];
 #endif
 
-		synchronizer* _any_job;
-		synchronizer* _workers_finished;
+	synchronizer* _any_job;
+	synchronizer* _workers_finished;
 
-	public:
+public:
 
 #ifdef _WIN32
-		static DWORD HandleGlobalMyPoolThread(LPVOID parms);
+	static DWORD HandleGlobalMyPoolThread(LPVOID parms);
 #else
-		static void* HandleGlobalMyPoolThread(void* parms );
+	static void* HandleGlobalMyPoolThread(void* parms );
 #endif
-	};
+};
+
 }
+
+#endif // _POOL_THREAD_
+
