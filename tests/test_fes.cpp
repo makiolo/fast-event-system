@@ -69,7 +69,7 @@ protected:
 	}
 	
 	std::string _data;
-	fes::shared_connection<std::string> _conn;
+	fes::connection<std::string> _conn;
 };
 
 int main()

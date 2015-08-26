@@ -12,7 +12,7 @@ else()
 	#add_definitions(-fno-rtti)
 	#add_definitions(-fno-exceptions)
 	#add_definitions(-fpermissive)
-	#add_definitions(-g3)
+	add_definitions(-g3 -Og)
 	add_definitions(-Wall -Wextra -Werror)
 endif()
 
@@ -117,15 +117,13 @@ install(    FILES ${HEADER_CODE}
             DESTINATION "include/multithread")
 source_group( "multithread" FILES ${HEADER_CODE} )
 
-ADD_EXECUTABLE(test_leader_follower tests/test_leader_follower.cpp)
-target_link_libraries(test_leader_follower fast-event-system)
-ADD_TEST(NAME test_leader_follower COMMAND test_leader_follower WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+macro(CREATE_TEST TESTNAME TESTDEPENDS)
+	ADD_EXECUTABLE(${TESTNAME} tests/${TESTNAME}.cpp)
+	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
+	ADD_TEST(NAME ${TESTNAME} COMMAND ${TESTNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+endmacro()
 
-ADD_EXECUTABLE(test_fes tests/test_fes.cpp)
-target_link_libraries(test_fes fast-event-system)
-ADD_TEST(NAME test_fes COMMAND test_fes WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-#ADD_EXECUTABLE(test_autoasociative_memory tests/test_autoasociative_memory.cpp)
-#target_link_libraries(test_autoasociative_memory fast-event-system)
-#ADD_TEST(NAME test_autoasociative_memory COMMAND test_autoasociative_memory WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+CREATE_TEST("test_fes" "fast-event-system")
+CREATE_TEST("test_sync" "fast-event-system")
+CREATE_TEST("test_leader_follower" "fast-event-system")
 

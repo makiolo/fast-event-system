@@ -1,10 +1,9 @@
-// fes by Ricardo Marmolejo García is licensed under a Creative Commons Reconocimiento 4.0 Internacional License.
-// http://creativecommons.org/licenses/by/4.0/
+// fes by Ricardo Marmolejo García is licensed under a Creative Commons Reconocimiento 4.0 Internacional License.// http://creativecommons.org/licenses/by/4.0/
+// me/makiolo/dev/sandbox_private/vimfiles/doc/clang.txt' 
 //
 
 #ifndef _FAST_EVENT_SYSTEM_
 #define _FAST_EVENT_SYSTEM_
-
 #include <functional>
 #include <string>
 #include <memory>
@@ -68,81 +67,6 @@ marktime high_resolution_clock();
 // END workaround
 
 template <typename ... Args>
-class internal_connection
-{
-public:
-	internal_connection(const std::function<void(void)>& deleter)
-		: _deleter(deleter)
-		, _connected(true)
-	{
-		
-	}
-	
-	internal_connection(const internal_connection<Args...>& other) = delete;
-	const internal_connection<Args...>& operator=(const internal_connection<Args...>& other) = delete;
-	
-	void disconnect()
-	{
-		if (_connected)
-		{
-			_deleter();
-			_connected = false;
-		}
-	}
-
-	void fake_disconnect()
-	{
-		_connected = false;
-	}
-
-	~internal_connection()
-	{
-		
-	}
-	
-protected:
-	std::function<void(void)> _deleter;
-	bool _connected;
-};
-template <typename ... Args> using shared_connection = std::shared_ptr<internal_connection<Args...> >;
-
-template <typename ... Args>
-class connection
-{
-public:
-	connection()
-	{
-		
-	}
-
-	connection(const shared_connection<Args ...>& other)
-		: _connection(other)
-	{
-		
-	}
-	
-	const connection<Args...>& operator=(const shared_connection<Args ...>&other)
-	{
-		_connection = other;
-		return *this;
-	}
-
-	~connection()
-	{
-		if (_connection)
-		{
-			_connection->disconnect();
-		}
-	}
-
-	connection(const connection&) = delete;
-	connection& operator=(const connection&) = delete;
-
-protected:
-	shared_connection<Args...> _connection;
-};
-
-template <typename ... Args>
 class method
 {
 public:
@@ -181,6 +105,78 @@ protected:
 	function _method;
 };
 
+template <typename ... Args> using methods_t = std::list<method<Args...> >;
+
+template <typename ... Args>
+class internal_connection
+{
+public:
+	using deleter_t = std::function<void(methods_t<Args...>&)>;
+
+	internal_connection(methods_t<Args...>& registered, const deleter_t& deleter)
+		: _deleter(deleter)
+		, _connected(true)
+		, _registered(registered)
+	{ ; }
+	
+	internal_connection(const internal_connection<Args...>& other) = delete;
+	const internal_connection<Args...>& operator=(const internal_connection<Args...>& other) = delete;
+	
+	void disconnect()
+	{
+		if (_connected)
+		{
+			_deleter(_registered);
+			_connected = false;
+		}
+	}
+	
+protected:
+	deleter_t _deleter;
+	std::atomic<bool> _connected;
+	methods_t<Args...>& _registered;
+};
+template <typename ... Args> using shared_connection = std::shared_ptr<internal_connection<Args...> >;
+template <typename ... Args> using weak_connection = std::weak_ptr<internal_connection<Args...> >;
+
+template <typename ... Args>
+class connection
+{
+public:
+	connection()
+	{
+		
+	}
+
+	connection(const weak_connection<Args ...>& other)
+		: _connection(other)
+	{
+		
+	}
+
+	connection<Args...>& operator=(const weak_connection<Args ...>& other)
+	{
+		_connection = other;
+		return *this;
+	}
+
+	~connection()
+	{
+		if(auto connection = _connection.lock())
+		{
+			connection->disconnect();
+		}
+	}
+
+	connection(const connection&) = delete;
+	connection(connection<Args ...>&&) = delete;
+	connection& operator=(const connection&) = delete;
+	connection& operator=(connection&&) = delete;
+
+protected:
+	weak_connection<Args...> _connection;
+};
+
 template <typename ... Args> class async_delay;
 template <typename ... Args> class async_fast;
 
@@ -188,7 +184,7 @@ template <typename ... Args>
 class sync
 {
 public:
-	using methods = std::list<method<Args...> >;
+	using methods = methods_t<Args...>;
 	
 	sync() = default;
 	~sync() { ; }
@@ -197,36 +193,36 @@ public:
 	sync& operator=(const sync& other) = delete;
 	
 	template <typename T>
-	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
 	
-	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
+	inline weak_connection<Args...> connect(const typename method<Args...>::function& fun)
 	{
-		auto it = _registered.emplace(_registered.end(), method);
-		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >([&]() {
-			_registered.erase(it);
+		typename methods::iterator it = _registered.emplace(_registered.end(), fun);
+		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >(_registered, [it](methods& registered) {
+			registered.erase(it);
 		});
-		_conns.emplace_back(conn);
-		return conn;
+		_conns.push_back(conn);
+		return weak_connection<Args...>(conn);
 	}
 
-	inline shared_connection<Args...> connect(sync<Args...>& callback)
+	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
+	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
@@ -243,14 +239,14 @@ public:
 
 protected:	
 	template <typename T, int ... Is>
-	shared_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
+	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
-		auto it = _registered.emplace(_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
-		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >([&](){
-			_registered.erase(it);
+		typename methods::iterator it = _registered.emplace(_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
+		shared_connection<Args...> conn = std::make_shared<internal_connection<Args ...> >(_registered, [it](methods& registered) {
+			registered.erase(it);
 		});
-		_conns.emplace_back(conn);
-		return conn;
+		_conns.push_back(conn);
+		return weak_connection<Args...>(conn);
 	}
 	
 protected:
@@ -388,31 +384,31 @@ public:
 	}
 	
 	template <typename T>
-	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
 	
-	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
+	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
 	}
 
-	inline shared_connection<Args...> connect(sync<Args...>& callback)
+	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return _output.connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
+	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return _output.connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 
-	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return _output.connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
@@ -489,31 +485,31 @@ public:
 	}
 
 	template <typename T>
-	inline shared_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
 
-	inline shared_connection<Args...> connect(const typename method<Args...>::function& method)
+	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
 	}
 	
-	inline shared_connection<Args...> connect(sync<Args...>& callback)
+	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return _output.connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
 	
-	inline shared_connection<Args...> connect(async_fast<Args...>& queue)
+	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return _output.connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
 
-	inline shared_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return _output.connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
