@@ -25,9 +25,14 @@
 #include <mutex>
 #include <condition_variable>
 #include <future>
-#include <fast-event-system/common.h>
-#include <concurrentqueue/concurrentqueue.h>
 #include <ctime>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <concurrentqueue/concurrentqueue.h>
+#pragma GCC diagnostic pop
+
+#include <fast-event-system/common.h>
 #include <fast-event-system/api.h>
 
 #ifdef _WIN32
