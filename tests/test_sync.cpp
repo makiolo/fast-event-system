@@ -3,8 +3,21 @@
 
 int main(int, const char**)
 {
-	fes::sync<int, std::string, double> sync;
+	// asyncply::run( functor )
+	// asyncply::sequence( functor, functor ... )
+	// asyncply::parallel( functor, functor ... )
+	// 
+	// safe vs unsafe
+	// safe vs fast
+	// inter vs intra
+	// fes::channel::safe::sync            // (future/promise)
+	// fes::channel::safe::async           
+	// fes::channel::unsafe::sync          
+	// fes::channel::unsafe::async         (delay)
+	// 
 
+	fes::sync<int, std::string, double> sync;
+	
 	// test connect in context
 	{
 		// TODO: operator=
