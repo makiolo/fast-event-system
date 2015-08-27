@@ -74,7 +74,6 @@ protected:
 
 int main()
 {
-#if 1
 	{
 		Producer<fes::sync<std::string> > p;
 		Consumer<fes::sync<std::string> > c1;
@@ -113,9 +112,7 @@ int main()
 			assert(c2.get_data() == "data");
 		}
 	}
-#endif
 	
-#if 1
 	fes::async_delay<int> root;
 	fes::async_delay<int> node_a;
 	fes::async_delay<int> node_b;
@@ -140,35 +137,30 @@ int main()
 	root(0, fes::deltatime(10), 111);
 
 	auto t1 = fes::high_resolution_clock() + fes::deltatime(600);
-	while (true)
+	while (fes::high_resolution_clock() < t1)
 	{
 		root.update();
 		node_a.update();
 		node_b.update();
-
-		if (fes::high_resolution_clock() > t1)
-		{
-			break;
-		}
 	}
 
 	exit(called1 && called2 ? 0 : 1);
-#endif
 	
 #if 0
 	// fixed deltatime clock
 
-	double freq = 5.0f; // Hz
+	double freq = 5.0; // Hz
 	double period = 1000 / freq;
-	double timeline_past = 0.0f;
-	double timeline_present = 0.0f;
-	double timeline_future = 0.0f;
+	double timeline_past = 0.0;
+	double timeline_present = 0.0;
+	double timeline_future = 0.0;
 	double radius = period;
 	timeline_past -= radius;
 	timeline_future += radius;
 	
 	fes::async_delay<> clock;
-	fes::shared_connection<> conn = clock.connect([&]() {
+	fes::connection<> conn;
+	conn = clock.connect([&]() {
 		radius = timeline_present - timeline_past;
 		timeline_past = timeline_present;
 		timeline_present = timeline_future;
@@ -178,14 +170,14 @@ int main()
 	clock.connect(0, fes::deltatime(period), clock);
 	clock();
 	
+	fes::marktime begin = fes::high_resolution_clock();
+	fes::marktime end;
 	double realtime = 0.0;
-	auto begin = fes::high_resolution_clock();
-	double end;
 	double dt = period;
-	while (true)
+	while(true)
 	{
 		float d = realtime / timeline_future;
-		clamp( d, 0.0f, 1.0f ); // really need clamp ?
+		clamp( d, 0.0f, 1.0f );
 		
 		auto interp = smoothstep(timeline_present, timeline_future, d);
 		std::cout << "t = " << interp << std::endl;
@@ -193,7 +185,8 @@ int main()
 		clock.update();
 
 		end = begin;
-		dt = end - begin;
+		dt = std::chrono::duration_cast<std::chrono::duration<fes::marktime> >(end - begin).count();
+
 		realtime += dt;
 		begin = fes::high_resolution_clock();
 	}

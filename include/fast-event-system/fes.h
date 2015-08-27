@@ -348,12 +348,22 @@ public:
 		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
+	
+	void operator()(deltatime delay, const Args& ... data)
+	{
+		operator()(0, delay, data...);
+	} 
+
+	void operator()(int priority, const Args& ... data)
+	{
+		operator()(priority, fes::deltatime(0), data...);
+	}
 
 	inline void operator()(const Args& ... data)
 	{
 		operator()(0, fes::deltatime(0), data...);
 	}
-	
+		
 	void update(deltatime tmax = fes::deltatime(1))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
@@ -361,6 +371,15 @@ public:
 		while (!empty() && has_next && (high_resolution_clock() <= timeout))
 		{
 			has_next = _dispatch_one();
+		}
+	}
+
+	void update_while(deltatime time)
+	{
+		auto mark = fes::high_resolution_clock() + time;
+		while(fes::high_resolution_clock() < mark)
+		{
+			update();
 		}
 	}
 

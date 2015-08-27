@@ -126,5 +126,8 @@ endmacro()
 
 CREATE_TEST("test_fes" "fast-event-system")
 CREATE_TEST("test_sync" "fast-event-system")
+CREATE_TEST("test_async_fast" "fast-event-system")
+CREATE_TEST("test_async_delay" "fast-event-system")
 CREATE_TEST("test_leader_follower" "fast-event-system")
 CREATE_TEST("test_bench" "fast-event-system")
+
