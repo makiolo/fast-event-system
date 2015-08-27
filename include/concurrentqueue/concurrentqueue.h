@@ -112,10 +112,12 @@ namespace moodycamel { namespace details {
 #define MOODYCAMEL_TRY try
 #define MOODYCAMEL_CATCH(...) catch(__VA_ARGS__)
 #define MOODYCAMEL_RETHROW throw
+#define MOODYCAMEL_THROW(expr) throw (expr)
 #else
 #define MOODYCAMEL_TRY if (true)
 #define MOODYCAMEL_CATCH(...) else if (false)
 #define MOODYCAMEL_RETHROW
+#define MOODYCAMEL_THROW(expr)
 #endif
 #endif
 
@@ -124,6 +126,12 @@ namespace moodycamel { namespace details {
 #define MOODYCAMEL_NOEXCEPT
 #define MOODYCAMEL_NOEXCEPT_CTOR(type, valueType, expr) true
 #define MOODYCAMEL_NOEXCEPT_ASSIGN(type, valueType, expr) true
+#elif defined(_MSC_VER) && defined(_NOEXCEPT) && _MSC_VER < 1800
+// VS2012's std::is_nothrow_[move_]constructible is broken and returns true when it shouldn't :-(
+// We have to assume *all* non-trivial constructors may throw on VS2012!
+#define MOODYCAMEL_NOEXCEPT _NOEXCEPT
+#define MOODYCAMEL_NOEXCEPT_CTOR(type, valueType, expr) (std::is_rvalue_reference<valueType>::value && std::is_move_constructible<type>::value ? std::is_trivially_move_constructible<type>::value : std::is_trivially_copy_constructible<type>::value)
+#define MOODYCAMEL_NOEXCEPT_ASSIGN(type, valueType, expr) ((std::is_rvalue_reference<valueType>::value && std::is_move_assignable<type>::value ? std::is_trivially_move_assignable<type>::value || std::is_nothrow_move_assignable<type>::value : std::is_trivially_copy_assignable<type>::value || std::is_nothrow_copy_assignable<type>::value) && MOODYCAMEL_NOEXCEPT_CTOR(type, valueType, expr))
 #elif defined(_MSC_VER) && defined(_NOEXCEPT) && _MSC_VER < 1900
 #define MOODYCAMEL_NOEXCEPT _NOEXCEPT
 #define MOODYCAMEL_NOEXCEPT_CTOR(type, valueType, expr) (std::is_rvalue_reference<valueType>::value && std::is_move_constructible<type>::value ? std::is_trivially_move_constructible<type>::value || std::is_nothrow_move_constructible<type>::value : std::is_trivially_copy_constructible<type>::value || std::is_nothrow_copy_constructible<type>::value)
@@ -145,6 +153,16 @@ namespace moodycamel { namespace details {
 //// Assume `thread_local` is fully supported in all other C++11 compilers/runtimes
 //#define MOODYCAMEL_CPP11_THREAD_LOCAL_SUPPORTED
 //#endif
+#endif
+#endif
+
+// VS2012 doesn't support deleted functions. 
+// In this case, we declare the function normally but don't define it. A link error will be generated if the function is called.
+#ifndef MOODYCAMEL_DELETE_FUNCTION
+#if defined(_MSC_VER) && _MSC_VER < 1800
+#define MOODYCAMEL_DELETE_FUNCTION
+#else
+#define MOODYCAMEL_DELETE_FUNCTION = delete
 #endif
 #endif
 
@@ -391,7 +409,7 @@ namespace details
 		return *it;
 	}
 	
-#if defined(__APPLE__) || defined(__clang__) || !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+#if defined(__clang__) || !defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
 	template<typename T> struct is_trivially_destructible : std::is_trivially_destructible<T> { };
 #else
 	template<typename T> struct is_trivially_destructible : std::has_trivial_destructor<T> { };
@@ -437,8 +455,8 @@ namespace details
 		
 	private:
 		ThreadExitNotifier() : tail(nullptr) { }
-		ThreadExitNotifier(ThreadExitNotifier const&) = delete;
-		ThreadExitNotifier& operator=(ThreadExitNotifier const&) = delete;
+		ThreadExitNotifier(ThreadExitNotifier const&) MOODYCAMEL_DELETE_FUNCTION;
+		ThreadExitNotifier& operator=(ThreadExitNotifier const&) MOODYCAMEL_DELETE_FUNCTION;
 		
 		~ThreadExitNotifier()
 		{
@@ -527,8 +545,8 @@ struct ProducerToken
 	}
 	
 	// Disable copying and assignment
-	ProducerToken(ProducerToken const&) = delete;
-	ProducerToken& operator=(ProducerToken const&) = delete;
+	ProducerToken(ProducerToken const&) MOODYCAMEL_DELETE_FUNCTION;
+	ProducerToken& operator=(ProducerToken const&) MOODYCAMEL_DELETE_FUNCTION;
 	
 private:
 	template<typename T, typename Traits> friend class ConcurrentQueue;
@@ -568,8 +586,8 @@ struct ConsumerToken
 	}
 	
 	// Disable copying and assignment
-	ConsumerToken(ConsumerToken const&) = delete;
-	ConsumerToken& operator=(ConsumerToken const&) = delete;
+	ConsumerToken(ConsumerToken const&) MOODYCAMEL_DELETE_FUNCTION;
+	ConsumerToken& operator=(ConsumerToken const&) MOODYCAMEL_DELETE_FUNCTION;
 
 private:
 	template<typename T, typename Traits> friend class ConcurrentQueue;
@@ -725,8 +743,8 @@ public:
 	}
 
 	// Disable copying and copy assignment
-	ConcurrentQueue(ConcurrentQueue const&) = delete;
-	ConcurrentQueue& operator=(ConcurrentQueue const&) = delete;
+	ConcurrentQueue(ConcurrentQueue const&) MOODYCAMEL_DELETE_FUNCTION;
+	ConcurrentQueue& operator=(ConcurrentQueue const&) MOODYCAMEL_DELETE_FUNCTION;
 	
 	// Moving is supported, but note that it is *not* a thread-safe operation.
 	// Nobody can use the queue while it's being moved, and the memory effects
@@ -1178,8 +1196,9 @@ private:
 	friend struct ConsumerToken;
 	friend struct ExplicitProducer;
 	friend class ConcurrentQueueTests;
-	
+		
 	enum AllocationMode { CanAlloc, CannotAlloc };
+	
 	
 	///////////////////////////////
 	// Queue methods
@@ -1275,8 +1294,8 @@ private:
 		FreeList(FreeList&& other) : freeListHead(other.freeListHead.load(std::memory_order_relaxed)) { other.freeListHead.store(nullptr, std::memory_order_relaxed); }
 		void swap(FreeList& other) { details::swap_relaxed(freeListHead, other.freeListHead); }
 		
-		FreeList(FreeList const&) = delete;
-		FreeList& operator=(FreeList const&) = delete;
+		FreeList(FreeList const&) MOODYCAMEL_DELETE_FUNCTION;
+		FreeList& operator=(FreeList const&) MOODYCAMEL_DELETE_FUNCTION;
 		
 		inline void add(N* node)
 		{
@@ -1486,7 +1505,7 @@ private:
 		}
 		
 		inline T* operator[](index_t idx) MOODYCAMEL_NOEXCEPT { return reinterpret_cast<T*>(elements) + static_cast<size_t>(idx & static_cast<index_t>(BLOCK_SIZE - 1)); }
-		inline T const* operator[](index_t idx) const MOODYCAMEL_NOEXCEPT { return reinterpret_cast<T*>(elements) + static_cast<size_t>(idx & static_cast<index_t>(BLOCK_SIZE - 1)); }
+		inline T const* operator[](index_t idx) const MOODYCAMEL_NOEXCEPT { return reinterpret_cast<T const*>(elements) + static_cast<size_t>(idx & static_cast<index_t>(BLOCK_SIZE - 1)); }
 		
 	public:
 		Block* next;

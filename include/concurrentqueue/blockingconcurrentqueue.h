@@ -62,8 +62,8 @@ namespace details
 		private:
 		    void* m_hSema;
 		    
-		    Semaphore(const Semaphore& other) = delete;
-		    Semaphore& operator=(const Semaphore& other) = delete;
+		    Semaphore(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
+		    Semaphore& operator=(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
 
 		public:
 		    Semaphore(int initialCount = 0)
@@ -99,8 +99,8 @@ namespace details
 		private:
 		    semaphore_t m_sema;
 
-		    Semaphore(const Semaphore& other) = delete;
-		    Semaphore& operator=(const Semaphore& other) = delete;
+		    Semaphore(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
+		    Semaphore& operator=(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
 
 		public:
 		    Semaphore(int initialCount = 0)
@@ -141,8 +141,8 @@ namespace details
 		private:
 		    sem_t m_sema;
 
-		    Semaphore(const Semaphore& other) = delete;
-		    Semaphore& operator=(const Semaphore& other) = delete;
+		    Semaphore(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
+		    Semaphore& operator=(const Semaphore& other) MOODYCAMEL_DELETE_FUNCTION;
 
 		public:
 		    Semaphore(int initialCount = 0)
@@ -351,7 +351,7 @@ public:
 	{
 		assert(reinterpret_cast<ConcurrentQueue*>((BlockingConcurrentQueue*)1) == &((BlockingConcurrentQueue*)1)->inner && "BlockingConcurrentQueue must have ConcurrentQueue as its first member");
 		if (!sema) {
-			throw std::bad_alloc();
+			MOODYCAMEL_THROW(std::bad_alloc());
 		}
 	}
 	
@@ -360,13 +360,13 @@ public:
 	{
 		assert(reinterpret_cast<ConcurrentQueue*>((BlockingConcurrentQueue*)1) == &((BlockingConcurrentQueue*)1)->inner && "BlockingConcurrentQueue must have ConcurrentQueue as its first member");
 		if (!sema) {
-			throw std::bad_alloc();
+			MOODYCAMEL_THROW(std::bad_alloc());
 		}
 	}
 	
 	// Disable copying and copy assignment
-	BlockingConcurrentQueue(BlockingConcurrentQueue const&) = delete;
-	BlockingConcurrentQueue& operator=(BlockingConcurrentQueue const&) = delete;
+	BlockingConcurrentQueue(BlockingConcurrentQueue const&) MOODYCAMEL_DELETE_FUNCTION;
+	BlockingConcurrentQueue& operator=(BlockingConcurrentQueue const&) MOODYCAMEL_DELETE_FUNCTION;
 	
 	// Moving is supported, but note that it is *not* a thread-safe operation.
 	// Nobody can use the queue while it's being moved, and the memory effects

@@ -4,6 +4,7 @@
 #include <thread>
 #include <scheduler/sas.h>
 #include <animator/interpolation.h>
+#include <Poco/Mutex.h>
 
 class Context
 {
@@ -14,8 +15,8 @@ public:
 	}
 	
 	~Context() { ; }
-
-	inline void sleep(int milli)
+	
+	void sleep(int milli)
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
 	}
@@ -30,88 +31,37 @@ public:
 		}
 		std::cout << std::endl;
 	}
+protected:
 
-	void hello_world(float a)
-	{
-		float i = 0.0f;
-		while (i < a)
-		{
-			std::cout << " ";
-			i += 1.0f;
-		}
-		std::cout << "X\r";
-	}
 };
 
-class PersonA;
-
-class PersonB : public sas::talker<PersonB, PersonA>
+class Person : public asyncply::talker<Person, Person>
 {
 public:
-	explicit PersonB(const std::string& name, Context& context)
-		: _context(context)
-		, _name(name)
+	explicit Person(const std::string& name, Context& context)
+		: _name(name)
+		, _context(context)
 	{
 		
 	}
-	
-	~PersonB() { ; }
+	virtual ~Person() { ; }	
 	
 	void say(const std::string& text, int delay = 10)
 	{
 		_context.print(_name, text, delay);
 	}
 protected:
-	Context& _context;
 	std::string _name;
-};
-
-
-class PersonA : public sas::talker<PersonA, PersonB>
-{
-public:
-	explicit PersonA(const std::string& name, Context& context)
-		: _context(context)
-		, _name(name)
-	{
-		
-	}
-	~PersonA() { ; }	
-	
-	void say(const std::string& text, int delay = 10)
-	{
-		_context.print(_name, text, delay);
-	}
-protected:
 	Context& _context;
-	std::string _name;
 };
 
 int main()
 {
-	std::ios_base::sync_with_stdio(false);
-	
 	{
-		//auto processor = std::make_shared<sas::processor>(std::thread::hardware_concurrency());
-		auto processor = std::make_shared<sas::processor>(1);
+		//std::ios_base::sync_with_stdio(false);
 		
-		sas::animations_queue<Context> anim;
 		Context context;
-		PersonA person1("Person A", context);
-		PersonB person2("Person B", context);
-		
-		person1.set_processor(processor);
-		person2.set_processor(processor);
-		anim.set_processor(processor);
-
-#ifdef _WIN32
-		anim.add_follower(context);
-		anim.call([&](Context& self, float interp)
-		{
-			self.hello_world(interp);
-		}, 0, 78, 1000, fes::deltatime(0), 10);
-		// Need fix std::chrono in clang
-#endif
+		Person person1("Person A", context);
 		
 		/*
 		Order expected:
@@ -126,75 +76,60 @@ int main()
 		 Person B: "8. Bye person A"
 		*/
 		
-		// person A
-		person1.call_me([&](PersonA& self) {
+		person1.call_me([&](Person& self) {
 			self.say("1. What are you doing now ? ");
-			self.sleep(100);
-		}, fes::deltatime(0), 4);
-		person1.call_me([&](PersonA& self) {
-			self.say("3. I didn't know you play pool.  Are you having fun?");
-			self.sleep(100);
-		}, fes::deltatime(0), 3);
-		person1.call_me([&](PersonA& self) {
-			self.say("5. I'm taking a break from my homework. There seems to be no end to the amount of work I have to do.");
-			self.sleep(100);
-		}, fes::deltatime(0), 2);
-		person1.call_me([&](PersonA& self) {
-			self.say("7. bye person B");
-			self.sleep(100);
-		}, fes::deltatime(0), 1);
-		
-		// person B
-		person2.call_me([&](PersonB& self) {
+		});
+		person1.call_me([&](Person& self) {
 			self.say("2. I'm playing pool with my friends at a pool hall.");
-			self.sleep(100);
-		}, fes::deltatime(0), 4);
-		person2.call_me([&](PersonB& self) {
+		});
+		person1.call_me([&](Person& self) {
+			self.say("3. I didn't know you play pool.  Are you having fun?");
+		});
+		person1.call_me([&](Person& self) {
 			self.say("4. I'm having a great time.  How about you?  What are you doing?");
-			self.sleep(100);
-		}, fes::deltatime(0), 3);
-		person2.call_me([&](PersonB& self) {
+		});
+		person1.call_me([&](Person& self) {
+			self.say("5. I'm taking a break from my homework. There seems to be no end to the amount of work I have to do.");
+		});
+		person1.call_me([&](Person& self) {
 			self.say("6. I'm glad I'm not in your shoes.");
-			self.sleep(100);
-		}, fes::deltatime(0), 2);
-		person2.call_me([&](PersonB& self) {
+		});
+		person1.call_me([&](Person& self) {
+			self.say("7. bye person B");
+		});
+		person1.call_me([&](Person& self) {
 			self.say("8. bye person A");
-			self.sleep(100);
-		}, fes::deltatime(0), 1);
+		});
 		
-		for (int i = 0; i < 9000; ++i)
+		for (int i = 0; i < 500; ++i)
 		{
-#ifdef _WIN32
-			anim.update();
-#endif
 			person1.update();
-			person2.update();
-			person2.sleep(1);
+			context.sleep(10);
 		}
 	}
+	Poco::ThreadPool::defaultPool().joinAll();
 	return(0);
 }
 
-/*
-template <typename T> using CommandTalker = std::function<void(T&)>;
-template <typename T> using CompositeCommandTalker = std::function<CommandTalker<T>(const CommandTalker<T>&)>;
-
-sas::CommandTalker<Buyer> operator>>=(const sas::CompositeCommandTalker<Buyer>& a, const sas::CommandTalker<Buyer>& b)
+int main2()
 {
-	return a(b);
-}
-
-sas::CompositeCommandTalker<Buyer> repeat(int n)
-{
-	return [=](const sas::CommandTalker<Buyer>& f)
 	{
-		return [&](Buyer& self)
-		{
-			for(int cont = 0; cont < n; ++cont)
-			{
-				f(self);
+		asyncply::parallel(
+			[]() {
+				std::cout << "Hola mundo 11111" << std::endl;
+			},
+			[]() {
+				std::cout << "Hola mundo 22222" << std::endl;
+			},
+			[]() {
+				std::cout << "Hola mundo 3333333" << std::endl;
+			},
+			[]() {
+				std::cout << "Hola mundo 444444" << std::endl;
 			}
-		};
-	};
+		);
+	}
+	Poco::ThreadPool::defaultPool().joinAll();
+	return 0;
 }
-*/
+

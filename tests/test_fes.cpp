@@ -20,14 +20,14 @@ public:
 	Producer() {}
 	~Producer() {}
 
-	void operator()(const std::string&& data)
+	void operator()(const std::string& data)
 	{
-		_channel(std::forward<const std::string>(data));
+		_channel(data);
 	}
 
-	void operator()(int priority, fes::deltatime delay, const std::string&& data)
+	void operator()(int priority, fes::deltatime delay, const std::string& data)
 	{
-		_channel(priority, delay, std::forward<const std::string>(data));
+		_channel(priority, delay, data );
 	}
 
 	void update()
@@ -74,7 +74,7 @@ protected:
 
 int main()
 {
-#if 0
+#if 1
 	{
 		Producer<fes::sync<std::string> > p;
 		Consumer<fes::sync<std::string> > c1;
@@ -115,31 +115,31 @@ int main()
 	}
 #endif
 	
-#if 0
+#if 1
 	fes::async_delay<int> root;
 	fes::async_delay<int> node_a;
 	fes::async_delay<int> node_b;
 	
-	auto c1 = root.connect(0, fes::deltatime(1500), node_a);
-	auto c2 = root.connect(0, fes::deltatime(3000), node_b);
+	auto c1 = root.connect(0, fes::deltatime(100), node_a);
+	auto c2 = root.connect(0, fes::deltatime(200), node_b);
 	
 	static bool called1 = false;
-	auto c3 = node_a.connect([](const int& data) {
+	auto c3 = node_a.connect([&](const int& data) {
 		std::cout << "A: data = " << data << std::endl;
 		called1 = true;
 		assert(data == 111);
 	});
 
 	static bool called2 = false;
-	auto c4 = node_b.connect([](const int& data) {
+	auto c4 = node_b.connect([&](const int& data) {
 		std::cout << "B: data = " << data << std::endl;
 		called2 = true;
 		assert(data == 111);
 	});
 	
 	root(0, fes::deltatime(10), 111);
-	
-	auto t1 = fes::high_resolution_clock() + fes::deltatime(8000);
+
+	auto t1 = fes::high_resolution_clock() + fes::deltatime(600);
 	while (true)
 	{
 		root.update();
@@ -152,11 +152,10 @@ int main()
 		}
 	}
 
-	assert(called1 == true);
-	assert(called2 == true);
+	exit(called1 && called2 ? 0 : 1);
 #endif
 	
-#if 1
+#if 0
 	// fixed deltatime clock
 
 	double freq = 5.0f; // Hz

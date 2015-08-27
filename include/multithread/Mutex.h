@@ -1,16 +1,14 @@
 #ifndef _MUTEX_H_
 #define _MUTEX_H_
 
-#if defined(__APPLE__)
 #include "Semaphore.h"
-#endif
 
 namespace asyncply {
 
 class fast_event_system_API mutex
 {
 public:
-	typedef scoped_lock<mutex> scoped_lock;
+	using scoped_lock_t = scoped_lock<mutex>;
 
 	mutex();
 	~mutex();
