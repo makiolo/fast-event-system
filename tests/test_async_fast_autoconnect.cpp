@@ -26,6 +26,6 @@ int main(int, const char**)
 		sync.dispatch_one();
 	}
 
-	return counter == N;
+	return (counter == N ? 0 : 1);
 }
 
