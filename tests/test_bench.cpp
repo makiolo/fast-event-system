@@ -8,8 +8,7 @@
 #include <sstream>
 #include <fstream>
 
-//template <typename T> using weakptr = std::weak_ptr<T>;
-template <typename T> using weakptr = std::shared_ptr<T>;
+template <typename T> using weakptr = std::weak_ptr<T>;
 
 class Entity final
 {
@@ -152,23 +151,31 @@ foo return_a_obj(int n)
 
 int main_measured_algorithm_1(int, const char **)
 {
-	volatile int n = 6;
-	foo f = return_a_obj(n);
-	//std::cout << f._data << std::endl;
+	auto entity = std::make_shared<Entity>();
+	auto render1 = std::make_shared<Render>(entity);
+	auto render2 = std::make_shared<Render>(entity);
+	auto render3 = std::make_shared<Render>(entity);
+	auto render4 = std::make_shared<Render>(entity);
+	auto render5 = std::make_shared<Render>(entity);
+	auto render6 = std::make_shared<Render>(entity);
 	return 0;
 }
 
 int main_measured_algorithm_2(int, const char **)
 {
-	volatile int n = 2;
-	foo f = return_a_obj(n);
-	//std::cout << f._data << std::endl;
+	auto entity = std::make_shared<Entity>();
+	auto render1 = std::make_shared<RenderOLD>(entity);
+	auto render2 = std::make_shared<RenderOLD>(entity);
+	auto render3 = std::make_shared<RenderOLD>(entity);
+	auto render4 = std::make_shared<RenderOLD>(entity);
+	auto render5 = std::make_shared<RenderOLD>(entity);
+	auto render6 = std::make_shared<RenderOLD>(entity);
 	return 0;
 }
 
 double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, const char**))
 {
-	long long N = 1e4;
+	long long N = 1e6;
 	double elapsedtime;
 	{
 		measure_scoped timer(elapsedtime);
