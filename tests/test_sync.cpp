@@ -3,16 +3,16 @@
 
 int main(int, const char**)
 {
-	fes::sync<int, std::string, double> _sync;
+	fes::sync<int, std::string, double> sync;
 
 	// test connect in context
 	{
 		// TODO: operator=
 		fes::connection<int, std::string, double> conn(
-			_sync.connect(
+			sync.connect(
 				[](int n, const std::string& str, double r)
 				{
-					std::cout << "Se ha recibido el mensaje: " << std::endl;
+					std::cout << "received message: " << std::endl;
 					std::cout << "n = " << n << std::endl;
 					std::cout << "str = " << str << std::endl;
 					std::cout << "r = " << r << std::endl;
@@ -24,12 +24,12 @@ int main(int, const char**)
 			)
 		);
 		// lambda must received this
-		_sync(5, "hello world", 11.0);
+		sync(5, "hello world", 11.0);
 
 		// autodisconnection
 	}
 	// kill only if autodisconnection failed
-	_sync(6, "kill", 12.0);
+	sync(6, "kill", 12.0);
 	return 0;
 }
 
