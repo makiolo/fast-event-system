@@ -79,7 +79,7 @@ void pool_thread::execute()
 
 void pool_thread::Stop()
 {
-	mutex::scoped_lock lock(_queue->get_mutex());
+	mutex::scoped_lock_t lock(_queue->get_mutex());
 
 	// Despides a los trabajadores
 	for (unsigned int i(0); i < _number_threads; ++i)
@@ -94,7 +94,7 @@ void pool_thread::Stop()
 	}
 
 	// El hilo terminará cuando todos los hilos terminen
-	Join();
+	join();
 
 	// ya no esta iniciado
 	_started = false;

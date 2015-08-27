@@ -18,7 +18,7 @@ DWORD thread::HandleGlobalMyThread(LPVOID parms)
 void* thread::HandleGlobalMyThread(void* parms)
 {
 	thread* t = static_cast<thread*>(parms);
-	t>execute();
+	t->execute();
 
 #ifdef JOINABLE // Joinable
 	pthread_exit(0);

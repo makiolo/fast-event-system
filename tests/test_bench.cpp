@@ -1,3 +1,6 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 #include <iostream>
 #include <memory>
 #include <ctime>
@@ -188,4 +191,5 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
+#pragma GCC diagnostic pop
 

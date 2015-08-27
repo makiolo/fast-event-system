@@ -31,7 +31,7 @@ protected:
 class fast_event_system_API semaphore
 {
 public:
-	typedef scoped_lock<semaphore> scoped_lock;
+	typedef scoped_lock<semaphore> scoped_lock_t;
 
 	semaphore(int concurrency = 1, bool isForSync = false);
 	~semaphore();
@@ -127,7 +127,7 @@ public:
 protected:
 
 #if defined(LINUX)
-	sem_t _sem;
+	mutable sem_t _sem;
 #elif defined(__APPLE__)
 	sem_t* _sem;
 	std::string _name_sem;

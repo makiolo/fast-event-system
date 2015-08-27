@@ -98,6 +98,7 @@ void PrintLastError()
 
 #endif
 
+#endif
+
 }
 
-#endif
