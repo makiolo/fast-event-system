@@ -16,7 +16,7 @@ public:
 	
 	~Context() { ; }
 	
-	void sleep(int milli)
+	inline void sleep(int milli)
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
 	}
@@ -55,7 +55,7 @@ protected:
 	Context& _context;
 };
 
-int main()
+int main2()
 {
 	{
 		//std::ios_base::sync_with_stdio(false);
@@ -111,24 +111,108 @@ int main()
 	return(0);
 }
 
-int main2()
+int main()
 {
+#if 0
 	{
-		asyncply::parallel(
+		auto job = asyncply::run(
 			[]() {
-				std::cout << "Hola mundo 11111" << std::endl;
+				std::cout << "Hello world" << std::endl;
+				return 2.0;
+			}
+		);
+		std::cout << "return: " << job->wait() << std::endl;
+	}
+#endif
+	{
+		asyncply::sequence(
+			[=](int data) {
+				std::cout << "step 1. initial data " << data << std::endl;
+				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
+				return 1.0;
 			},
-			[]() {
-				std::cout << "Hola mundo 22222" << std::endl;
+			[=](double data) -> std::string {
+				std::cout << "recibido " << data << std::endl;
+				std::cout << "step 2" << std::endl;
+				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
+				return "hello world";
 			},
-			[]() {
-				std::cout << "Hola mundo 3333333" << std::endl;
-			},
-			[]() {
-				std::cout << "Hola mundo 444444" << std::endl;
+			[=](const std::string& data) {
+				std::cout << "recibido " << data << std::endl;
+				std::cout << "step 3" << std::endl;
+				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
 			}
 		);
 	}
+#if 0
+	{
+		auto job1 = asyncply::run(
+			[=]() {
+				std::cout << "step 1" << std::endl;
+				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
+				return 1.0;
+			}
+		);
+		job1->then(
+			[=](double data){
+				//////////////////////////////	
+				auto job2 = asyncply::run(
+					[=]() -> std::string {
+						std::cout << "recibido " << data << std::endl;
+						std::cout << "step 2" << std::endl;
+						std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
+						return "hello world";
+					}
+				);
+				job2->then(
+					[=](const std::string& data) {
+						/////////////////////
+						auto job3 = asyncply::run(
+							[=]() {
+								std::cout << "recibido " << data << std::endl;
+								std::cout << "step 3" << std::endl;
+								std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
+							}
+						);
+						// no next
+						//  wait 3
+						job3->wait();
+						////////////////////
+					}
+				);
+				//  wait to 2 and 3
+				job2->wait();
+				/////////////////////////////
+			}
+		);
+		//  wait to 1, 2 and 3
+		job1->wait();
+	}
+	{
+		auto vjobs = asyncply::parallel(
+			[]() {
+				std::this_thread::sleep_for( std::chrono::milliseconds(2000) );
+				return 1.0;
+			}
+			,[]() {
+				std::this_thread::sleep_for( std::chrono::milliseconds(2000) );
+				return 2.0;
+			},
+			[]() {
+				std::this_thread::sleep_for( std::chrono::milliseconds(2000) );
+				return 3.0;
+			},
+			[]() {
+				std::this_thread::sleep_for( std::chrono::milliseconds(2000) );
+				return 4.0;
+			}
+		);
+		for(auto& job : vjobs)
+		{
+			std::cout << "end with value = " << job->wait() << std::endl;
+		}
+	}
+#endif
 	Poco::ThreadPool::defaultPool().joinAll();
 	return 0;
 }

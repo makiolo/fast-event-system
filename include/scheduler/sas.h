@@ -212,7 +212,8 @@ class task : public Poco::Runnable
 {
 public:
 	using func = std::function<R()>;
-	using then_type = std::function<void(const R&)>;
+	using return_type = typename std::remove_reference<R>::type;
+	using then_type = std::function<void(const return_type&)>;
 
 	task(const func& method)
 		: _method(method)
@@ -227,6 +228,11 @@ public:
 
 	task(const task& te) = delete;
 	task& operator = (const task& te) = delete;
+
+	R& wait()
+	{
+		return get_future()->get();
+	}
 	
 	std::shared_ptr< future<R> > get_future() const
 	{
@@ -273,6 +279,7 @@ class task<void> : public Poco::Runnable
 {
 public:
 	using func = std::function<void()>;
+	using return_type = void;
 	using then_type = std::function<void()>;
 	
 	task(const func& method)
@@ -288,6 +295,11 @@ public:
 
 	task(const task& te) = delete;
 	task& operator = (const task& te) = delete;
+
+	void wait()
+	{
+		get_future()->get();
+	}
 	
 	std::shared_ptr< future<void> > get_future() const
 	{
@@ -328,37 +340,74 @@ protected:
 	then_type _post_method;
 };
 
-template< typename Function>
+template <typename Function>
 shared_task<Function> run(Function&& f)
 {
-	/*
-	[&]() -> typename std::result_of<Function()>::type
-	{
-		return f();
-	}
-	*/
 	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >( std::bind( std::forward<Function>(f) ) );
 	Poco::ThreadPool::defaultPool().start( *job );
 	return job;
 }
 
-template<typename Function>
-void _parallel(Function&& f)
+template <typename Function>
+void _parallel(std::vector<shared_task<Function> >& vf, Function&& f)
 {
-	run(std::forward<Function>(f));
+	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
 }
 
-template<typename Function, typename ... Functions>
-void _parallel(Function&& f, Functions&& ... fs)
+template <typename Function, typename ... Functions>
+void _parallel(std::vector<shared_task<Function> >& vf, Function&& f, Functions&& ... fs)
 {
-	run(std::forward<Function>(f));
-	_parallel(std::forward<Functions>(fs)...);
+	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
 }
 
-template< typename ... Functions>
-void parallel(Functions&& ... fs)
+template <typename Function, typename ... Functions>
+std::vector<shared_task<Function> > parallel(Function&& f, Functions&& ... fs)
 {
-	_parallel(std::forward<Functions>(fs)...);
+	std::vector<shared_task<Function> > vf;
+	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
+	return vf;
+}
+
+template <typename Function>
+std::vector<shared_task<Function> > parallel(Function&& f)
+{
+	std::vector<shared_task<Function> > vf;
+	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	return vf;
+}
+
+template <typename Function>
+std::function<void(const typename shared_task<Function>::return_type& data)> 
+_sequence(Function&& f)
+{
+	// last execution
+	return [=](const typename shared_task<Function>::return_type& data) {
+		shared_task<Function> job = asyncply::run(
+			std::bind( std::forward<Function>(f), std::forward<typename shared_task<Function>::return_type >(data) )
+		);
+		job->wait();
+	};
+}
+
+template <typename Function, typename ... Functions>
+std::function<void(const typename shared_task<Function>::return_type& data)> 
+_sequence(Function&& f, Functions&& ... fs)
+{
+	return [=](const typename shared_task<Function>::return_type& data) {
+		shared_task<Function> job = asyncply::run(
+			std::bind( std::forward<Function>(f), std::forward<typename shared_task<Function>::return_type >(data) )
+		);
+		job->then(asyncply::_sequence( std::forward<Functions>(fs)... ));
+		job->wait();
+	};
+}
+
+template <typename ... Functions>
+void sequence(Functions&& ... fs)
+{
+	asyncply::_sequence([]() -> int {return 0;}, std::forward<Functions>(fs)...);
 }
 
 /*

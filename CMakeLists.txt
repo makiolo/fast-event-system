@@ -12,7 +12,7 @@ else()
 	#add_definitions(-fno-rtti)
 	#add_definitions(-fno-exceptions)
 	#add_definitions(-fpermissive)
-	#add_definitions(-g3)
+	add_definitions(-ggdb)
 	add_definitions(-Wall -Wextra -Werror)
 endif()
 
