@@ -26,7 +26,8 @@ namespace asyncply {
 template <typename R>
 class task;
 
-template< typename Function> using shared_task = std::shared_ptr< task<typename std::result_of<Function()>::type> >;
+template< typename Function> using task_t = task<typename std::result_of<Function()>::type>;
+template< typename Function> using shared_task = std::shared_ptr<task_t<Function> >;
 template< typename Function> shared_task<Function> run(Function&& f);
 
 template <typename R>
@@ -385,7 +386,7 @@ _sequence(Function&& f)
 	// last execution
 	return [=](const typename shared_task<Function>::return_type& data) {
 		shared_task<Function> job = asyncply::run(
-			std::bind( std::forward<Function>(f), std::forward<typename shared_task<Function>::return_type >(data) )
+			std::bind( std::forward<Function>(f), std::forward<typename task_t<Function>::return_type >(data) )
 		);
 		job->wait();
 	};
@@ -397,7 +398,7 @@ _sequence(Function&& f, Functions&& ... fs)
 {
 	return [=](const typename shared_task<Function>::return_type& data) {
 		shared_task<Function> job = asyncply::run(
-			std::bind( std::forward<Function>(f), std::forward<typename shared_task<Function>::return_type >(data) )
+			std::bind( std::forward<Function>(f), std::forward<typename task_t<Function>::return_type >(data) )
 		);
 		job->then(asyncply::_sequence( std::forward<Functions>(fs)... ));
 		job->wait();
