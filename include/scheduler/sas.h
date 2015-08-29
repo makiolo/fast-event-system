@@ -24,69 +24,76 @@
 namespace asyncply {
 
 template <typename R> class task;
+template< typename Function> using task_of_functor = task<typename std::result_of< Function() >::type>;
+template< typename Function> using shared_task = std::shared_ptr< task_of_functor<Function> >;
 
-template< typename Function> using task_of_functor = task<typename std::result_of<Function()>::type>;
-//template< typename Function> using task_of_functor = task<decltype(Function())>;
-template< typename Function> using shared_task = std::shared_ptr<task_of_functor<Function> >;
-template< typename Function> shared_task<Function> run(Function&& f);
-
-/*
-- Elemento 1
-- Elemento 2
-- Elemento 3
- */
 template <typename R>
 class future
 {
 public:
 	future(Poco::Semaphore& mutex)
-		: _mutex(mutex)
-		, _ready(false)
+		: _semaphore(mutex)
+		, _ready(0)
 	{
 		
 	}
 
-	~future()
+	~future() noexcept
 	{
 		
 	}
 	
-	R& get()
+	const R& get() const
 	{
 		Poco::Mutex::ScopedLock lock(_zone);
-		if (!_ready)
+		while (_ready <= 0)
 		{
-			_mutex.wait();
-			_ready = true;
+			_semaphore.wait();
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
 			}
+			++_ready;
+		}
+		return _value;
+	}
+
+	const R& get_post() const
+	{
+		Poco::Mutex::ScopedLock lock(_zone);
+		while (_ready <= 1)
+		{
+			_semaphore.wait();
+			if (_exception)
+			{
+				std::rethrow_exception(_exception);
+			}
+			++_ready;
 		}
 		return _value;
 	}
 	
-	void set_value(const R& value)
+	void set_value(const R& value) noexcept
 	{
 		_value = value;
 	}
 
-	void set_value(R&& value)
+	void set_value(R&& value) noexcept
 	{
 		_value = std::forward<R>(value);
 	}
 
-	void set_exception(std::exception_ptr p)
+	void set_exception(std::exception_ptr p) noexcept
 	{
 		_exception = p;
 	}
 
 protected:
-	Poco::Semaphore& _mutex;
-	Poco::Mutex _zone;
+	mutable Poco::Mutex _zone;
+	Poco::Semaphore& _semaphore;
 	R _value;
 	std::exception_ptr _exception;
-	std::atomic<bool> _ready;
+	mutable std::atomic<int> _ready;
 };
 
 template <>
@@ -94,41 +101,55 @@ class future<void>
 {
 public:
 	future(Poco::Semaphore& mutex)
-		: _mutex(mutex)
-		, _ready(false)
+		: _semaphore(mutex)
+		, _ready(0)
 	{
 		
 	}
 
-	~future()
+	~future() noexcept
 	{
 
 	}
 	
-	void get()
+	void get() const
 	{
 		Poco::Mutex::ScopedLock lock(_zone);
-		if (!_ready)
+		while (_ready <= 0)
 		{
-			_mutex.wait();
-			_ready = true;
+			_semaphore.wait();
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
 			}
+			++_ready;
+		}
+	}
+
+	void get_post() const
+	{
+		Poco::Mutex::ScopedLock lock(_zone);
+		while (_ready <= 1)
+		{
+			_semaphore.wait();
+			if (_exception)
+			{
+				std::rethrow_exception(_exception);
+			}
+			++_ready;
 		}
 	}
 	
-	void set_exception(std::exception_ptr p)
+	void set_exception(std::exception_ptr p) noexcept
 	{
 		_exception = p;
 	}
 	
 protected:
-	Poco::Semaphore& _mutex;
-	Poco::Mutex _zone;
+	mutable Poco::Mutex _zone;
+	Poco::Semaphore& _semaphore;
 	std::exception_ptr _exception;
-	std::atomic<bool> _ready;
+	mutable std::atomic<int> _ready;
 };
 
 template <typename R>
@@ -136,13 +157,13 @@ class promise
 {
 public:
 	promise()
-		: _future( std::make_shared<future<R> >(_mutex) )
-		, _mutex(0, 1)
+		: _future( std::make_shared<future<R> >(_semaphore) )
+		, _semaphore(0, 2)
 	{
 		
 	}
 	
-	~promise()
+	~promise() noexcept
 	{
 		
 	}
@@ -152,29 +173,29 @@ public:
 		return _future;
 	}
 
-	void set_value(const R& value)
+	void set_value(const R& value) noexcept
 	{
 		_future->set_value(value);
 	}
 
-	void set_value(R&& value)
+	void set_value(R&& value) noexcept
 	{
 		_future->set_value(std::forward<R>(value));
 	}
 
-	void set_exception(std::exception_ptr p)
+	void set_exception(std::exception_ptr p) noexcept
 	{
 		_future->set_exception(p);
 	}
 
-	void signal()
+	void signal() noexcept
 	{
-		_mutex.set();
+		_semaphore.set();
 	}
 
 protected:
 	std::shared_ptr< future<R> > _future;
-	Poco::Semaphore _mutex;
+	Poco::Semaphore _semaphore;
 };
 
 template <>
@@ -182,13 +203,13 @@ class promise<void>
 {
 public:
 	promise()
-		: _future( std::make_shared<future<void> >( _mutex ) )
-		, _mutex(0, 1)
+		: _future( std::make_shared<future<void> >( _semaphore ) )
+		, _semaphore(0, 2)
 	{
 		
 	}
 	
-	~promise()
+	~promise() noexcept
 	{
 		
 	}
@@ -198,19 +219,19 @@ public:
 		return _future;
 	}
 	
-	void set_exception(std::exception_ptr p)
+	void set_exception(std::exception_ptr p) noexcept
 	{
 		_future->set_exception(p);
 	}
 	
-	void signal()
+	void signal() noexcept
 	{
-		_mutex.set();
+		_semaphore.set();
 	}
 	
 protected:
 	std::shared_ptr< future<void> > _future;
-	Poco::Semaphore _mutex;
+	Poco::Semaphore _semaphore;
 };
 
 template <typename R>
@@ -218,11 +239,10 @@ class task : public Poco::Runnable
 {
 public:
 	using func = std::function<R()>;
-	using return_type = typename std::remove_reference<R>::type;
-	using then_type = std::function<void(const return_type&)>;
+	using return_type = R;
+	using post_type = std::function<return_type(const return_type&)>;
 
-	task(const func& method)
-		: _method(method)
+	task(const func& method) : _method( method )
 	{
 		
 	}
@@ -232,12 +252,17 @@ public:
 		
 	}
 
-	task(const task& te) = delete;
-	task& operator = (const task& te) = delete;
+	task(const task&) = delete;
+	task& operator = (const task&) = delete;
 
-	R& wait()
+	const R& get() const
 	{
 		return get_future()->get();
+	}
+
+	const R& get_post() const
+	{
+		return get_future()->get_post();
 	}
 	
 	std::shared_ptr< future<R> > get_future() const
@@ -247,14 +272,27 @@ public:
 
 	void run() override
 	{
+		R r;
 		{
 			try {
-				auto v = _method();
-				_result.set_value(v);
-				if (_post_method)
-				{
-					_post_method(v);
+				r = _method();
+				_result.set_value(r);
+				// riesgo de setear el post demasiado tarde
+			}
+			catch (...) {
+				try {
+					_result.set_exception(std::current_exception());
 				}
+				catch (...) { ; }
+			}
+		}
+		_result.signal();
+
+		if (_post_method)
+		{
+			try {
+				r = _post_method(r);
+				_result.set_value(r);
 			}
 			catch (...) {
 				try {
@@ -266,7 +304,7 @@ public:
 		_result.signal();
 	}
 	
-	void then(const then_type& post_method)
+	void post(const post_type& post_method) noexcept
 	{
 		_post_method = post_method;
 	}
@@ -277,7 +315,7 @@ protected:
 protected:
 	func _method;
 	promise<R> _result;
-	then_type _post_method;
+	post_type _post_method;
 };
 
 template <>
@@ -286,15 +324,14 @@ class task<void> : public Poco::Runnable
 public:
 	using func = std::function<void()>;
 	using return_type = void;
-	using then_type = std::function<void()>;
+	using post_type = std::function<return_type()>;
 	
-	task(const func& method)
-		: _method(method)
+	task(const func& method) : _method( method )
 	{
 		
 	}
 	
-	~task()
+	virtual ~task() noexcept
 	{
 		
 	}
@@ -302,9 +339,14 @@ public:
 	task(const task& te) = delete;
 	task& operator = (const task& te) = delete;
 
-	void wait()
+	void get() const
 	{
 		get_future()->get();
+	}
+
+	void get_post() const
+	{
+		get_future()->get_post();
 	}
 	
 	std::shared_ptr< future<void> > get_future() const
@@ -316,11 +358,21 @@ public:
 	{
 		{
 			try {
-				_method();
-				if (_post_method)
-				{
-					_post_method();
+				 _method();
+			}
+			catch (...) {
+				try {
+					_result.set_exception(std::current_exception());
 				}
+				catch (...) { ; }
+			}
+		}
+		_result.signal();
+
+		if (_post_method)
+		{
+			try {
+				_post_method();
 			}
 			catch (...) {
 				try {
@@ -332,7 +384,7 @@ public:
 		_result.signal();
 	}
 
-	void then(const then_type& post_method)
+	void post(const post_type& post_method) noexcept
 	{
 		_post_method = post_method;
 	}
@@ -343,7 +395,7 @@ protected:
 protected:
 	func _method;
 	promise<void> _result;
-	then_type _post_method;
+	post_type _post_method;
 };
 
 /////////////////////////////////////// RUN //////////////////////////////////
@@ -351,20 +403,10 @@ protected:
 template <typename Function>
 shared_task<Function> run(Function&& f)
 {
-	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >( std::bind( std::forward<Function>(f) ) );
+	auto job = std::make_shared< task_of_functor<Function> >( std::forward<Function>(f) );
 	Poco::ThreadPool::defaultPool().start( *job );
 	return job;
 }
-
-/*
-template <typename Function, typename ... Args>
-shared_task<Function> run(Function&& f, Args&& ... args)
-{
-	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >( std::bind( std::forward<Function>(f), std::forward<Args>(args)... ) );
-	Poco::ThreadPool::defaultPool().start( *job );
-	return job;
-}
-*/
 
 ////////////////////////// PARALLEL ///////////////////////////////////////////
 
@@ -387,7 +429,7 @@ std::vector<shared_task<Function> > parallel(Function&& f, Functions&& ... fs)
 	std::vector<shared_task<Function> > vf;
 	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
 	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
-	return vf;
+	return std::move(vf);
 }
 
 template <typename Function>
@@ -395,48 +437,44 @@ std::vector<shared_task<Function> > parallel(Function&& f)
 {
 	std::vector<shared_task<Function> > vf;
 	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
-	return vf;
+	return std::move(vf);
 }
 
-/////////////////// SEQUENCE ////////////////////////////////////////
+/////////aaaaaa////////// SEQUENCE ////////////////////////////////////////
 
-template <typename FunctionPrev, typename Function>
-typename task_of_functor<FunctionPrev>::then_type _sequence(FunctionPrev&&, Function&& f)
+template <typename Data, typename Function>
+std::function<Data(const Data&)> _sequence(Function&& f)
 {
-	return [&f](const typename task_of_functor<FunctionPrev>::return_type& data) {
-		auto job = asyncply::run( std::bind( std::forward<Function>(f), std::ref(data) ) );
-		job->wait();
+	return [&f](const Data& data) {
+		auto job = asyncply::run( [&f, &data]() {
+					return f(data);
+				} );
+		return job->get();
 	};
 }
 
-template <typename FunctionPrev, typename Function, typename ... Functions>
-typename task_of_functor<FunctionPrev>::then_type _sequence(FunctionPrev&&, Function&& f, Functions&& ... fs)
+template <typename Data, typename Function, typename ... Functions>
+std::function<Data(const Data&)> _sequence(Function&& f, Functions&& ... fs)
 {
-	/*
-    using first_t = typename first<Functions...>::type;
-    using last_t = typename last<Functions...>::type;
-
-	std::cout << typeid(Function).name() << '\n';
-	std::cout << typeid(first_t).name() << '\n';
-	*/
-	
-	return [&f, &fs...](const typename task_of_functor<FunctionPrev>::return_type& data) {
-		auto job = asyncply::run( std::bind( std::forward<Function>(f), std::ref(data) ) );
-		job->then(asyncply::_sequence<Function, first_t, Functions...>( std::forward<Function>(f), std::forward<Functions>(fs)... ));
-		job->wait();
+	return [&f, &fs...](const Data& data) {
+		auto job = asyncply::run([&f, &data]() {
+					return f(data);
+				});
+		job->post(
+				[&fs...](const Data& d){
+					return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(d);
+				});
+		return job->get_post();
 	};
 }
 
-template <typename ... Functions>
-void sequence(Functions&& ... fs)
+template <typename Data, typename ... Functions>
+const Data& sequence(const Data& data, Functions&& ... fs)
 {
-	auto job = asyncply::run(
-		[&fs...]() {
-			auto seq = asyncply::_sequence(std::forward<Functions>(fs)...);
-			seq(0);
-		} 
-	);
-	job->wait();
+	auto job = asyncply::run([&data, &fs...] () {
+				return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(data);
+			});
+	return job->get();
 }
 
 /*
@@ -477,7 +515,7 @@ CompositeLeaf repeat(int n)
 				yield();
 				ret(100);
 			}
-		).then(
+		).post(
 			[&](int finish_result) {
 				
 			}
@@ -516,7 +554,7 @@ public:
 			_job->get_future()->get();
 		}
 		_job = asyncply::run( std::bind(cmd, std::ref(self)) );
-		_job->then(
+		_job->post(
 			[this]()
 			{
 				this->busy = false;
@@ -615,7 +653,7 @@ public:
 				}
 			}
 		);
-		_job->then(
+		_job->post(
 			[this]()
 			{
 				this->busy = false;

@@ -131,4 +131,5 @@ CREATE_TEST("test_async_fast_autoconnect" "fast-event-system")
 CREATE_TEST("test_async_delay" "fast-event-system")
 CREATE_TEST("test_leader_follower" "fast-event-system")
 CREATE_TEST("test_bench" "fast-event-system")
+CREATE_TEST("test_nan" "fast-event-system")
 
