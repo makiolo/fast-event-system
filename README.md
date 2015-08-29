@@ -33,10 +33,12 @@ You will need cmake (and a compiler).
 
 ```
 $ git clone https://github.com/makiolo/fast-event-system.git
+$ cd fast-event-system
 $ mkdir build
 $ cd build
 $ cmake ..
 $ make (in unix) or compile generated solution (in windows)
+$ ctest .. (for execute unittests)
 ```
 
 ### Example fast-event-system:
