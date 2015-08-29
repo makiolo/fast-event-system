@@ -2,6 +2,7 @@
 // 15-04-2015
 
 #include <thread>
+#include <memory>
 #include <scheduler/sas.h>
 #include <animator/interpolation.h>
 #include <Poco/Mutex.h>
@@ -113,21 +114,27 @@ int main2()
 
 int main()
 {
-#if 0
+#if 1
 	{
-		auto job = asyncply::run(
-			[]() {
-				std::cout << "Hello world" << std::endl;
+
+		struct functor_raii
+		{
+			double operator()()
+			{
+				std::cout << "hello world" << std::endl;
 				return 2.0;
 			}
-		);
+		};
+
+		auto job = asyncply::run( functor_raii() );
 		std::cout << "return: " << job->wait() << std::endl;
 	}
 #endif
+#if 0
 	{
 		asyncply::sequence(
-			[=](int data) {
-				std::cout << "step 1. initial data " << data << std::endl;
+			[=](int ) {
+				std::cout << "step 1." << std::endl;
 				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
 				return 1.0;
 			},
@@ -144,7 +151,8 @@ int main()
 			}
 		);
 	}
-#if 0
+#endif
+#if 1
 	{
 		auto job1 = asyncply::run(
 			[=]() {

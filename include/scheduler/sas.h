@@ -349,6 +349,14 @@ shared_task<Function> run(Function&& f)
 	return job;
 }
 
+template <typename Function, typename ... Args>
+shared_task<Function> run(Function&& f, Args&& ... args)
+{
+	auto job = std::make_shared<task< typename std::result_of<Function()>::type > >( std::bind( std::forward<Function>(f), std::forward<Args>(args)... ) );
+	Poco::ThreadPool::defaultPool().start( *job );
+	return job;
+}
+
 template <typename Function>
 void _parallel(std::vector<shared_task<Function> >& vf, Function&& f)
 {
@@ -379,28 +387,28 @@ std::vector<shared_task<Function> > parallel(Function&& f)
 	return vf;
 }
 
-template <typename Function>
-std::function<void(const typename task_t<Function>::return_type& data)> 
+template <typename FunctionPrev, typename Function>
+std::function<void(const typename task_t<FunctionPrev>::return_type& data)> 
 _sequence(Function&& f)
 {
 	// last execution
-	return [=](const typename task_t<Function>::return_type& data) {
+	return [=](const typename task_t<FunctionPrev>::return_type& data) {
 		shared_task<Function> job = asyncply::run(
-			std::bind( std::forward<Function>(f), std::forward<typename task_t<Function>::return_type >(data) )
+			std::bind( std::forward<Function>(f) )
 		);
 		job->wait();
 	};
 }
 
-template <typename Function, typename ... Functions>
-std::function<void(const typename task_t<Function>::return_type& data)> 
+template <typename FunctionPrev, typename Function, typename ... Functions>
+std::function<void(const typename task_t<FunctionPrev>::return_type& data)> 
 _sequence(Function&& f, Functions&& ... fs)
 {
-	return [=](const typename task_t<Function>::return_type& data) {
+	return [=](const typename task_t<FunctionPrev>::return_type& data, Functions&& ... ffs) {
 		shared_task<Function> job = asyncply::run(
-			std::bind( std::forward<Function>(f), std::forward<typename task_t<Function>::return_type >(data) )
+			std::bind( std::forward<Function>(f) )
 		);
-		job->then(asyncply::_sequence( std::forward<Functions>(fs)... ));
+		job->then(asyncply::_sequence( std::forward<Function>(f), std::forward<Functions>(ffs)... ));
 		job->wait();
 	};
 }
@@ -408,14 +416,21 @@ _sequence(Function&& f, Functions&& ... fs)
 template <typename ... Functions>
 void sequence(Functions&& ... fs)
 {
-	struct dummy_functor
-	{
-		int operator()()
-		{
-			return 0;
-		}
-	};
-	asyncply::_sequence(dummy_functor(), std::forward<Functions>(fs)...);
+	auto job = asyncply::run(
+		[](Functions&& ... ffs) {
+			struct dummy_functor
+			{
+				int operator()()
+				{
+					return 0;
+				}
+			};
+			auto seq = asyncply::_sequence(dummy_functor(), std::forward<Functions>(ffs)...);
+			seq(0, std::forward<Functions>(ffs)... );
+		}, 
+		std::forward<Functions>(fs)...
+	);
+	job->wait();
 }
 
 /*
