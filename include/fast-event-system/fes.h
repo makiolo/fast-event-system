@@ -4,6 +4,7 @@
 
 #ifndef _FAST_EVENT_SYSTEM_
 #define _FAST_EVENT_SYSTEM_
+
 #include <functional>
 #include <string>
 #include <memory>

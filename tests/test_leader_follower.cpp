@@ -114,7 +114,7 @@ int main2()
 
 int main()
 {
-#if 1
+#if 0
 	{
 
 		struct functor_raii
@@ -130,11 +130,15 @@ int main()
 		std::cout << "return: " << job->wait() << std::endl;
 	}
 #endif
-#if 0
+#if 1
 	{
 		asyncply::sequence(
-			[=](int ) {
-				std::cout << "step 1." << std::endl;
+			[=]() -> int {
+				std::cout << "main" << std::endl;
+				return 1;
+			},
+			[=](int data) -> double {
+				std::cout << "step 1, initial data = " << data << std::endl;
 				std::this_thread::sleep_for( std::chrono::milliseconds(1000) );
 				return 1.0;
 			},
@@ -152,7 +156,7 @@ int main()
 		);
 	}
 #endif
-#if 1
+#if 0
 	{
 		auto job1 = asyncply::run(
 			[=]() {
