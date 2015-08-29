@@ -392,7 +392,7 @@ std::function<void(const typename task_t<FunctionPrev>::return_type& data)>
 _sequence(Function&& f)
 {
 	// last execution
-	return [=](const typename task_t<FunctionPrev>::return_type& data) {
+	return [&f](const typename task_t<FunctionPrev>::return_type& data) {
 		shared_task<Function> job = asyncply::run(
 			std::bind( std::forward<Function>(f) )
 		);
@@ -402,9 +402,9 @@ _sequence(Function&& f)
 
 template <typename FunctionPrev, typename Function, typename ... Functions>
 std::function<void(const typename task_t<FunctionPrev>::return_type& data)> 
-_sequence(Function&& f, Functions&& ... fs)
+_sequence(Function&& f, Functions&& ...)
 {
-	return [=](const typename task_t<FunctionPrev>::return_type& data, Functions&& ... ffs) {
+	return [&f](const typename task_t<FunctionPrev>::return_type& data, Functions&& ... ffs) {
 		shared_task<Function> job = asyncply::run(
 			std::bind( std::forward<Function>(f) )
 		);
