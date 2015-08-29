@@ -2,6 +2,8 @@ PROJECT(FAST-EVENT-SYSTEM CXX)
 cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
+set(CMAKE_BUILD_TYPE Release)
+
 add_subdirectory(verypoco)
 
 if(WIN32)

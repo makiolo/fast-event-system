@@ -40,7 +40,7 @@ public:
 
 	~future() noexcept
 	{
-		
+
 	}
 	
 	const R& get() const
@@ -211,7 +211,7 @@ public:
 	
 	~promise() noexcept
 	{
-		
+
 	}
 	
 	std::shared_ptr< future<void> > get_future() const
@@ -247,9 +247,9 @@ public:
 		
 	}
 	
-	~task()
+	virtual ~task()
 	{
-		
+		get_post();
 	}
 
 	task(const task&) = delete;
@@ -333,7 +333,7 @@ public:
 	
 	virtual ~task() noexcept
 	{
-		
+		get_post();
 	}
 
 	task(const task& te) = delete;
@@ -413,13 +413,13 @@ shared_task<Function> run(Function&& f)
 template <typename Function>
 void _parallel(std::vector<shared_task<Function> >& vf, Function&& f)
 {
-	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	vf.push_back( asyncply::run(std::forward<Function>(f)) );
 }
 
 template <typename Function, typename ... Functions>
 void _parallel(std::vector<shared_task<Function> >& vf, Function&& f, Functions&& ... fs)
 {
-	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	vf.push_back( asyncply::run(std::forward<Function>(f)) );
 	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
 }
 
@@ -427,7 +427,7 @@ template <typename Function, typename ... Functions>
 std::vector<shared_task<Function> > parallel(Function&& f, Functions&& ... fs)
 {
 	std::vector<shared_task<Function> > vf;
-	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	vf.push_back( asyncply::run(std::forward<Function>(f)) );
 	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
 	return std::move(vf);
 }
@@ -436,7 +436,7 @@ template <typename Function>
 std::vector<shared_task<Function> > parallel(Function&& f)
 {
 	std::vector<shared_task<Function> > vf;
-	vf.emplace_back( asyncply::run(std::forward<Function>(f)) );
+	vf.push_back( asyncply::run(std::forward<Function>(f)) );
 	return std::move(vf);
 }
 

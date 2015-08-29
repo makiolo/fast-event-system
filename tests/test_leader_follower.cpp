@@ -56,6 +56,17 @@ protected:
 	Context& _context;
 };
 
+class test_exception : public std::exception
+{
+public:
+	test_exception(const std::string m = "test fail") : msg(m) { ; }
+	virtual ~test_exception(void) { ; }
+	const char* what() const noexcept
+	{ return msg.c_str(); }
+private:
+	std::string msg;
+};
+
 int main2()
 {
 	{
@@ -163,104 +174,175 @@ int main()
 		std::cout << "resul final " << resul << std::endl;
 	}
 #endif
-#if 1
+#if 0
+	double total = 0.0;
+	for(int i=0; i<100; ++i)
 	{
-		auto vjobs = asyncply::parallel(
-			[]() {
-				return asyncply::sequence(1.0, // initial value in subprocess
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					}
-				);
+		total = asyncply::sequence(total, // initial value in subprocess
+			[](double data) {
+				return data + 1.0;
 			},
-			[]() {
-				return asyncply::sequence(1.0, // initial value in subprocess
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					}
-				);
+			[](double data) {
+				return data + 1.0;
 			},
-			[]() {
-				return asyncply::sequence(1.0, // initial value in subprocess
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					}
-				);
+			[](double data) {
+				return data + 1.0;
 			},
-			[]() {
-				return asyncply::sequence(1.0, // initial value in subprocess
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					}
-				);
+			[](double data) {
+				return data + 1.0;
 			},
-			[]() {
-				return asyncply::sequence(1.0, // initial value in subprocess
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					},
-					[](double data) {
-						return data + 1.0;
-					}
-				);
+			[](double data) {
+				return data + 1.0;
 			}
 		);
-		double aggregation = 0.0;
-		for(auto& job : vjobs)
-		{
-			try
-			{
-				aggregation += job->get_post();
-			}
-			catch(std::exception& e)
-			{
-				std::cout << "exception: " << e.what() << std::endl;
-			}
-		}
-		std::cout << "total = " << aggregation << std::endl;
 	}
+	std::cout << "total = " << total << std::endl;
+#endif
+#if 1
+	std::atomic<int> count;
+	count = 0.0;
+	{
+		fes::async_fast<int, std::string> c;
+		auto vjobs = asyncply::parallel(
+			[&c](){
+				for(int i=0; i<3;++i)
+				{
+					// productor
+					c(i, "saludo de t1");
+				}
+			},
+			[&c](){
+				for(int i=0; i<3;++i)
+				{
+					// productor
+					c(i, "saludo de t2");
+				}
+			},
+			[&c, &count]() {
+				c.connect([&count](int iter, const std::string& data){
+					std::cout << "recibido en t3 " << data << ", iter " << iter << std::endl;
+					++count;
+				});
+			},
+			[&c, &count]() {
+				c.connect([&count](int iter, const std::string& data){
+					std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
+					++count;
+				});
+			}
+		);
+		c.update_while( fes::deltatime(1000) );
+	}
+	std::cout << "total = " << count << std::endl;
+	if(count != 12)
+	{
+		throw test_exception();
+	}
+#endif
+#if 1
+
+	auto vjobs = asyncply::parallel(
+		[]() {
+			double initial = 1.0;
+			return asyncply::sequence(initial, // initial value in subprocess
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				}
+			);
+		},
+		[]() {
+			double initial = 1.0;
+			return asyncply::sequence(initial, // initial value in subprocess
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				}
+			);
+		},
+		[]() {
+			double initial = 1.0;
+			return asyncply::sequence(initial, // initial value in subprocess
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				}
+			);
+		},
+		[]() {
+			double initial = 1.0;
+			return asyncply::sequence(initial, // initial value in subprocess
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				}
+			);
+		},
+		[]() {
+			double initial = 1.0;
+			return asyncply::sequence(initial, // initial value in subprocess
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				},
+				[](double data) {
+					return data + 1.0;
+				}
+			);
+		}
+	);
+	double aggregation = 0.0;
+	for(auto& job : vjobs)
+	{
+		try
+		{
+			double partial = job->get();
+			std::cout << "partial " << partial << std::endl;
+			aggregation += partial;
+		}
+		catch(std::exception& e)
+		{
+			std::cout << "exception: " << e.what() << std::endl;
+		}
+	}
+	std::cout << "total = " << aggregation << std::endl;
 #endif
 	Poco::ThreadPool::defaultPool().joinAll();
 	return 0;

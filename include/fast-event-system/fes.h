@@ -29,7 +29,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <concurrentqueue/concurrentqueue.h>
+#include <concurrentqueue/blockingconcurrentqueue.h>
 #pragma GCC diagnostic pop
 
 #include <fast-event-system/common.h>
@@ -466,7 +466,7 @@ template <typename ... Args>
 class async_fast
 {
 public:
-	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...> >;
+	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...> >;
 	
 	async_fast() = default;
 	~async_fast() = default;
@@ -475,16 +475,25 @@ public:
 	
 	void operator()(const Args& ... data)
 	{
+		++_size_exact;
 		_queue.enqueue(std::make_tuple(data...));
 	}
 	
 	void update(deltatime tmax = fes::deltatime(1))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
-		bool has_next = true;
-		while (!empty() && has_next && (high_resolution_clock() <= timeout))
+		while (!empty() && (high_resolution_clock() <= timeout))
 		{
-			has_next = _dispatch_one();
+			_dispatch_one();
+		}
+	}
+
+	void update_while(deltatime time)
+	{
+		auto mark = fes::high_resolution_clock() + time;
+		while(fes::high_resolution_clock() < mark)
+		{
+			update();
 		}
 	}
 	
@@ -492,19 +501,20 @@ public:
 	{
 		if (!empty())
 		{
-			return _dispatch_one();
+			_dispatch_one();
+			return true;
 		}
 		return false;
 	}
 
 	inline bool empty() const
 	{
-		return (_queue.size_approx() <= 0);
+		return (_size_exact <= 0);
 	}
 
 	inline size_t size() const
 	{
-		return _queue.size_approx();
+		return _size_exact;
 	}
 
 	template <typename T>
@@ -546,20 +556,20 @@ protected:
 		_output(std::get<S>(top)...);
 	}
 
-	bool _dispatch_one()
+	void _dispatch_one()
 	{
 		std::tuple<Args...> t;
 		if (_queue.try_dequeue(t))
 		{
+			--_size_exact;
 			dispatch_one(t, gens < sizeof...(Args) > {});
-			return true;
 		}
-		return false;
 	}
 
 protected:
 	sync<Args...> _output;
 	container_type _queue;
+	std::atomic<int> _size_exact;
 };
 
 } // end namespace
