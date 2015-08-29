@@ -30,6 +30,11 @@ template< typename Function> using task_t = task<typename std::result_of<Functio
 template< typename Function> using shared_task = std::shared_ptr<task_t<Function> >;
 template< typename Function> shared_task<Function> run(Function&& f);
 
+/*
+- Elemento 1
+- Elemento 2
+- Elemento 3
+ */
 template <typename R>
 class future
 {
@@ -388,11 +393,11 @@ std::vector<shared_task<Function> > parallel(Function&& f)
 }
 
 template <typename FunctionPrev, typename Function>
-std::function<void(const typename task_t<FunctionPrev>::return_type& data)> 
+std::function<void(const typename task_t<FunctionPrev>::return_type&)> 
 _sequence(Function&& f)
 {
 	// last execution
-	return [&f](const typename task_t<FunctionPrev>::return_type& data) {
+	return [&f](const typename task_t<FunctionPrev>::return_type&) {
 		shared_task<Function> job = asyncply::run(
 			std::bind( std::forward<Function>(f) )
 		);
@@ -401,10 +406,10 @@ _sequence(Function&& f)
 }
 
 template <typename FunctionPrev, typename Function, typename ... Functions>
-std::function<void(const typename task_t<FunctionPrev>::return_type& data)> 
+std::function<void(const typename task_t<FunctionPrev>::return_type&)> 
 _sequence(Function&& f, Functions&& ...)
 {
-	return [&f](const typename task_t<FunctionPrev>::return_type& data, Functions&& ... ffs) {
+	return [&f](const typename task_t<FunctionPrev>::return_type&, Functions&& ... ffs) {
 		shared_task<Function> job = asyncply::run(
 			std::bind( std::forward<Function>(f) )
 		);
