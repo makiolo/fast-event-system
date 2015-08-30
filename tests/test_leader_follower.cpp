@@ -202,35 +202,37 @@ int main()
 	std::atomic<int> count;
 	count = 0.0;
 	{
-		fes::async_fast<int, std::string> c;
-		auto vjobs = asyncply::parallel(
-			[&c](){
-				for(int i=0; i<3;++i)
-				{
-					// productor
-					c(i, "saludo de t1");
+		fes::async_fast<int, std::string> c(1000);
+		{
+			auto vjobs = asyncply::parallel(
+				[&c](){
+					for(int i=0; i<3;++i)
+					{
+						// productor
+						c(i, "saludo de t1");
+					}
+				},
+				[&c](){
+					for(int i=0; i<3;++i)
+					{
+						// productor
+						c(i, "saludo de t2");
+					}
+				},
+				[&c, &count]() {
+					c.connect([&count](int iter, const std::string& data){
+						std::cout << "recibido en t3 " << data << ", iter " << iter << std::endl;
+						++count;
+					});
+				},
+				[&c, &count]() {
+					c.connect([&count](int iter, const std::string& data){
+						std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
+						++count;
+					});
 				}
-			},
-			[&c](){
-				for(int i=0; i<3;++i)
-				{
-					// productor
-					c(i, "saludo de t2");
-				}
-			},
-			[&c, &count]() {
-				c.connect([&count](int iter, const std::string& data){
-					std::cout << "recibido en t3 " << data << ", iter " << iter << std::endl;
-					++count;
-				});
-			},
-			[&c, &count]() {
-				c.connect([&count](int iter, const std::string& data){
-					std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
-					++count;
-				});
-			}
-		);
+			);
+		}
 		c.update_while( fes::deltatime(1000) );
 	}
 	std::cout << "total = " << count << std::endl;
@@ -241,7 +243,7 @@ int main()
 #endif
 #if 1
 
-	auto vjobs = asyncply::parallel(
+	std::vector<std::shared_ptr<asyncply::task<double> > > vjobs = asyncply::parallel(
 		[]() {
 			double initial = 1.0;
 			return asyncply::sequence(initial, // initial value in subprocess

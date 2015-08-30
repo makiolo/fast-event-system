@@ -29,7 +29,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <concurrentqueue/blockingconcurrentqueue.h>
+#include <concurrentqueue/concurrentqueue.h>
 #pragma GCC diagnostic pop
 
 #include <fast-event-system/common.h>
@@ -466,9 +466,14 @@ template <typename ... Args>
 class async_fast
 {
 public:
-	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...> >;
+	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...> >;
 	
 	async_fast() = default;
+	async_fast(size_t initial_allocation)
+		: _queue(initial_allocation)
+	{
+		
+	}
 	~async_fast() = default;
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
