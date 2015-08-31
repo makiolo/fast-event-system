@@ -77,7 +77,7 @@ int main2()
 		
 		/*
 		Order expected:
-
+		
 		 Person A: "1. What are you doing now?"
 		 Person B: "2. I'm playing pool with my friends at a pool hall."
 		 Person A: "3. I didn't know you play pool.  Are you having fun?"
@@ -127,7 +127,8 @@ int main()
 {
 	Poco::ThreadPool::defaultPool().addCapacity(32);
 
-#if 0
+	{
+#if 1
 	{
 
 		struct functor_raii
@@ -143,7 +144,7 @@ int main()
 		std::cout << "return: " << job->get() << std::endl;
 	}
 #endif
-#if 0
+#if 1
 	{
 		int resul = asyncply::sequence(0,
 			[](int data) {
@@ -174,7 +175,7 @@ int main()
 		std::cout << "resul final " << resul << std::endl;
 	}
 #endif
-#if 0
+#if 1
 	double total = 0.0;
 	for(int i=0; i<100; ++i)
 	{
@@ -200,40 +201,47 @@ int main()
 #endif
 #if 1
 	std::atomic<int> count;
-	count = 0.0;
+	count = 0;
 	{
 		fes::async_fast<int, std::string> c(1000);
+
 		{
-			auto vjobs = asyncply::parallel(
-				[&c](){
-					for(int i=0; i<3;++i)
+			std::vector<std::shared_ptr<asyncply::task<void> > > vjobs;
+			vjobs.reserve(4);
+			asyncply::parallel(vjobs, 
+					[&]()
 					{
-						// productor
-						c(i, "saludo de t1");
-					}
-				},
-				[&c](){
-					for(int i=0; i<3;++i)
+						for (int i = 0; i < 3; ++i)
+						{
+							// productor
+							c(i, "saludo de t1");
+						}
+					},
+					[&]()
 					{
-						// productor
-						c(i, "saludo de t2");
+						for (int i = 0; i < 3; ++i)
+						{
+							// productor
+							c(i, "saludo de t2");
+						}
+					},
+					[&]()
+					{
+						c.connect([&](int iter, const std::string& data) {
+							std::cout << "recibido en t3 " << data << ", iter " << iter << std::endl;
+							++count;
+						});
+					},
+					[&]() 
+					{
+						c.connect([&](int iter, const std::string& data) {
+							std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
+							++count;
+						});
 					}
-				},
-				[&c, &count]() {
-					c.connect([&count](int iter, const std::string& data){
-						std::cout << "recibido en t3 " << data << ", iter " << iter << std::endl;
-						++count;
-					});
-				},
-				[&c, &count]() {
-					c.connect([&count](int iter, const std::string& data){
-						std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
-						++count;
-					});
-				}
 			);
 		}
-		c.update_while( fes::deltatime(1000) );
+		c.update_while(fes::deltatime(2000));
 	}
 	std::cout << "total = " << count << std::endl;
 	if(count != 12)
@@ -243,9 +251,11 @@ int main()
 #endif
 #if 1
 
-	std::vector<std::shared_ptr<asyncply::task<double> > > vjobs = asyncply::parallel(
-		[]() {
-			double initial = 1.0;
+	double initial = 1.0;
+	std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
+	vjobs.reserve(5);
+	asyncply::parallel(vjobs, 
+		[=]() {
 			return asyncply::sequence(initial, // initial value in subprocess
 				[](double data) {
 					return data + 1.0;
@@ -261,8 +271,7 @@ int main()
 				}
 			);
 		},
-		[]() {
-			double initial = 1.0;
+		[=]() {
 			return asyncply::sequence(initial, // initial value in subprocess
 				[](double data) {
 					return data + 1.0;
@@ -278,8 +287,7 @@ int main()
 				}
 			);
 		},
-		[]() {
-			double initial = 1.0;
+		[=]() {
 			return asyncply::sequence(initial, // initial value in subprocess
 				[](double data) {
 					return data + 1.0;
@@ -295,8 +303,7 @@ int main()
 				}
 			);
 		},
-		[]() {
-			double initial = 1.0;
+		[=]() {
 			return asyncply::sequence(initial, // initial value in subprocess
 				[](double data) {
 					return data + 1.0;
@@ -312,8 +319,7 @@ int main()
 				}
 			);
 		},
-		[]() {
-			double initial = 1.0;
+		[=]() {
 			return asyncply::sequence(initial, // initial value in subprocess
 				[](double data) {
 					return data + 1.0;
@@ -345,7 +351,14 @@ int main()
 		}
 	}
 	std::cout << "total = " << aggregation << std::endl;
-#endif
+	/*
+	if (aggregation != 25.0)
+	{
+		throw test_exception();
+	}
+	*/
+	#endif
+	}
 	Poco::ThreadPool::defaultPool().joinAll();
 	return 0;
 }

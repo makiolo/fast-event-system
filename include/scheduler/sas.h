@@ -87,7 +87,7 @@ public:
 	{
 		_exception = p;
 	}
-
+	
 protected:
 	mutable Poco::Mutex _zone;
 	Poco::Semaphore& _semaphore;
@@ -424,55 +424,52 @@ void _parallel(std::vector<shared_task<Function> >& vf, Function&& f, Functions&
 }
 
 template <typename Function, typename ... Functions>
-std::vector<shared_task<Function> > parallel(Function&& f, Functions&& ... fs)
+void parallel(std::vector<shared_task<Function> >& vf, Function&& f, Functions&& ... fs)
 {
-	std::vector<shared_task<Function> > vf;
 	vf.push_back( asyncply::run(std::forward<Function>(f)) );
 	asyncply::_parallel(vf, std::forward<Functions>(fs)...);
-	return vf;
 }
 
 template <typename Function>
-std::vector<shared_task<Function> > parallel(Function&& f)
+void parallel(std::vector<shared_task<Function> > vf, Function&& f)
 {
-	std::vector<shared_task<Function> > vf;
 	vf.push_back( asyncply::run(std::forward<Function>(f)) );
-	return vf;
 }
 
-/////////aaaaaa////////// SEQUENCE ////////////////////////////////////////
+///////////////////////////// SEQUENCE ////////////////////////////////////////
 
 template <typename Data, typename Function>
-std::function<Data&(const Data&)> _sequence(Function&& f)
+std::function<Data(const Data&)> _sequence(Function&& f)
 {
-	return std::bind([](const Data& data, Function&& ff) {
-		auto job = asyncply::run(std::bind([](const Data& d, Function&& fff) {
-									return fff(d);
-								}), std::ref(data), std::forward<Function>(ff));
+	return [&](const Data& data) {
+		auto job = asyncply::run( [&]() {
+					return f(data);
+				} );
 		return job->get();
-	}, std::placeholders::_1, std::forward<Function>(f));
+	};
 }
 
 template <typename Data, typename Function, typename ... Functions>
-std::function<Data&(const Data&)> _sequence(Function&& f, Functions&& ... fs)
+std::function<Data(const Data&)> _sequence(Function&& f, Functions&& ... fs)
 {
-	return std::bind([](const Data& data, Function&& ff, Functions&& ... ffs) {
-		auto job = asyncply::run( std::bind([](const Data& d, Function&& fff) {
-					return fff(d);
-				}), std::ref(data), std::forward<Function>(ff));
-		job->post(	std::bind([](const Data& d, Functions&& ... fffs) {
-						return asyncply::_sequence<Data>(std::forward<Functions>(fffs)...)(d);
-					}, std::placeholders::_1, std::forward<Functions>(ffs)...));
+	return [&](const Data& data) {
+		auto job = asyncply::run([&f, &data]() {
+					return f(data);
+				});
+		job->post(
+				[&](const Data& d){
+					return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(d);
+				});
 		return job->get_post();
-	}, std::placeholders::_1, std::forward<Function>(f), std::forward<Functions>(fs)...);
+	};
 }
 
 template <typename Data, typename ... Functions>
-Data& sequence(const Data& data, Functions&& ... fs)
+Data sequence(const Data& data, Functions&& ... fs)
 {
-	auto job = asyncply::run(std::bind([](const Data& d, Functions&& ... ffs) {
-				return asyncply::_sequence<Data>(std::forward<Functions>(ffs)...)(d);
-			}, std::ref(data), std::forward<Functions>(fs)...));
+	auto job = asyncply::run([&] () {
+				return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(data);
+			});
 	return job->get();
 }
 

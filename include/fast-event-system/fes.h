@@ -381,9 +381,9 @@ public:
 	void update_while(deltatime time)
 	{
 		auto mark = fes::high_resolution_clock() + time;
-		while(fes::high_resolution_clock() < mark)
+		while(fes::high_resolution_clock() <= mark)
 		{
-			update();
+			dispatch_one();
 		}
 	}
 
@@ -496,9 +496,9 @@ public:
 	void update_while(deltatime time)
 	{
 		auto mark = fes::high_resolution_clock() + time;
-		while(fes::high_resolution_clock() < mark)
+		while(fes::high_resolution_clock() <= mark)
 		{
-			update();
+			_dispatch_one();
 		}
 	}
 	
