@@ -1,10 +1,7 @@
+add_subdirectory(verypoco)
+
 PROJECT(FAST-EVENT-SYSTEM CXX)
 cmake_minimum_required(VERSION 2.8)
-enable_testing()
-
-set(CMAKE_BUILD_TYPE Release)
-
-add_subdirectory(verypoco)
 
 if(WIN32)
 	add_definitions(/EHsc)
@@ -14,8 +11,11 @@ else()
 	#add_definitions(-fno-rtti)
 	#add_definitions(-fno-exceptions)
 	#add_definitions(-fpermissive)
-	add_definitions(-ggdb)
+	#add_definitions(-ggdb)
+	add_definitions(-pedantic)
 	add_definitions(-Wall -Wextra -Werror)
+	SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
+	SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread" )
 endif()
 
 if (NOT DEFINED EXTRA_DEF)
@@ -25,7 +25,7 @@ if (NOT DEFINED EXTRA_DEF)
 	CHECK_CXX_COMPILER_FLAG("-std=c++1y" COMPILER_SUPPORTS_CXX1Y)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-	
+
 	#if(COMPILER_SUPPORTS_CXX1Z)
 	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 	#message("-- C++1z Enabled")
@@ -46,12 +46,6 @@ else()
 	endif()
 else()
 	add_definitions(${EXTRA_DEF})
-endif()
-
-if (NOT MSVC)
-	SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -pedantic" )
-	SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
-	SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread" )
 endif()
 
 # Generate .clang_complete for full completation in vim + clang_complete
@@ -99,27 +93,28 @@ file(GLOB HEADER_CODE include/fast-event-system/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/fast-event-system")
 source_group( "fast-event-system" FILES ${HEADER_CODE} )
-            
+
 file(GLOB HEADER_CODE include/concurrentqueue/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/concurrentqueue")
 source_group( "concurrentqueue" FILES ${HEADER_CODE} )
-            
+
 file(GLOB HEADER_CODE include/concurrentqueue/internal/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/concurrentqueue/internal")
 source_group( "concurrentqueue_internal" FILES ${HEADER_CODE} )
-            
+
 file(GLOB HEADER_CODE include/animator/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/fast-event-system/animator")
 source_group( "fast-event-system_animator" FILES ${HEADER_CODE} )
-	    
+
 file(GLOB HEADER_CODE include/multithread/*.h)
 install(    FILES ${HEADER_CODE}
             DESTINATION "include/multithread")
 source_group( "multithread" FILES ${HEADER_CODE} )
 
+enable_testing()
 macro(CREATE_TEST TESTNAME TESTDEPENDS)
 	ADD_EXECUTABLE(${TESTNAME} tests/${TESTNAME}.cpp)
 	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
