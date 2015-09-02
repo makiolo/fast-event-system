@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(Foundation)
+project(Foundation CXX)
 
 set(LIBNAME "poco")
 set(POCO_LIBNAME "very${LIBNAME}")
@@ -24,7 +24,6 @@ endmacro()
 
 macro(POCO_SOURCES_AUTO_PLAT out platform)
     foreach( f ${ARGN})
-		
         get_filename_component(fname ${f} NAME)
 
         # Read the package name from the source file
