@@ -66,16 +66,16 @@ struct measure_scoped
 	//using clock = std::chrono::high_resolution_clock;
 	using clock = std::chrono::steady_clock;
 	//using clock = std::chrono::system_clock;
-	
-	using result_t = double;	
+
+	using result_t = double;
 	using time_point_t = std::chrono::time_point<clock>;
 	using duration_t = std::chrono::duration<result_t>;
-	
+
 	measure_scoped(result_t& result)
 		: _start( clock::now() )
 		, _result( result )
 	{ ; }
-	
+
 	~measure_scoped()
 	{
 		time_point_t end = clock::now();
@@ -101,15 +101,15 @@ public:
 	{
 		std::cout << "constructor" << std::endl;
 	}
-	
+
 	~foo()
 	{
 		std::cout << "destructor" << std::endl;
 	}
-	
+
 	foo(const foo& other) = delete;
 	foo& operator=(const foo& other) = delete;
-	
+
 	foo(foo&& other)
 		: _data(std::move(other._data))
 	{
@@ -175,11 +175,11 @@ int main_measured_algorithm_2(int, const char **)
 
 double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, const char**))
 {
-	long long N = 1e6 * 2;
+	long long N = 1e6;
 	double elapsedtime;
 	{
 		measure_scoped timer(elapsedtime);
-		
+
 		for(int i=0;i<N;++i)
 			volatile int result = algorithm(argc, argv);
 	}
@@ -190,7 +190,7 @@ int main(int argc, const char *argv[])
 {
 	double t1 = launch_benchmark(argc, argv, main_measured_algorithm_1);
 	double t2 = launch_benchmark(argc, argv, main_measured_algorithm_2);
-	
+
 	std::cout << "t1 = " << t1 << " ns" << std::endl;
 	std::cout << "t2 = " << t2 << " ns" << std::endl;
 	std::cout << "diff t2 - t1 = " << t2 - t1 << std::endl;

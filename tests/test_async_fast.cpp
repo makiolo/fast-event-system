@@ -1,10 +1,10 @@
 #include <iostream>
-#include <fast-event-system/fes.h>
+#include <fes/h/fes.h>
 
 int main(int, const char**)
 {
 	fes::async_fast<int, std::string, double> sync;
-	
+
 	// test connect in context
 	{
 		fes::connection<int, std::string, double> conn(
@@ -19,7 +19,7 @@ int main(int, const char**)
 					{
 						exit(1);
 					}
-				}		
+				}
 			)
 		);
 		// lambda must received this

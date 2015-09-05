@@ -10,8 +10,9 @@
 #include <queue>
 #include <assert.h>
 #include <cstdlib>
-#include <fast-event-system/fes.h>
-#include <animator/interpolation.h>
+//
+#include <fes/h/fes.h>
+#include <animator/h/interpolation.h>
 
 template <typename TYPE = fes::sync<std::string> >
 class Producer
@@ -34,7 +35,7 @@ public:
 	{
 		_channel.update();
 	}
-	
+
 	TYPE& get_channel() {return _channel;}
 protected:
 	TYPE _channel;
@@ -47,19 +48,19 @@ public:
 	Consumer()
 		: _data("waiting")
 	{
-		
+
 	}
 
 	~Consumer()
 	{
-		
+
 	}
 
 	void connect(Producer<TYPE>& producer)
 	{
 		_conn = producer.get_channel().connect(this, &Consumer::on_handler);
 	}
-	
+
 	const std::string& get_data() const {return _data;}
 
 protected:
@@ -67,7 +68,7 @@ protected:
 	{
 		_data = data;
 	}
-	
+
 	std::string _data;
 	fes::connection<std::string> _conn;
 };
@@ -112,14 +113,14 @@ int main()
 			assert(c2.get_data() == "data");
 		}
 	}
-	
+
 	fes::async_delay<int> root;
 	fes::async_delay<int> node_a;
 	fes::async_delay<int> node_b;
-	
+
 	auto c1 = root.connect(0, fes::deltatime(100), node_a);
 	auto c2 = root.connect(0, fes::deltatime(200), node_b);
-	
+
 	static bool called1 = false;
 	auto c3 = node_a.connect([&](const int& data) {
 		std::cout << "A: data = " << data << std::endl;
@@ -133,7 +134,7 @@ int main()
 		called2 = true;
 		assert(data == 111);
 	});
-	
+
 	root(0, fes::deltatime(10), 111);
 
 	auto t1 = fes::high_resolution_clock() + fes::deltatime(600);
@@ -145,7 +146,7 @@ int main()
 	}
 
 	exit(called1 && called2 ? 0 : 1);
-	
+
 #if 0
 	// fixed deltatime clock
 
@@ -157,7 +158,7 @@ int main()
 	double radius = period;
 	timeline_past -= radius;
 	timeline_future += radius;
-	
+
 	fes::async_delay<> clock;
 	fes::connection<> conn;
 	conn = clock.connect([&]() {
@@ -169,7 +170,7 @@ int main()
 	});
 	clock.connect(0, fes::deltatime(period), clock);
 	clock();
-	
+
 	fes::marktime begin = fes::high_resolution_clock();
 	fes::marktime end;
 	double realtime = 0.0;
@@ -178,7 +179,7 @@ int main()
 	{
 		float d = realtime / timeline_future;
 		clamp( d, 0.0f, 1.0f );
-		
+
 		auto interp = smoothstep(timeline_present, timeline_future, d);
 		std::cout << "t = " << interp << std::endl;
 
@@ -191,7 +192,7 @@ int main()
 		begin = fes::high_resolution_clock();
 	}
 #endif
-	
+
 	return 0;
 }
 

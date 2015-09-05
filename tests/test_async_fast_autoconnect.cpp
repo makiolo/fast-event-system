@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fast-event-system/fes.h>
+#include <fes/h/fes.h>
 
 int main(int, const char**)
 {
@@ -10,7 +10,7 @@ int main(int, const char**)
 
 	// testing autoconnect
 	sync.connect(sync);
-		
+
 	fes::connection<std::string> conn(
 		sync.connect(
 			[&counter](const std::string& str)
@@ -20,7 +20,7 @@ int main(int, const char**)
 			}
 		)
 	);
-	
+
 	sync("autoreference");
 	for (int i = 0; i < N; ++i) {
 		sync.dispatch_one();

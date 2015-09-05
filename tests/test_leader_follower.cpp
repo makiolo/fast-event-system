@@ -3,8 +3,8 @@
 
 #include <thread>
 #include <memory>
-#include <scheduler/sas.h>
-#include <animator/interpolation.h>
+#include <scheduler/h/sas.h>
+#include <animator/h/interpolation.h>
 #include <Poco/Mutex.h>
 
 class Context
@@ -12,11 +12,11 @@ class Context
 public:
 	explicit Context()
 	{
-		
+
 	}
-	
+
 	~Context() { ; }
-	
+
 	inline void sleep(int milli)
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds(milli) );
@@ -43,10 +43,10 @@ public:
 		: _name(name)
 		, _context(context)
 	{
-		
+
 	}
-	virtual ~Person() { ; }	
-	
+	virtual ~Person() { ; }
+
 	void say(const std::string& text, int delay = 10)
 	{
 		_context.print(_name, text, delay);
@@ -71,13 +71,13 @@ int main2()
 {
 	{
 		//std::ios_base::sync_with_stdio(false);
-		
+
 		Context context;
 		Person person1("Person A", context);
-		
+
 		/*
 		Order expected:
-		
+
 		 Person A: "1. What are you doing now?"
 		 Person B: "2. I'm playing pool with my friends at a pool hall."
 		 Person A: "3. I didn't know you play pool.  Are you having fun?"
@@ -87,7 +87,7 @@ int main2()
 		 Person A: "7. Bye person B"
 		 Person B: "8. Bye person A"
 		*/
-		
+
 		person1.call_me([&](Person& self) {
 			self.say("1. What are you doing now ? ");
 		});
@@ -112,7 +112,7 @@ int main2()
 		person1.call_me([&](Person& self) {
 			self.say("8. bye person A");
 		});
-		
+
 		for (int i = 0; i < 500; ++i)
 		{
 			person1.update();
@@ -208,7 +208,7 @@ int main()
 		{
 			std::vector<std::shared_ptr<asyncply::task<void> > > vjobs;
 			vjobs.reserve(4);
-			asyncply::parallel(vjobs, 
+			asyncply::parallel(vjobs,
 					[&]()
 					{
 						for (int i = 0; i < 3; ++i)
@@ -232,7 +232,7 @@ int main()
 							++count;
 						});
 					},
-					[&]() 
+					[&]()
 					{
 						c.connect([&](int iter, const std::string& data) {
 							std::cout << "recibido en t4 " << data << ", iter " << iter << std::endl;
@@ -251,12 +251,11 @@ int main()
 #endif
 #if 1
 
-	double initial = 1.0;
 	std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
 	vjobs.reserve(5);
-	asyncply::parallel(vjobs, 
-		[=]() {
-			return asyncply::sequence(initial, // initial value in subprocess
+	asyncply::parallel(vjobs,
+		[&]() {
+			return asyncply::sequence(1.0, 
 				[](double data) {
 					return data + 1.0;
 				},
@@ -271,8 +270,8 @@ int main()
 				}
 			);
 		},
-		[=]() {
-			return asyncply::sequence(initial, // initial value in subprocess
+		[&]() {
+			return asyncply::sequence(1.0,
 				[](double data) {
 					return data + 1.0;
 				},
@@ -287,8 +286,8 @@ int main()
 				}
 			);
 		},
-		[=]() {
-			return asyncply::sequence(initial, // initial value in subprocess
+		[&]() {
+			return asyncply::sequence(1.0,
 				[](double data) {
 					return data + 1.0;
 				},
@@ -303,8 +302,8 @@ int main()
 				}
 			);
 		},
-		[=]() {
-			return asyncply::sequence(initial, // initial value in subprocess
+		[&]() {
+			return asyncply::sequence(1.0,
 				[](double data) {
 					return data + 1.0;
 				},
@@ -319,8 +318,8 @@ int main()
 				}
 			);
 		},
-		[=]() {
-			return asyncply::sequence(initial, // initial value in subprocess
+		[&]() {
+			return asyncply::sequence(1.0,
 				[](double data) {
 					return data + 1.0;
 				},
@@ -351,12 +350,6 @@ int main()
 		}
 	}
 	std::cout << "total = " << aggregation << std::endl;
-	/*
-	if (aggregation != 25.0)
-	{
-		throw test_exception();
-	}
-	*/
 	#endif
 	}
 	Poco::ThreadPool::defaultPool().joinAll();

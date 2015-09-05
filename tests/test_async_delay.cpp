@@ -1,11 +1,11 @@
 #include <iostream>
-#include <fast-event-system/fes.h>
+#include <fes/h/fes.h>
 
 int main(int, const char**)
 {
 	fes::async_delay<int, std::string, double> sync;
 	bool is_dispatched = false;
-	
+
 	// test connect in context
 	{
 		fes::connection<int, std::string, double> conn(
@@ -30,13 +30,13 @@ int main(int, const char**)
 		// lambda must received this
 		sync(fes::deltatime(2000), 5, "hello world", 11.0);
 		sync.update_while( fes::deltatime(2001) );
-		
+
 		// autodisconnection
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
 	sync.update_while( fes::deltatime(1) );
-	
+
 	return is_dispatched ? 0 : 1;
 }
 

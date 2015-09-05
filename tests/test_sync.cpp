@@ -1,23 +1,23 @@
 #include <iostream>
-#include <fast-event-system/fes.h>
+#include <fes/h/fes.h>
 
 int main(int, const char**)
 {
 	// asyncply::run( functor )
 	// asyncply::sequence( functor, functor ... )
 	// asyncply::parallel( functor, functor ... )
-	// 
+	//
 	// safe vs unsafe
 	// safe vs fast
 	// inter vs intra
 	// fes::channel::safe::sync            // (future/promise)
-	// fes::channel::safe::async           
-	// fes::channel::unsafe::sync          
+	// fes::channel::safe::async
+	// fes::channel::unsafe::sync
 	// fes::channel::unsafe::async         (delay)
-	// 
+	//
 
 	fes::sync<int, std::string, double> sync;
-	
+
 	// test connect in context
 	{
 		// TODO: operator=
@@ -33,7 +33,7 @@ int main(int, const char**)
 					{
 						exit(1);
 					}
-				}		
+				}
 			)
 		);
 		// lambda must received this

@@ -1,7 +1,77 @@
 # http://lucumr.pocoo.org/2013/8/18/beautiful-native-libraries/
 
+macro(GENERATE_CLANG)
+	# Generate .clang_complete for full completation in vim + clang_complete
+	set(extra_parameters "")
+	get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+	foreach(dir ${dirs})
+	  set(extra_parameters ${extra_parameters} -I${dir})
+	endforeach()
+	get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
+	foreach(dir ${dirs})
+	  set(extra_parameters ${extra_parameters} -D${dir})
+	endforeach()
+	STRING(REGEX REPLACE ";" "\n" extra_parameters "${extra_parameters}")
+	FILE(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/.clang_complete" "${extra_parameters}\n")
+endmacro()
+
+macro(ENABLE_MODERN_CPP)
+
+	if(WIN32)
+		add_definitions(/EHsc)
+		#add_definitions(/GR-)
+		#add_definitions(/D_HAS_EXCEPTIONS=0)
+	else()
+		#add_definitions(-fno-rtti)
+		#add_definitions(-fno-exceptions)
+		#add_definitions(-fpermissive)
+		#add_definitions(-ggdb)
+		add_definitions(-pedantic)
+		add_definitions(-Wall -Wextra -Werror)
+		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
+		SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread" )
+	endif()
+
+	if (NOT DEFINED EXTRA_DEF)
+		include(CheckCXXCompilerFlag)
+		#CHECK_CXX_COMPILER_FLAG("-std=c++1z" COMPILER_SUPPORTS_CXX1Z)
+		CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
+		CHECK_CXX_COMPILER_FLAG("-std=c++1y" COMPILER_SUPPORTS_CXX1Y)
+		CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+		CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+
+		#if(COMPILER_SUPPORTS_CXX1Z)
+		#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+		#message("-- C++1z Enabled")
+		if(COMPILER_SUPPORTS_CXX14)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+			message("-- C++14 Enabled")
+		elseif(COMPILER_SUPPORTS_CXX1Y)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+			message("-- C++1y Enabled")
+		elseif(COMPILER_SUPPORTS_CXX11)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+			message("-- C++11 Enabled")
+		elseif(COMPILER_SUPPORTS_CXX0X)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+			message("-- C++0x Enabled")
+	else()
+			message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+		endif()
+	else()
+		add_definitions(${EXTRA_DEF})
+	endif()
+endmacro()
+
+macro(CREATE_TEST TESTNAME TESTDEPENDS)
+	include_directories(..)
+	ADD_EXECUTABLE(${TESTNAME} ${TESTNAME}.cpp)
+	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
+	ADD_TEST(NAME ${TESTNAME} COMMAND ${TESTNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
+endmacro()
+
 macro(GET_SYSTEM_INFO)
-    
+
     if(MSVC12)
         set(MSVC_NAME_LOWER "vc120")
         set(MSVC_NAME_UPPER "VC120")
@@ -26,7 +96,7 @@ macro(GET_SYSTEM_INFO)
         get_filename_component(compiler ${CMAKE_CXX_COMPILER} NAME)
         SET(COMPILER "${compiler}")
     ENDIF()
-    
+
     if(CMAKE_SYSTEM_NAME MATCHES Linux)
         set(PLATFORM "linux_amd64")
     elseif(CMAKE_SYSTEM_NAME MATCHES SunOS)
@@ -38,7 +108,7 @@ macro(GET_SYSTEM_INFO)
             set(PLATFORM "win32")
         endif(CMAKE_CL_64)
     endif()
-    
+
 endmacro()
 
 macro(generate_vcxproj_user _EXECUTABLE_NAME)
@@ -70,19 +140,29 @@ macro(generate_vcxproj_user _EXECUTABLE_NAME)
 endmacro()
 
 function(GENERATE_EXE _EXECUTABLE_NAME _SOURCE_FILES _HEADERS_FILES)
-    
+
     source_group( "Source Files" FILES ${_SOURCE_FILES} )
     source_group( "Header Files" FILES ${_HEADERS_FILES} )
-    
+
     add_definitions(/WX /W4)
-    
+
     IF(WIN32)
         ADD_EXECUTABLE(${_EXECUTABLE_NAME} WIN32 ${_SOURCE_FILES} ${_HEADERS_FILES})
     ELSEIF(LINUX)
         ADD_EXECUTABLE(${_EXECUTABLE_NAME} ${_SOURCE_FILES} ${_HEADERS_FILES})
     ENDIF()
+
+	# For detect stackoverflows / buffer-overflow...
+	# sanitizer address
+	# -g -fsanitize=address
+	# -g -fsanitize=address-full (buffer overflows)
+	# -g -fsanitize=thread (condiciones de carrera)
+	# -g -fsanitize=memory (detectar variables no inicializadas)
+	# 
+	# ASAN_OPTIONS="detect_leaks=1" executable
+
     generate_vcxproj_user(${_EXECUTABLE_NAME})
-    
+
 endfunction()
 
 function(GENERATE_LIB)
@@ -90,7 +170,7 @@ function(GENERATE_LIB)
     set(PARAMETERS ${ARGV})
     list(GET PARAMETERS 0 LIBNAME)
     list(REMOVE_AT PARAMETERS 0)
-    
+
     SET(HAVE_TESTS FALSE)
     SET(HAVE_PCH FALSE)
     set(TARGET_DEPENDENCIES)
@@ -126,7 +206,7 @@ function(GENERATE_LIB)
     endwhile()
 
     INCLUDE_DIRECTORIES(..)
-    INCLUDE_DIRECTORIES(h)
+	INCLUDE_DIRECTORIES(h/detail)
 
     file( GLOB SOURCE_FILES [Cc]/*.c [Cc]/*.cpp [Cc]/*.cxx *.cpp *.c *.cxx )
     file( GLOB HEADERS_FILES [Hh]/*.h [Hh]/*.hpp [Hh]/*.hxx [Hh][Pp][Pp]/*.hpp [Hh][Pp][Pp]/*.hxx *.h *.hpp *.hxx )
@@ -139,30 +219,31 @@ function(GENERATE_LIB)
 	ELSEIF(ANDROID)
 		file( GLOB SPECIFIC_PLATFORM c/android/*.cpp )
 	ENDIF()
-    
+
 	SET(SOURCE_FILES ${SOURCE_FILES} "${SPECIFIC_PLATFORM}")
     source_group( "c" FILES ${SOURCE_FILES})
     source_group( "h" FILES ${HEADERS_FILES})
-    
+
     # c++ exceptions and RTTI
     #add_definitions(/D_HAS_EXCEPTIONS=0)
     #add_definitions(/GR-)
     add_definitions(/wd4251)
     add_definitions(/wd4275)
-    
+
     # Avoid warning as error with / WX / W4
     # conversion from 'std::reference_wrapper<Chunk>' to 'std::reference_wrapper<Chunk> &
     add_definitions(/wd4239)
-    
+
     # warning C4316: 'Dune::PhysicsManager' : object allocated on the heap may not be aligned 16
     add_definitions(/wd4316)
-    
+
     add_definitions(/WX /W4)
-    
+
     ADD_LIBRARY(${LIBNAME} SHARED ${SOURCE_FILES} ${HEADERS_FILES} ${EXTRA_SOURCES})
     TARGET_LINK_LIBRARIES(${LIBNAME} ${TARGET_DEPENDENCIES} ${TARGET_3RDPARTY_DEPENDENCIES})
-    set_target_properties(${LIBNAME} PROPERTIES SUFFIX .pyd)
-    
+	#set_target_properties(${LIBNAME} PROPERTIES SUFFIX .pyd)
+	set_target_properties(${LIBNAME} PROPERTIES SUFFIX .dll)
+
     if(HAVE_PCH)
         add_definitions(-Zm200)
         #include(cotire)
@@ -170,45 +251,33 @@ function(GENERATE_LIB)
         set_target_properties(${LIBNAME} PROPERTIES COTIRE_UNITY_LINK_LIBRARIES_INIT "COPY")
         #cotire(${LIBNAME})
 	endif()
-    
-    # Generate .clang_complete for full completation in vim + clang_complete
-    set(extra_parameters "")
-    get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-    foreach(dir ${dirs})
-      set(extra_parameters ${extra_parameters} -I${dir})
-    endforeach()
-    get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
-    foreach(dir ${dirs})
-      set(extra_parameters ${extra_parameters} -D${dir})
-    endforeach()
-    STRING(REGEX REPLACE ";" "\n" extra_parameters "${extra_parameters}")
-    FILE(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/.clang_complete" "${extra_parameters}\n")
-    # end
-    
+
+	GENERATE_CLANG()
+
     foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
         INSTALL(    TARGETS ${LIBNAME}
                     DESTINATION ${BUILD_TYPE}
                     CONFIGURATIONS ${BUILD_TYPE})
     endforeach()
-    
+
     if(HAVE_TESTS)
-        
+
         # ctest
         # http://johnlamp.net/cmake-tutorial-5-functionally-improved-testing.html
         enable_testing()
-        
+
         #find_package(google-gmock ${GMOCK_REQUIRED_VERSION})
-        
+
         source_group("Tests" FILES ${TESTS_SOURCES})
-        
+
         ADD_EXECUTABLE(${LIBNAME}.Tests ${TESTS_SOURCES})
         TARGET_LINK_LIBRARIES(${LIBNAME}.Tests ${TARGET_DEPENDENCIES} ${TARGET_3RDPARTY_DEPENDENCIES} ${LIBNAME})
-        ADD_TEST(   NAME ${LIBNAME}.Tests 
+        ADD_TEST(   NAME ${LIBNAME}.Tests
                     COMMAND ${LIBNAME}.Tests
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-        
+
         generate_vcxproj_user(${LIBNAME}.Tests)
-        
+
     endif()
 endfunction()
 
@@ -221,8 +290,8 @@ endfunction()
 
 function(PACK_FILE_AND_RENAME FROM TO NEWNAME)
     foreach(BUILD_TYPE ${CMAKE_BUILD_TYPE})
-        INSTALL(FILES ${FROM} 
-                                DESTINATION ${BUILD_TYPE}/${TO} 
+        INSTALL(FILES ${FROM}
+                                DESTINATION ${BUILD_TYPE}/${TO}
                                 CONFIGURATIONS ${BUILD_TYPE}
                                 RENAME ${NEWNAME})
     endforeach()
