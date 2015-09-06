@@ -8,7 +8,7 @@ namespace asyncply {
 class multithread_API synchronizer : public semaphore
 {
 public:
-	synchronizer(int max = 1) : semaphore(max, true)
+	synchronizer(uint32_t max = 1) : semaphore(max, true)
 	{
 
 	}
@@ -18,15 +18,15 @@ public:
 
 	}
 
-	inline void wait(int count = 1) const
+	inline void wait(uint32_t count = 1) const
 	{
-		for (int i(0); i < count; ++i)
+		for (size_t i(0); i < count; ++i)
 			lock();
 	}
 
-	inline void signal(int count = 1) const
+	inline void signal(uint32_t count = 1) const
 	{
-		for (int i(0); i < count; ++i)
+		for (size_t i(0); i < count; ++i)
 			unlock();
 	}
 };

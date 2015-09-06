@@ -9,7 +9,7 @@ namespace asyncply {
 int semaphore::_count_sem = 0;
 #endif
 
-semaphore::semaphore(int concurrency, bool isForSync)
+semaphore::semaphore(uint32_t concurrency, bool isForSync)
 {
 	_concurrency = concurrency;
 
@@ -23,7 +23,7 @@ semaphore::semaphore(int concurrency, bool isForSync)
 	if(!isForSync)
 	{
 		// hay que llenar el semaforo
-		for(int i(0); i < _concurrency; ++i)
+		for(uint32_t i(0); i < _concurrency; ++i)
 			unlock();
 	}
 
@@ -39,7 +39,7 @@ semaphore::semaphore(int concurrency, bool isForSync)
 	if(!isForSync)
 	{
 		// hay que llenar el semaforo
-		for(int i(0); i < _concurrency; ++i)
+		for(uint32_t i(0); i < _concurrency; ++i)
 			unlock();
 	}
 

@@ -4,15 +4,15 @@
 
 namespace asyncply {
 
-pool_thread::pool_thread(int numThreads /*= 4*/)
+pool_thread::pool_thread(uint32_t numThreads /*= 4*/)
 {
-	_number_threads = std::min<int>(numThreads, THREADCOUNT_MAX);
+	_number_threads = std::min<uint32_t>(numThreads, THREADCOUNT_MAX);
 
 	assert(_number_threads > 0);
 	assert(_number_threads <= THREADCOUNT_MAX);
 
 	_started = false;
-	for (unsigned int i(0); i < _number_threads; ++i)
+	for (uint32_t i=0; i < _number_threads; ++i)
 	{
 		_workers[i] = new worker(this);
 	}
@@ -27,7 +27,7 @@ pool_thread::~pool_thread(void)
 	delete _workers_finished;
 	delete _any_job;
 	delete _queue;
-	for (unsigned int i(0); i < _number_threads; ++i)
+	for (uint32_t i=0; i < _number_threads; ++i)
 	{
 		delete _workers[i];
 	}
@@ -39,7 +39,7 @@ void pool_thread::Start()
 	{
 		_started = true;
 
-		for (unsigned int i(0); i < _number_threads; ++i)
+		for (uint32_t i=0; i < _number_threads; ++i)
 		{
 #ifdef _WIN32
 			_threads[i] = CreateThread(
@@ -82,13 +82,13 @@ void pool_thread::Stop()
 	mutex::scoped_lock_t lock(_queue->get_mutex());
 
 	// Despides a los trabajadores
-	for (unsigned int i(0); i < _number_threads; ++i)
+	for (uint32_t i = 0; i < _number_threads; ++i)
 	{
 		_workers[i]->set_interrupted(true);
 	}
 
 	// Avisas a los trabajadores que no se han enterado por estar durmiendo
-	for (unsigned int i(0); i < _number_threads; ++i)
+	for (uint32_t i = 0; i < _number_threads; ++i)
 	{
 		_any_job->signal();
 	}

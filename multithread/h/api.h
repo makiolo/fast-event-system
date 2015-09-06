@@ -2,49 +2,57 @@
 #define _MULTITHREAD_API_H_
 
 #if defined(_WIN32) || defined(WIN32)
-#ifdef multithread_EXPORTS
-#define multithread_API __declspec(dllexport)
+	#ifdef multithread_EXPORTS
+		#define multithread_API __declspec(dllexport)
+	#else
+		#ifndef multithread_STATIC
+			#define multithread_API __declspec(dllimport)
+		#else
+			#define multithread_API
+		#endif
+	#endif
 #else
-#ifndef multithread_STATIC
-#define multithread_API __declspec(dllimport)
-#else
-#define multithread_API
+	#if __GNUC__ >= 4
+		#define multithread_API __attribute__((visibility("default")))
+	#else
+		#define multithread_API
+	#endif
 #endif
-#endif
-#else
-#define multithread_API
-#endif
+
+namespace asyncply {
 
 #ifdef WINDOWS
 
-typedef __int64				Int64;
-typedef signed int			Int32;
-typedef signed short		Int16;
-typedef signed char			Int8;
+typedef __int64				int64_t;
+typedef signed int			int32_t;
+typedef signed short		int16_t;
+typedef signed char			int8_t;
 
-typedef unsigned __int64	UInt64;
-typedef unsigned int		Uint32;
-typedef unsigned short		Uint16;
-typedef unsigned char		Uint8;
+typedef unsigned __int64	uint64_t;
+typedef unsigned int		uint32_t;
+typedef unsigned short		uint16_t;
+typedef unsigned char		uint8_t;
 
-typedef double				Real64;
-typedef float				Real32;
+typedef double				real64_t;
+typedef float				real32_t;
 
 #else
 
-typedef long long			Int64;
-typedef signed int			Int32;
-typedef signed short		Int16;
-typedef signed char			Int8;
+typedef long long			int64_t;
+typedef signed int			int32_t;
+typedef signed short		int16_t;
+typedef signed char			int8_t;
 
-typedef unsigned long long	UInt64;
-typedef unsigned int		Uint32;
-typedef unsigned short		Uint16;
-typedef unsigned char		Uint8;
+typedef unsigned long long	uint64_t;
+typedef unsigned int		uint32_t;
+typedef unsigned short		uint16_t;
+typedef unsigned char		uint8_t;
 
-typedef double				Real64;
-typedef float				Real32;
+typedef double				real64_t;
+typedef float				real32_t;
 
 #endif
+
+}
 
 #endif // _FES_API_H_

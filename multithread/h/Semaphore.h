@@ -33,7 +33,7 @@ class multithread_API semaphore
 public:
 	typedef scoped_lock<semaphore> scoped_lock_t;
 
-	semaphore(int concurrency = 1, bool isForSync = false);
+	semaphore(uint32_t concurrency = 1, bool isForSync = false);
 	~semaphore();
 
 	///
@@ -137,7 +137,7 @@ protected:
 #else
 	HANDLE _semaphore;
 #endif
-	int _concurrency;
+	uint32_t _concurrency;
 };
 
 }

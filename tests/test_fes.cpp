@@ -31,9 +31,9 @@ public:
 		_channel(priority, delay, data );
 	}
 
-	void update()
+	void dispatch_one()
 	{
-		_channel.update();
+		_channel.dispatch_one();
 	}
 
 	TYPE& get_channel() {return _channel;}
@@ -95,7 +95,7 @@ int main()
 			c1.connect(p);
 			c2.connect(p);
 			p("data");
-			p.update();
+			p.dispatch_one();
 			assert(c1.get_data() == "data");
 			assert(c2.get_data() == "data");
 		}
@@ -108,7 +108,7 @@ int main()
 			c1.connect(p);
 			c2.connect(p);
 			p(0, fes::deltatime(0), "data");
-			p.update();
+			p.dispatch_one();
 			assert(c1.get_data() == "data");
 			assert(c2.get_data() == "data");
 		}

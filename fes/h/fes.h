@@ -1,5 +1,5 @@
 // fes by Ricardo Marmolejo García is licensed under a Creative Commons Reconocimiento 4.0 Internacional License.// http://creativecommons.org/licenses/by/4.0/
-// me/makiolo/dev/sandbox_private/vimfiles/doc/clang.txt' 
+// me/makiolo/dev/sandbox_private/vimfiles/doc/clang.txt'
 //
 
 #ifndef _FAST_EVENT_SYSTEM_
@@ -48,26 +48,24 @@ namespace fes {
 // BEGIN workaround
 
 #ifdef _WIN32
-// std::chrono in windows is bugged:
 // https://connect.microsoft.com/VisualStudio/feedback/details/719443/c-chrono-headers-high-resolution-clock-does-not-have-high-resolution
 
+bool init_clock();
 using marktime = double;
 using deltatime = double;
-
-bool init_clock();
-fes_API marktime high_resolution_clock();
 
 #else // gcc, clang ...
 
 //using clock_t = std::chrono::high_resolution_clock;
-using clock_t = std::chrono::steady_clock;
-//using clock_t = std::chrono::system_clock;
+//using clock_t = std::chrono::steady_clock;
+using clock_t = std::chrono::system_clock;
 using marktime = clock_t::time_point;
 using deltatime = std::chrono::milliseconds;
 
-marktime high_resolution_clock();
-
 #endif
+
+fes_API marktime high_resolution_clock();
+
 // END workaround
 
 template <typename ... Args>
@@ -79,23 +77,23 @@ public:
 	method(const function& method)
 		: _method(method)
 	{
-		
+
 	}
 
 	template <typename T>
 	method(T* obj, void (T::*ptr_func)(const Args&...))
 		: method(obj, ptr_func, make_int_sequence<sizeof...(Args)>{})
 	{
-		
+
 	}
 
 	template <typename T, int ... Is>
 	method(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 		: method(std::bind(ptr_func, obj, placeholder_template<Is>{}...))
 	{
-		
+
 	}
-	
+
 	method(const method& other) = delete;
 	method& operator=(const method& other) = delete;
 	~method() { ; }
@@ -122,10 +120,10 @@ public:
 		, _connected(true)
 		, _registered(registered)
 	{ ; }
-	
+
 	internal_connection(const internal_connection<Args...>& other) = delete;
 	const internal_connection<Args...>& operator=(const internal_connection<Args...>& other) = delete;
-	
+
 	void disconnect()
 	{
 		if (_connected)
@@ -134,7 +132,7 @@ public:
 			_connected = false;
 		}
 	}
-	
+
 protected:
 	deleter_t _deleter;
 	std::atomic<bool> _connected;
@@ -149,13 +147,13 @@ class connection
 public:
 	connection()
 	{
-		
+
 	}
 
 	connection(const weak_connection<Args ...>& other)
 		: _connection(other)
 	{
-		
+
 	}
 
 	connection<Args...>& operator=(const weak_connection<Args ...>& other)
@@ -189,19 +187,21 @@ class sync
 {
 public:
 	using methods = methods_t<Args...>;
-	
+
+	//! default constructor
 	sync() = default;
+	//! default destructor
 	~sync() { ; }
-	
+
 	sync(const sync& other) = delete;
 	sync& operator=(const sync& other) = delete;
-	
+
 	template <typename T>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
-	
+
 	inline weak_connection<Args...> connect(const typename method<Args...>::function& fun)
 	{
 		typename methods::iterator it = _registered.emplace(_registered.end(), fun);
@@ -218,21 +218,21 @@ public:
 			callback(data...);
 		});
 	}
-	
+
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return connect([&queue](const Args& ... data) {
 			queue(data...);
 		});
 	}
-	
+
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return connect([&queue, priority, delay](const Args& ... data) {
 			queue(priority, delay, data...);
 		});
 	}
-	
+
 	void operator()(const Args& ... data) const
 	{
 		for (auto& reg : _registered)
@@ -241,7 +241,7 @@ public:
 		}
 	}
 
-protected:	
+protected:
 	template <typename T, int ... Is>
 	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
@@ -252,7 +252,7 @@ protected:
 		_conns.push_back(conn);
 		return weak_connection<Args...>(conn);
 	}
-	
+
 protected:
 	methods _registered;
 	std::vector<shared_connection<Args...> > _conns;
@@ -266,9 +266,9 @@ struct message
 		, _timestamp(timestamp)
 		, _data(data...)
 	{
-		
+
 	}
-	
+
 	message(const message& other)
 		: _priority(other._priority)
 		, _timestamp(other._timestamp)
@@ -276,7 +276,7 @@ struct message
 	{
 
 	}
-	
+
 	message(message&& other) noexcept
 		: _priority(other._priority)
 		, _timestamp(other._timestamp)
@@ -284,19 +284,19 @@ struct message
 	{
 
 	}
-	
+
 	message& operator=(const message& other)
 	{
 		message(other).swap(*this);
 		return *this;
 	}
-	
+
 	message& operator=(message&& other) noexcept
 	{
 		message(std::move(other)).swap(*this);
 		return *this;
 	}
-	
+
 	void swap(message& other) noexcept
 	{
 		using std::swap;
@@ -304,12 +304,12 @@ struct message
 		swap(_timestamp, other._timestamp);
 		swap(_data, other._data);
 	}
-	
+
 	~message()
 	{
 
 	}
-	
+
 	int _priority;
 	marktime _timestamp;
 	std::tuple<Args...> _data;
@@ -325,12 +325,12 @@ struct message_comp
 			return false;
 		else if (one._timestamp > other._timestamp)
 			return true;
-		
+
 		if(one._priority < other._priority)
 			return true;
 		else if(one._priority > other._priority)
 			return false;
-		
+
 		return false;
     }
 };
@@ -340,23 +340,23 @@ class async_delay
 {
 public:
 	using container_type = std::vector<message<Args...> >;
-	
+
 	async_delay() = default;
 	~async_delay() = default;
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
-	
+
 	void operator()(int priority, deltatime delay, const Args& ... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
-	
+
 	void operator()(deltatime delay, const Args& ... data)
 	{
 		operator()(0, delay, data...);
-	} 
+	}
 
 	void operator()(int priority, const Args& ... data)
 	{
@@ -367,8 +367,8 @@ public:
 	{
 		operator()(0, fes::deltatime(0), data...);
 	}
-		
-	void update(deltatime tmax = fes::deltatime(1))
+
+	void update(deltatime tmax = fes::deltatime(16))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
 		bool has_next = true;
@@ -395,23 +395,23 @@ public:
 		}
 		return false;
 	}
-		
+
 	inline bool empty() const
 	{
 		return _queue.empty();
 	}
-	
+
 	inline size_t size() const
 	{
 		return _queue.size();
 	}
-	
+
 	template <typename T>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
-	
+
 	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
@@ -423,7 +423,7 @@ public:
 			callback(data...);
 		});
 	}
-	
+
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return _output.connect([&queue](const Args& ... data) {
@@ -462,29 +462,35 @@ protected:
 	container_type _queue;
 };
 
+/*!
+ * # Canal seguro de comunicacion entre threads
+ * Esta clase permite crear un canal de datos asincrono.
+ * Mediante el *operator()* puede publicar datos.
+ * Los clientes se conectan usando el metodo *connect()*
+ */
 template <typename ... Args>
 class async_fast
 {
 public:
 	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...> >;
-	
+
 	async_fast() = default;
 	async_fast(size_t initial_allocation)
 		: _queue(initial_allocation)
 	{
-		
+
 	}
 	~async_fast() = default;
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
-	
+
 	void operator()(const Args& ... data)
 	{
 		++_size_exact;
 		_queue.enqueue(std::make_tuple(data...));
 	}
-	
-	void update(deltatime tmax = fes::deltatime(1))
+
+	void update(deltatime tmax = fes::deltatime(16))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
 		while (!empty() && (high_resolution_clock() <= timeout))
@@ -501,7 +507,7 @@ public:
 			_dispatch_one();
 		}
 	}
-	
+
 	bool dispatch_one()
 	{
 		if (!empty())
@@ -532,14 +538,14 @@ public:
 	{
 		return _output.connect(method);
 	}
-	
+
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return _output.connect([&callback](const Args& ... data) {
 			callback(data...);
 		});
 	}
-	
+
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
 		return _output.connect([&queue](const Args& ... data) {
@@ -553,8 +559,8 @@ public:
 			queue(priority, delay, data...);
 		});
 	}
-	
-protected:	
+
+protected:
 	template<int ...S>
 	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
 	{

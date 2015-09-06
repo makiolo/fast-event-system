@@ -10,7 +10,7 @@ namespace asyncply {
 class multithread_API pool_thread : public thread
 {
 public:
-	pool_thread(int numThreads = 4);
+	pool_thread(uint32_t numThreads = 4);
 	virtual ~pool_thread(void);
 
 	void Stop();
@@ -41,7 +41,7 @@ protected:
 protected:
 	friend class worker;
 
-	unsigned int _number_threads;
+	uint32_t _number_threads;
 	bool _started;
 	worker* _workers[THREADCOUNT_MAX];
 	circular_queue<job>* _queue;

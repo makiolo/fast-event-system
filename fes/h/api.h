@@ -12,8 +12,16 @@
 #endif
 #endif
 #else
+#if __GNUC__ >= 4
+#define fes_API __attribute__((visibility("default")))
+#else
 #define fes_API
 #endif
+#endif
+
+#define FES_VERSION_MAJOR 1
+#define FES_VERSION_MINOR 0
+#define FES_VERSION ((FES_VERSION_MAJOR << 16) | FES_VERSION_MINOR)
 
 #ifdef WINDOWS
 

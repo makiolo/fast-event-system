@@ -7,6 +7,7 @@ CREATE_TEST("test_async_fast_autoconnect" fes)
 CREATE_TEST("test_async_delay" fes)
 CREATE_TEST("test_bench" fes)
 CREATE_TEST("test_nan" fes)
+CREATE_TEST("test_clang" "")
 
 # find_package
 include_directories(../verypoco/include)

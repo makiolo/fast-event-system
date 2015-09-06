@@ -22,16 +22,22 @@ macro(ENABLE_MODERN_CPP)
         #add_definitions(/GR-)
         #add_definitions(/D_HAS_EXCEPTIONS=0)
     else()
-        #add_definitions(-fno-rtti)
-        #add_definitions(-fno-exceptions)
-        #add_definitions(-fpermissive)
-        #add_definitions(-ggdb)
-        add_definitions(-Wall -Weffc++ -pedantic -pedantic-errors -Wextra -Waggrega te-return -Wcast-align -Wcast-qual -Wconversion)
+		#add_definitions(-fsanitize=address-full)
+		#add_definitions(-fsanitize=memory)
+		#add_definitions(-fsanitize=thread)
+		set(SANITIZE "thread")
+		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize=${SANITIZE}" )
+		SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZE}" )
+		add_definitions(-fsanitize=${SANITIZE})
+        #             add_definitions(-fno-rtti -fno-exceptions )
+        add_definitions(-Wall -Weffc++ -pedantic -pedantic-errors -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion)
         add_definitions(-Wdisabled-optimization -Werror -Wfloat-equal -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k)
-        add_definitions(-Wi mport  -Winit-self  -Winline -Winvalid-pch -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute)
-        add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpack ed  -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow)
-        add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused)
-        add_definitions(-Wunus ed-parameter -Wvariadic-macros -Wwrite-strings)
+        # add_definitions(-Wimport  -Winit-self  -Winline -Winvalid-pch -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute)
+        # add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpacked  -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow)
+        # add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused)
+        # add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
+		# In Linux default now is not export symbols
+		add_definitions(-fvisibility=hidden)
         SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
         SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lpthread" )
     endif()
@@ -71,7 +77,7 @@ macro(CREATE_TEST TESTNAME TESTDEPENDS)
 	include_directories(..)
 	ADD_EXECUTABLE(${TESTNAME} ${TESTNAME}.cpp)
 	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
-	ADD_TEST(NAME ${TESTNAME} COMMAND ${TESTNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
+	ADD_TEST(NAME ${TESTNAME} COMMAND ${TESTNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endmacro()
 
 macro(GET_SYSTEM_INFO)
@@ -148,11 +154,14 @@ function(GENERATE_EXE _EXECUTABLE_NAME _SOURCE_FILES _HEADERS_FILES)
     source_group( "Source Files" FILES ${_SOURCE_FILES} )
     source_group( "Header Files" FILES ${_HEADERS_FILES} )
 
-    add_definitions(/WX /W4)
+	# -g -fsanitize=address-full (buffer overflows)
+	# -g -fsanitize=thread (condiciones de carrera)
+	# -g -fsanitize=memory (detectar variables no inicializadas)
 
     IF(WIN32)
+		add_definitions(/WX /W4)
         ADD_EXECUTABLE(${_EXECUTABLE_NAME} WIN32 ${_SOURCE_FILES} ${_HEADERS_FILES})
-    ELSEIF(LINUX)
+    ELSEIF()
         ADD_EXECUTABLE(${_EXECUTABLE_NAME} ${_SOURCE_FILES} ${_HEADERS_FILES})
     ENDIF()
 
@@ -162,7 +171,7 @@ function(GENERATE_EXE _EXECUTABLE_NAME _SOURCE_FILES _HEADERS_FILES)
 	# -g -fsanitize=address-full (buffer overflows)
 	# -g -fsanitize=thread (condiciones de carrera)
 	# -g -fsanitize=memory (detectar variables no inicializadas)
-	# 
+	#
 	# ASAN_OPTIONS="detect_leaks=1" executable
 
     generate_vcxproj_user(${_EXECUTABLE_NAME})
@@ -228,20 +237,20 @@ function(GENERATE_LIB)
     source_group( "c" FILES ${SOURCE_FILES})
     source_group( "h" FILES ${HEADERS_FILES})
 
-    # c++ exceptions and RTTI
-    #add_definitions(/D_HAS_EXCEPTIONS=0)
-    #add_definitions(/GR-)
-    add_definitions(/wd4251)
-    add_definitions(/wd4275)
+	if(WIN32)
+		# c++ exceptions and RTTI
+		#add_definitions(/D_HAS_EXCEPTIONS=0)
+		#add_definitions(/GR-)
+		add_definitions(/wd4251)
+		add_definitions(/wd4275)
+		# Avoid warning as error with / WX / W4
+		# conversion from 'std::reference_wrapper<Chunk>' to 'std::reference_wrapper<Chunk> &
+		add_definitions(/wd4239)
+		# warning C4316: 'Dune::PhysicsManager' : object allocated on the heap may not be aligned 16
+		add_definitions(/wd4316)
 
-    # Avoid warning as error with / WX / W4
-    # conversion from 'std::reference_wrapper<Chunk>' to 'std::reference_wrapper<Chunk> &
-    add_definitions(/wd4239)
-
-    # warning C4316: 'Dune::PhysicsManager' : object allocated on the heap may not be aligned 16
-    add_definitions(/wd4316)
-
-    add_definitions(/WX /W4)
+		add_definitions(/WX /W4)
+	endif()
 
     ADD_LIBRARY(${LIBNAME} SHARED ${SOURCE_FILES} ${HEADERS_FILES} ${EXTRA_SOURCES})
     TARGET_LINK_LIBRARIES(${LIBNAME} ${TARGET_DEPENDENCIES} ${TARGET_3RDPARTY_DEPENDENCIES})

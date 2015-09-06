@@ -64,8 +64,8 @@ struct measure_scoped
 	// TODO: decision by compiler
 	// use best clock for you
 	//using clock = std::chrono::high_resolution_clock;
-	using clock = std::chrono::steady_clock;
-	//using clock = std::chrono::system_clock;
+	//using clock = std::chrono::steady_clock;
+	using clock = std::chrono::system_clock;
 
 	using result_t = double;
 	using time_point_t = std::chrono::time_point<clock>;
@@ -133,22 +133,6 @@ public:
 	std::string _data;
 };
 
-foo return_a_obj(int n)
-{
-	foo f("hola mundo 2222");
-	//std::cout << "data: " << f._data << std::endl;
-	if(n > 4)
-	{
-		f._data = "n > 4";
-	}
-	else
-	{
-		f._data = "n <= 4";
-	}
-	//std::cout << "data: " << f._data << std::endl;
-	return f;
-}
-
 int main_measured_algorithm_1(int, const char **)
 {
 	auto entity = std::make_shared<Entity>();
@@ -175,7 +159,7 @@ int main_measured_algorithm_2(int, const char **)
 
 double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, const char**))
 {
-	long long N = 1e6;
+	long long N = 1;
 	double elapsedtime;
 	{
 		measure_scoped timer(elapsedtime);
