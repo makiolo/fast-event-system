@@ -1,3 +1,4 @@
+# vim: set noexpandtab:
 language: cpp
 
 os:
@@ -123,6 +124,6 @@ notifications:
 	email:
 		recipients:
 			- makiolo@gmail.com
-	on_success: change
-	on_failure: always
+		on_success: change
+		on_failure: always
 
