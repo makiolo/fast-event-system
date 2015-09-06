@@ -6,6 +6,10 @@
 namespace asyncply {
 
 class multithread_API mutex
+	/*!
+	 * This class represent a mutex.
+	 * OS Supported: *Windows*, *Linux*, *Mac*
+	 */
 {
 public:
 	using scoped_lock_t = scoped_lock<mutex>;
@@ -14,6 +18,7 @@ public:
 	~mutex();
 
 	inline void lock()
+		//! lock this mutex
 	{
 #if defined(LINUX)
 		pthread_mutex_lock(&_mutex);
@@ -25,6 +30,7 @@ public:
 	}
 
 	inline void unlock()
+		//! unlock mutex
 	{
 #if defined(LINUX)
 		pthread_mutex_unlock(&_mutex);
@@ -36,11 +42,11 @@ public:
 	}
 
 	inline bool trylock()
+		//! lock if is not busy
 	{
 #if defined(LINUX)
 		return pthread_mutex_trylock(&_mutex) == 0;
 #elif defined(__APPLE__)
-		// sin implementar
 		assert(0);
 #else
 		return TryEnterCriticalSection(&_section_critical) != 0;
