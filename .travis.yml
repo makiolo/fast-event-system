@@ -2,9 +2,9 @@ language: cpp
 
 os:
     - linux
-    - osx
 
 before_install:
+    
     - if [ "$TRAVIS_OS_NAME" = "linux" ];
     then
         wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -;
