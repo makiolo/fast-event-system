@@ -37,11 +37,10 @@
 #include <fes/h/api.h>
 
 #ifdef _WIN32
-//#ifndef WIN32_LEAN_AND_MEAN
-//#define WIN32_LEAN_AND_MEAN
-//#endif
-//#include <Windows.h>
-//#define noexcept _NOEXCEPT
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
 #endif
 
 namespace fes
