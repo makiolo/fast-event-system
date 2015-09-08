@@ -1,5 +1,7 @@
 language: cpp
-
+sudo: required
+serviles
+    - docker
 os:
     - linux
 
@@ -125,4 +127,3 @@ notifications:
             - makiolo@gmail.com
         on_success: change
         on_failure: always
-
