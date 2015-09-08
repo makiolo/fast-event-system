@@ -2,10 +2,11 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/Semaphore.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 #if defined(__APPLE__)
-#include <sstream> // std::stringstream
+#include <sstream>  // std::stringstream
 int semaphore::_count_sem = 0;
 #endif
 
@@ -13,17 +14,17 @@ semaphore::semaphore(uint32_t concurrency, bool isForSync)
 {
 	_concurrency = concurrency;
 
-	assert(_concurrency > 0); // "La concurrencia es negativa o cero");
+	assert(_concurrency > 0);  // "La concurrencia es negativa o cero");
 
 #if defined(LINUX)
 
-	(void) sem_init(&_sem, 0, _concurrency);
+	(void)sem_init(&_sem, 0, _concurrency);
 
 	// En MAC y Linux siempre se inicia vacio
-	if(!isForSync)
+	if (!isForSync)
 	{
 		// hay que llenar el semaforo
-		for(uint32_t i(0); i < _concurrency; ++i)
+		for (uint32_t i(0); i < _concurrency; ++i)
 			unlock();
 	}
 
@@ -36,10 +37,10 @@ semaphore::semaphore(uint32_t concurrency, bool isForSync)
 	_sem = sem_open(_name_sem.c_str(), O_CREAT, 0644, _concurrency);
 
 	// En MAC y Linux siempre se inicia vacio
-	if(!isForSync)
+	if (!isForSync)
 	{
 		// hay que llenar el semaforo
-		for(uint32_t i(0); i < _concurrency; ++i)
+		for (uint32_t i(0); i < _concurrency; ++i)
 			unlock();
 	}
 
@@ -61,7 +62,7 @@ semaphore::semaphore(uint32_t concurrency, bool isForSync)
 semaphore::~semaphore()
 {
 #if defined(LINUX)
-	(void) sem_destroy(&_sem);
+	(void)sem_destroy(&_sem);
 #elif defined(__APPLE__)
 	int code1 = sem_close(_sem);
 	int code2 = sem_unlink(_name_sem.c_str());
@@ -82,14 +83,8 @@ void PrintLastError()
 	DWORD dw = GetLastError();
 
 	FormatMessageW(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
-		dw,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPWSTR)&lpMsgBuf,
-		0, NULL);
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
 
 	printf("Error: %S", lpMsgBuf);
 
@@ -99,6 +94,4 @@ void PrintLastError()
 #endif
 
 #endif
-
 }
-

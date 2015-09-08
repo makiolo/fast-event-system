@@ -8,24 +8,26 @@
 #include <sstream>
 #include <fstream>
 
-template <typename T> using weakptr = std::weak_ptr<T>;
+template <typename T>
+using weakptr = std::weak_ptr<T>;
 
 class Entity final
 {
 public:
-	Entity()
-	{ ; }
-	virtual ~Entity()
-	{ ; }
+	Entity() { ; }
+	virtual ~Entity() { ; }
 };
 
 class Component
 {
 public:
-	Component(weakptr<Entity>&& entity) : _entity(std::forward<weakptr<Entity> >(entity))
-	{ ; }
-	virtual ~Component()
-	{ ; }
+	Component(weakptr<Entity>&& entity)
+		: _entity(std::forward<weakptr<Entity>>(entity))
+	{
+		;
+	}
+	virtual ~Component() { ; }
+
 protected:
 	weakptr<Entity> _entity;
 };
@@ -33,19 +35,24 @@ protected:
 class Render final : public Component
 {
 public:
-	Render(weakptr<Entity>&& entity) : Component(std::forward<weakptr<Entity> >(entity))
-	{ ; }
-	virtual ~Render()
-	{ ; }
+	Render(weakptr<Entity>&& entity)
+		: Component(std::forward<weakptr<Entity>>(entity))
+	{
+		;
+	}
+	virtual ~Render() { ; }
 };
 
 class ComponentOLD
 {
 public:
-	ComponentOLD(const weakptr<Entity>& entity) : _entity(entity)
-	{ ; }
-	virtual ~ComponentOLD()
-	{ ; }
+	ComponentOLD(const weakptr<Entity>& entity)
+		: _entity(entity)
+	{
+		;
+	}
+	virtual ~ComponentOLD() { ; }
+
 protected:
 	weakptr<Entity> _entity;
 };
@@ -53,18 +60,20 @@ protected:
 class RenderOLD final : public ComponentOLD
 {
 public:
-	RenderOLD(const weakptr<Entity>& entity) : ComponentOLD(entity)
-	{ ; }
-	virtual ~RenderOLD()
-	{ ; }
+	RenderOLD(const weakptr<Entity>& entity)
+		: ComponentOLD(entity)
+	{
+		;
+	}
+	virtual ~RenderOLD() { ; }
 };
 
 struct measure_scoped
 {
 	// TODO: decision by compiler
 	// use best clock for you
-	//using clock = std::chrono::high_resolution_clock;
-	//using clock = std::chrono::steady_clock;
+	// using clock = std::chrono::high_resolution_clock;
+	// using clock = std::chrono::steady_clock;
 	using clock = std::chrono::system_clock;
 
 	using result_t = double;
@@ -72,9 +81,11 @@ struct measure_scoped
 	using duration_t = std::chrono::duration<result_t>;
 
 	measure_scoped(result_t& result)
-		: _start( clock::now() )
-		, _result( result )
-	{ ; }
+		: _start(clock::now())
+		, _result(result)
+	{
+		;
+	}
 
 	~measure_scoped()
 	{
@@ -84,28 +95,22 @@ struct measure_scoped
 	}
 
 protected:
-    time_point_t _start;
+	time_point_t _start;
 	result_t& _result;
 };
 
 class foo
 {
 public:
-	foo()
-	{
-		std::cout << "constructor empty" << std::endl;
-	}
+	foo() { std::cout << "constructor empty" << std::endl; }
 
 	foo(const std::string& data)
-		: _data( data )
+		: _data(data)
 	{
 		std::cout << "constructor" << std::endl;
 	}
 
-	~foo()
-	{
-		std::cout << "destructor" << std::endl;
-	}
+	~foo() { std::cout << "destructor" << std::endl; }
 
 	foo(const foo& other) = delete;
 	foo& operator=(const foo& other) = delete;
@@ -116,7 +121,7 @@ public:
 		std::cout << "constructor move &&" << std::endl;
 	}
 
-	foo& operator= (foo&& other)
+	foo& operator=(foo&& other)
 	{
 		std::cout << "asignacion move &&" << std::endl;
 		foo(std::move(other)).swap(*this);
@@ -133,7 +138,7 @@ public:
 	std::string _data;
 };
 
-int main_measured_algorithm_1(int, const char **)
+int main_measured_algorithm_1(int, const char**)
 {
 	auto entity = std::make_shared<Entity>();
 	auto render1 = std::make_shared<Render>(entity);
@@ -145,7 +150,7 @@ int main_measured_algorithm_1(int, const char **)
 	return 0;
 }
 
-int main_measured_algorithm_2(int, const char **)
+int main_measured_algorithm_2(int, const char**)
 {
 	auto entity = std::make_shared<Entity>();
 	auto render1 = std::make_shared<RenderOLD>(entity);
@@ -164,13 +169,13 @@ double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, cons
 	{
 		measure_scoped timer(elapsedtime);
 
-		for(int i=0;i<N;++i)
+		for (int i = 0; i < N; ++i)
 			volatile int result = algorithm(argc, argv);
 	}
-	return (elapsedtime*1e9)/N; // return mean time
+	return (elapsedtime * 1e9) / N;  // return mean time
 }
 
-int main(int argc, const char *argv[])
+int main(int argc, const char* argv[])
 {
 	double t1 = launch_benchmark(argc, argv, main_measured_algorithm_1);
 	double t2 = launch_benchmark(argc, argv, main_measured_algorithm_2);
@@ -183,4 +188,3 @@ int main(int argc, const char *argv[])
 }
 
 #pragma GCC diagnostic pop
-

@@ -5,7 +5,8 @@
 
 #define THREADCOUNT_MAX 16
 
-namespace asyncply {
+namespace asyncply
+{
 
 class multithread_API pool_thread : public thread
 {
@@ -15,25 +16,15 @@ public:
 
 	void Stop();
 
-	circular_queue<job>* get_queue() const
-	{
-		return _queue;
-	}
+	circular_queue<job>* get_queue() const { return _queue; }
 
 	void submit(job* j);
 
-	synchronizer* get_synchronizer_workers_finished() const
-	{
-		return _workers_finished;
-	}
+	synchronizer* get_synchronizer_workers_finished() const { return _workers_finished; }
 
-	unsigned int get_number_threads() const
-	{
-		return _number_threads;
-	}
+	unsigned int get_number_threads() const { return _number_threads; }
 
 protected:
-
 	void Start();
 
 	virtual void execute();
@@ -56,15 +47,12 @@ protected:
 	synchronizer* _workers_finished;
 
 public:
-
 #ifdef _WIN32
 	static DWORD HandleGlobalMyPoolThread(LPVOID parms);
 #else
-	static void* HandleGlobalMyPoolThread(void* parms );
+	static void* HandleGlobalMyPoolThread(void* parms);
 #endif
 };
-
 }
 
-#endif // _POOL_THREAD_
-
+#endif  // _POOL_THREAD_

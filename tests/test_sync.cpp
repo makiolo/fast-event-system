@@ -22,20 +22,17 @@ int main(int, const char**)
 	{
 		// TODO: operator=
 		fes::connection<int, std::string, double> conn(
-			sync.connect(
-				[](int n, const std::string& str, double r)
+			sync.connect([](int n, const std::string& str, double r)
 				{
 					std::cout << "received message: " << std::endl;
 					std::cout << "n = " << n << std::endl;
 					std::cout << "str = " << str << std::endl;
 					std::cout << "r = " << r << std::endl;
-					if(str == "kill")
+					if (str == "kill")
 					{
 						exit(1);
 					}
-				}
-			)
-		);
+				}));
 		// lambda must received this
 		sync(5, "hello world", 11.0);
 
@@ -45,4 +42,3 @@ int main(int, const char**)
 	sync(6, "kill", 12.0);
 	return 0;
 }
-

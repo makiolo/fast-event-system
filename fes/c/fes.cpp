@@ -1,6 +1,7 @@
 #include <fes/h/fes.h>
 
-namespace fes {
+namespace fes
+{
 
 #ifdef _WIN32
 
@@ -43,5 +44,4 @@ fes::marktime high_resolution_clock()
 }
 
 #endif
-
 }

@@ -2,7 +2,8 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/PoolThread.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 pool_thread::pool_thread(uint32_t numThreads /*= 4*/)
 {
@@ -12,7 +13,7 @@ pool_thread::pool_thread(uint32_t numThreads /*= 4*/)
 	assert(_number_threads <= THREADCOUNT_MAX);
 
 	_started = false;
-	for (uint32_t i=0; i < _number_threads; ++i)
+	for (uint32_t i = 0; i < _number_threads; ++i)
 	{
 		_workers[i] = new worker(this);
 	}
@@ -27,7 +28,7 @@ pool_thread::~pool_thread(void)
 	delete _workers_finished;
 	delete _any_job;
 	delete _queue;
-	for (uint32_t i=0; i < _number_threads; ++i)
+	for (uint32_t i = 0; i < _number_threads; ++i)
 	{
 		delete _workers[i];
 	}
@@ -39,22 +40,21 @@ void pool_thread::Start()
 	{
 		_started = true;
 
-		for (uint32_t i=0; i < _number_threads; ++i)
+		for (uint32_t i = 0; i < _number_threads; ++i)
 		{
 #ifdef _WIN32
-			_threads[i] = CreateThread(
-				NULL,       // default security attributes
-				0,          // default stack size
+			_threads[i] = CreateThread(NULL,  // default security attributes
+				0,							  // default stack size
 				(LPTHREAD_START_ROUTINE)HandleGlobalMyPoolThread,
-				_workers[i],	// no thread function arguments
-				0,          // default creation flags
-				&_threads_id[i]); // receive thread identifier
+				_workers[i],	   // no thread function arguments
+				0,				   // default creation flags
+				&_threads_id[i]);  // receive thread identifier
 #else
-#ifdef JOINABLE // Joinable
+#ifdef JOINABLE  // Joinable
 			pthread_create(&_threads[i], NULL, HandleGlobalMyPoolThread, _workers[i]);
-#else // Detachable
+#else			 // Detachable
 
-			pthread_attr_t attr; // thread attribute
+			pthread_attr_t attr;  // thread attribute
 
 			// set thread detachstate attribute to DETACHED
 			pthread_attr_init(&attr);
@@ -66,7 +66,7 @@ void pool_thread::Start()
 		}
 
 		// esperar a que los hilos terminen
-		// 
+		//
 		_workers_finished->wait(_number_threads);
 	}
 }
@@ -124,7 +124,7 @@ DWORD pool_thread::HandleGlobalMyPoolThread(LPVOID parms)
 
 #else
 
-void* pool_thread::HandleGlobalMyPoolThread(void* parms )
+void* pool_thread::HandleGlobalMyPoolThread(void* parms)
 {
 	worker* w = static_cast<worker*>(parms);
 
@@ -134,12 +134,11 @@ void* pool_thread::HandleGlobalMyPoolThread(void* parms )
 	// avisa que el hilo a terminado
 	w->get_owner()->get_synchronizer_workers_finished()->signal();
 
-#ifdef JOINABLE // Joinable
+#ifdef JOINABLE  // Joinable
 	pthread_exit(0);
 #endif
 	return NULL;
 }
 
 #endif
-
 }

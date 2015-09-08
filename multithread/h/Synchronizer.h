@@ -3,20 +3,18 @@
 
 #include "Semaphore.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 class multithread_API synchronizer : public semaphore
 {
 public:
-	synchronizer(uint32_t max = 1) : semaphore(max, true)
+	synchronizer(uint32_t max = 1)
+		: semaphore(max, true)
 	{
-
 	}
 
-	~synchronizer()
-	{
-
-	}
+	~synchronizer() {}
 
 	inline void wait(uint32_t count = 1) const
 	{
@@ -30,7 +28,6 @@ public:
 			unlock();
 	}
 };
-
 }
 
-#endif // _SYNCRONIZER_H_
+#endif  // _SYNCRONIZER_H_

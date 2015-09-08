@@ -2,7 +2,8 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/Job.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 void job::Execute()
 {
@@ -12,17 +13,17 @@ void job::Execute()
 		Start();
 		_state = RUNNING;
 	}
-	
+
 	do
 	{
 		// avanzar el algoritmo sliced
 		_state = Update();
-		
+
 		// dar oportunidad a otros hilos
-		//pthread_yield_np();
-	
+		// pthread_yield_np();
+
 	} while (_state == RUNNING);
-	
+
 	// termina
 	Finish();
 }

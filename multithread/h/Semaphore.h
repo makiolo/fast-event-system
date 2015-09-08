@@ -1,7 +1,8 @@
 #ifndef _SEMAPHORE_H_
 #define _SEMAPHORE_H_
 
-namespace asyncply {
+namespace asyncply
+{
 
 #ifdef _WIN32
 #ifdef _DEBUG
@@ -13,15 +14,13 @@ template <typename T>
 class scoped_lock
 {
 public:
-	explicit scoped_lock(T& semaforo) : _semaphore(semaforo)
+	explicit scoped_lock(T& semaforo)
+		: _semaphore(semaforo)
 	{
 		_semaphore.lock();
 	}
 
-	~scoped_lock()
-	{
-		_semaphore.unlock();
-	}
+	~scoped_lock() { _semaphore.unlock(); }
 	scoped_lock& operator=(const scoped_lock&) = delete;
 
 protected:
@@ -37,7 +36,8 @@ public:
 	~semaphore();
 
 	///
-	/// Reduce el valor del semaforo. Bloquea la región critica. Esta operación tiene múltiples nombres.
+	/// Reduce el valor del semaforo. Bloquea la región critica. Esta operación tiene múltiples
+	/// nombres.
 	///  * wait (s)
 	///	 * {
 	///		  if s > 0
@@ -52,11 +52,11 @@ public:
 	{
 #if defined(LINUX)
 
-		(void) sem_wait(&_sem);
+		(void)sem_wait(&_sem);
 
 #elif defined(__APPLE__)
 
-		(void) sem_wait(_sem);
+		(void)sem_wait(_sem);
 
 #else
 #ifdef _DEBUG
@@ -89,11 +89,11 @@ public:
 	{
 #if defined(LINUX)
 
-		(void) sem_post(&_sem);
+		(void)sem_post(&_sem);
 
 #elif defined(__APPLE__)
 
-		(void) sem_post(_sem);
+		(void)sem_post(_sem);
 
 #else
 #ifdef _DEBUG
@@ -112,7 +112,7 @@ public:
 	{
 #if defined(LINUX)
 		int value;
-		(void) sem_getvalue(&_sem, &value);
+		(void)sem_getvalue(&_sem, &value);
 		return value;
 #elif defined(__APPLE__)
 		// apple no lo implementa (sem_getvalue)
@@ -125,21 +125,21 @@ public:
 	}
 
 protected:
-
 #if defined(LINUX)
 	mutable sem_t _sem;
 #elif defined(__APPLE__)
 	sem_t* _sem;
 	std::string _name_sem;
+
 public:
 	static int _count_sem;
+
 protected:
 #else
 	HANDLE _semaphore;
 #endif
 	uint32_t _concurrency;
 };
-
 }
 
-#endif // _SEMAPHORE_H_
+#endif  // _SEMAPHORE_H_

@@ -11,21 +11,17 @@ int main(int, const char**)
 	// testing autoconnect
 	sync.connect(sync);
 
-	fes::connection<std::string> conn(
-		sync.connect(
-			[&counter](const std::string& str)
-			{
-				std::cout << str << std::endl;
-				++counter;
-			}
-		)
-	);
+	fes::connection<std::string> conn(sync.connect([&counter](const std::string& str)
+		{
+			std::cout << str << std::endl;
+			++counter;
+		}));
 
 	sync("autoreference");
-	for (int i = 0; i < N; ++i) {
+	for (int i = 0; i < N; ++i)
+	{
 		sync.dispatch_one();
 	}
 
 	return (counter == N ? 0 : 1);
 }
-

@@ -6,49 +6,47 @@
 
 #define MAX_ELEMENTS 512
 
-namespace asyncply {
+namespace asyncply
+{
 
 template <typename T>
 class circular_queue
 {
 public:
 	circular_queue()
-			: _top_index(0)
+		: _top_index(0)
 		, _bottom_index(0)
-			, _number_works(0)
+		, _number_works(0)
 	{
-
 	}
 
-	~circular_queue()
-	{
-
-	}
+	~circular_queue() {}
 
 	void push(T* element)
 	{
-			mutex::scoped_lock_t lock(_mutex);
+		mutex::scoped_lock_t lock(_mutex);
 
-		assert(_number_works < MAX_ELEMENTS); // "Demasiados elementos en la cola circular, aumente el valor de MAX_ELEMENTS");
+		assert(_number_works < MAX_ELEMENTS);  // "Demasiados elementos en la cola circular, aumente
+											   // el valor de MAX_ELEMENTS");
 
 		_queue[_top_index] = element;
-			_top_index = (_top_index + 1) % (MAX_ELEMENTS - 1);
+		_top_index = (_top_index + 1) % (MAX_ELEMENTS - 1);
 
 		++_number_works;
 	}
 
 	T* pop()
 	{
-			mutex::scoped_lock_t lock(_mutex);
+		mutex::scoped_lock_t lock(_mutex);
 
 		if (_number_works > 0)
 		{
 			T* element = _queue[_bottom_index];
-				_bottom_index = (_bottom_index + 1) % (MAX_ELEMENTS - 1);
+			_bottom_index = (_bottom_index + 1) % (MAX_ELEMENTS - 1);
 
 			--_number_works;
 
-			assert(_number_works >= 0); // "Number of elements can't be negative.");
+			assert(_number_works >= 0);  // "Number of elements can't be negative.");
 
 			return element;
 		}
@@ -58,15 +56,9 @@ public:
 		}
 	}
 
-	inline int size()
-	{
-		return _number_works;
-	}
+	inline int size() { return _number_works; }
 
-	mutex& get_mutex()
-	{
-		return _mutex;
-	}
+	mutex& get_mutex() { return _mutex; }
 
 private:
 	T* _queue[MAX_ELEMENTS];
@@ -75,7 +67,6 @@ private:
 	mutex _mutex;
 	int _number_works;
 };
-
 }
 
-#endif // _CIRCULAR_QUEUE_H_
+#endif  // _CIRCULAR_QUEUE_H_

@@ -3,54 +3,38 @@
 
 #include "Job.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
-	class job_function : public job
+class job_function : public job
+{
+public:
+	job_function(const std::function<job::StateJob()>& function)
 	{
-	public:
-		job_function(const std::function<job::StateJob()>& function)
-		{
-			_function = function;
-			_callback = true;
-		}
+		_function = function;
+		_callback = true;
+	}
 
-		job_function()
-		{
-			_callback = false;
-		}
+	job_function() { _callback = false; }
 
-		~job_function(void)
-		{
+	~job_function(void) {}
 
-		}
+	void set_function(const std::function<job::StateJob()>& function)
+	{
+		_function = function;
+		_callback = true;
+	}
 
-		void set_function(const std::function<job::StateJob()>& function)
-		{
-			_function = function;
-			_callback = true;
-		}
+	virtual void Start() { assert(_callback); }
 
-		virtual void Start()
-		{
-			assert(_callback);
-		}
+	virtual job::StateJob Update() { return _function(); }
 
-		virtual job::StateJob Update()
-		{
-			return _function();
-		}
+	virtual void Finish() {}
 
-		virtual void Finish()
-		{
-
-		}
-
-	protected:
-		std::function<job::StateJob()> _function;
-		bool _callback;
-	};
-
+protected:
+	std::function<job::StateJob()> _function;
+	bool _callback;
+};
 }
 
-#endif // _JOB_FUNCTION_H_
-
+#endif  // _JOB_FUNCTION_H_

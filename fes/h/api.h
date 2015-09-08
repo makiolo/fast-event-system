@@ -25,33 +25,33 @@
 
 #ifdef WINDOWS
 
-	typedef __int64				Int64;
-	typedef signed int			Int32;
-	typedef signed short		Int16;
-	typedef signed char			Int8;
+typedef __int64 Int64;
+typedef signed int Int32;
+typedef signed short Int16;
+typedef signed char Int8;
 
-	typedef unsigned __int64	UInt64;
-	typedef unsigned int		Uint32;
-	typedef unsigned short		Uint16;
-	typedef unsigned char		Uint8;
+typedef unsigned __int64 UInt64;
+typedef unsigned int Uint32;
+typedef unsigned short Uint16;
+typedef unsigned char Uint8;
 
-	typedef double				Real64;
-	typedef float				Real32;
+typedef double Real64;
+typedef float Real32;
 
 #else
 
-	typedef long long			Int64;
-	typedef signed int			Int32;
-	typedef signed short		Int16;
-	typedef signed char			Int8;
+typedef long long Int64;
+typedef signed int Int32;
+typedef signed short Int16;
+typedef signed char Int8;
 
-	typedef unsigned long long	UInt64;
-	typedef unsigned int		Uint32;
-	typedef unsigned short		Uint16;
-	typedef unsigned char		Uint8;
+typedef unsigned long long UInt64;
+typedef unsigned int Uint32;
+typedef unsigned short Uint16;
+typedef unsigned char Uint8;
 
-	typedef double				Real64;
-	typedef float				Real32;
+typedef double Real64;
+typedef float Real32;
 
 #endif
 
@@ -59,4 +59,4 @@ typedef Int32 Int;
 typedef Uint32 Uint;
 typedef Real32 Real;
 
-#endif // _FES_API_H_
+#endif  // _FES_API_H_

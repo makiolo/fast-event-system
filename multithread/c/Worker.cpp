@@ -2,7 +2,8 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/Worker.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 void worker::execute()
 {
@@ -22,5 +23,4 @@ void worker::execute()
 		}
 	}
 }
-
 }

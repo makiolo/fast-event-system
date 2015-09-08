@@ -3,13 +3,14 @@
 
 #include "Semaphore.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 class multithread_API mutex
-	/*!
-	 * This class represent a mutex.
-	 * OS Supported: *Windows*, *Linux*, *Mac*
-	 */
+/*!
+ * This class represent a mutex.
+ * OS Supported: *Windows*, *Linux*, *Mac*
+ */
 {
 public:
 	using scoped_lock_t = scoped_lock<mutex>;
@@ -18,7 +19,7 @@ public:
 	~mutex();
 
 	inline void lock()
-		//! lock this mutex
+	//! lock this mutex
 	{
 #if defined(LINUX)
 		pthread_mutex_lock(&_mutex);
@@ -30,7 +31,7 @@ public:
 	}
 
 	inline void unlock()
-		//! unlock mutex
+	//! unlock mutex
 	{
 #if defined(LINUX)
 		pthread_mutex_unlock(&_mutex);
@@ -42,7 +43,7 @@ public:
 	}
 
 	inline bool trylock()
-		//! lock if is not busy
+	//! lock if is not busy
 	{
 #if defined(LINUX)
 		return pthread_mutex_trylock(&_mutex) == 0;
@@ -54,18 +55,15 @@ public:
 	}
 
 protected:
-
 #if defined(LINUX)
 	pthread_mutex_t _mutex;
-	pthread_mutexattr_t  _attr;
+	pthread_mutexattr_t _attr;
 #elif defined(__APPLE__)
 	Semaphore _sem;
 #else
 	CRITICAL_SECTION _section_critical;
 #endif
 };
-
 }
 
-#endif // _MUTEX_H_
-
+#endif  // _MUTEX_H_

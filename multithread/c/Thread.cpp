@@ -2,7 +2,8 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/Thread.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 #ifdef _WIN32
 
@@ -20,11 +21,10 @@ void* thread::HandleGlobalMyThread(void* parms)
 	thread* t = static_cast<thread*>(parms);
 	t->execute();
 
-#ifdef JOINABLE // Joinable
+#ifdef JOINABLE  // Joinable
 	pthread_exit(0);
 #endif
 	return NULL;
 }
 #endif
-
 }

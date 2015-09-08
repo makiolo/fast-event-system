@@ -3,7 +3,8 @@
 
 #include "Thread.h"
 
-namespace asyncply {
+namespace asyncply
+{
 
 class multithread_API worker
 {
@@ -14,29 +15,18 @@ public:
 		_interrupted = false;
 	}
 
-	~worker()
-	{
-
-	}
+	~worker() {}
 
 	void execute();
 
-	void set_interrupted(bool interrupted)
-	{
-		_interrupted = interrupted;
-	}
+	void set_interrupted(bool interrupted) { _interrupted = interrupted; }
 
-	pool_thread* get_owner() const
-	{
-		return _owner;
-	}
+	pool_thread* get_owner() const { return _owner; }
 
 protected:
 	pool_thread* _owner;
 	bool _interrupted;
 };
-
 }
 
 #endif
-
