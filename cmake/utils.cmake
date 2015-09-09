@@ -1,5 +1,3 @@
-# http://lucumr.pocoo.org/2013/8/18/beautiful-native-libraries/
-
 macro(GENERATE_CLANG)
 	# Generate .clang_complete for full completation in vim + clang_complete
 	set(extra_parameters "")
@@ -25,17 +23,20 @@ macro(ENABLE_MODERN_CPP)
 		#add_definitions(-fsanitize=address-full)
 		#add_definitions(-fsanitize=memory)
 		#add_definitions(-fsanitize=thread)
-		set(SANITIZE "thread")
+		set(SANITIZE "memory")
 		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize=${SANITIZE}" )
 		SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZE}" )
 		add_definitions(-fsanitize=${SANITIZE})
-        #             add_definitions(-fno-rtti -fno-exceptions )
+        # add_definitions(-fno-rtti -fno-exceptions )
+		# activate all warnings and convert in errors
         add_definitions(-Wall -Weffc++ -pedantic -pedantic-errors -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion)
         add_definitions(-Wdisabled-optimization -Werror -Wfloat-equal -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k)
-        # add_definitions(-Wimport  -Winit-self  -Winline -Winvalid-pch -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute)
-        # add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpacked  -Wpadded -Wpointer-arith -Wredundant-decls -Wshadow)
-        # add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused)
-        # add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
+        add_definitions(-Wimport  -Winit-self  -Winline -Winvalid-pch -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute)
+		add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow)
+        add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused)
+        add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
+		# convert error in warnings
+		add_definitions(-Wno-error=shadow)
 		# In Linux default now is not export symbols
 		add_definitions(-fvisibility=hidden)
         SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
@@ -65,12 +66,13 @@ macro(ENABLE_MODERN_CPP)
 		elseif(COMPILER_SUPPORTS_CXX0X)
 			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 			message("-- C++0x Enabled")
-	else()
+		else()
 			message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 		endif()
 	else()
 		add_definitions(${EXTRA_DEF})
 	endif()
+
 endmacro()
 
 macro(CREATE_TEST TESTNAME TESTDEPENDS)
@@ -246,9 +248,8 @@ function(GENERATE_LIB)
 		# Avoid warning as error with / WX / W4
 		# conversion from 'std::reference_wrapper<Chunk>' to 'std::reference_wrapper<Chunk> &
 		add_definitions(/wd4239)
-		# warning C4316: 'Dune::PhysicsManager' : object allocated on the heap may not be aligned 16
+		# warning C4316: 'PhysicsManager' : object allocated on the heap may not be aligned 16
 		add_definitions(/wd4316)
-
 		add_definitions(/WX /W4)
 	endif()
 

@@ -136,52 +136,5 @@ int main()
 	}
 
 	exit(called1 && called2 ? 0 : 1);
-
-#if 0
-	// fixed deltatime clock
-
-	double freq = 5.0; // Hz
-	double period = 1000 / freq;
-	double timeline_past = 0.0;
-	double timeline_present = 0.0;
-	double timeline_future = 0.0;
-	double radius = period;
-	timeline_past -= radius;
-	timeline_future += radius;
-
-	fes::async_delay<> clock;
-	fes::connection<> conn;
-	conn = clock.connect([&]() {
-		radius = timeline_present - timeline_past;
-		timeline_past = timeline_present;
-		timeline_present = timeline_future;
-		timeline_future += radius;
-		std::cout << "timeline = " << timeline_present << std::endl;
-	});
-	clock.connect(0, fes::deltatime(period), clock);
-	clock();
-
-	fes::marktime begin = fes::high_resolution_clock();
-	fes::marktime end;
-	double realtime = 0.0;
-	double dt = period;
-	while(true)
-	{
-		float d = realtime / timeline_future;
-		clamp( d, 0.0f, 1.0f );
-
-		auto interp = smoothstep(timeline_present, timeline_future, d);
-		std::cout << "t = " << interp << std::endl;
-
-		clock.update();
-
-		end = begin;
-		dt = std::chrono::duration_cast<std::chrono::duration<fes::marktime> >(end - begin).count();
-
-		realtime += dt;
-		begin = fes::high_resolution_clock();
-	}
-#endif
-
-	return 0;
 }
+

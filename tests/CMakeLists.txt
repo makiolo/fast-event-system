@@ -10,7 +10,7 @@ CREATE_TEST("test_nan" fes)
 CREATE_TEST("test_clang" "")
 
 # find_package
-include_directories(../verypoco/include)
+include_directories(SYSTEM ../verypoco/include)
 if(WIN32)
 	add_definitions(-DPOCO_OS_FAMILY_WINDOWS)
 endif()

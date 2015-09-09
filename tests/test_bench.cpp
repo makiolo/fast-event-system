@@ -12,7 +12,7 @@ template <typename T>
 using weakptr = std::weak_ptr<T>;
 
 class Entity final
-{
+	{
 public:
 	Entity() { ; }
 	virtual ~Entity() { ; }
