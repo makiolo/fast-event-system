@@ -5,22 +5,22 @@ os:
 before_install:
     - if [ "$TRAVIS_OS_NAME" = "linux" ];
       then
-            shippable_retry wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -;
-            shippable_retry sudo add-apt-repository --yes "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main";
-            shippable_retry sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
-            shippable_retry sudo add-apt-repository --yes ppa:h-rayflood/llvm;
-            shippable_retry sudo add-apt-repository --yes ppa:andykimpe/cmake;
-            shippable_retry sudo apt-get update -qq;
-            shippable_retry sudo apt-get install -qq cmake;
-            shippable_retry sudo apt-get install -qq $SUPPORT;
-            shippable_retry sudo apt-get install -qq $PACKAGE;
+            wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -;
+            sudo add-apt-repository --yes "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main";
+            sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
+            sudo add-apt-repository --yes ppa:h-rayflood/llvm;
+            sudo add-apt-repository --yes ppa:andykimpe/cmake;
+            sudo apt-get update -qq;
+            sudo apt-get install -qq cmake;
+            sudo apt-get install -qq $SUPPORT;
+            sudo apt-get install -qq $PACKAGE;
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
 
 script:
     - mkdir -p $FL_CONF
     - cd $FL_CONF
-    - shippable_retry cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF
+    - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF
     - make -j4
     - ctest --no-compress-output --output-on-failure -T Test --timeout 30 .
     - mkdir -p ../shippable/testresults/
