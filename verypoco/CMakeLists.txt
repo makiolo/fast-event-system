@@ -24,7 +24,7 @@ endmacro()
 
 macro(POCO_SOURCES_AUTO_PLAT out platform)
     foreach( f ${ARGN})
-		
+
         get_filename_component(fname ${f} NAME)
 
         # Read the package name from the source file
@@ -95,6 +95,8 @@ endif(WIN32)
 
 if (UNIX AND NOT ANDROID )
   add_definitions( -DPOCO_OS_FAMILY_UNIX )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
   # Standard 'must be' defines
   if (APPLE)
     add_definitions( -DPOCO_HAVE_IPv6 -DPOCO_NO_STAT64)
@@ -106,15 +108,15 @@ if (UNIX AND NOT ANDROID )
 endif(UNIX AND NOT ANDROID )
 
 if (CMAKE_SYSTEM MATCHES "SunOS")
-  add_definitions( -DPOCO_OS_FAMILY_UNIX )
-  # Standard 'must be' defines
-  add_definitions( -D_XOPEN_SOURCE=500 -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 )
-  set(SYSLIBS  pthread socket xnet nsl resolv rt dl)
+	add_definitions( -DPOCO_OS_FAMILY_UNIX )
+	# Standard 'must be' defines
+	add_definitions( -D_XOPEN_SOURCE=500 -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 )
+	set(SYSLIBS  pthread socket xnet nsl resolv rt dl)
 endif(CMAKE_SYSTEM MATCHES "SunOS")
 
 if (CMAKE_COMPILER_IS_MINGW)
-  add_definitions(-DWC_NO_BEST_FIT_CHARS=0x400  -DPOCO_WIN32_UTF8)
-  add_definitions(-D_WIN32 -DMINGW32 -DWINVER=0x500 -DODBCVER=0x0300 -DPOCO_THREAD_STACK_SIZE)
+	add_definitions(-DWC_NO_BEST_FIT_CHARS=0x400  -DPOCO_WIN32_UTF8)
+	add_definitions(-D_WIN32 -DMINGW32 -DWINVER=0x500 -DODBCVER=0x0300 -DPOCO_THREAD_STACK_SIZE)
 endif (CMAKE_COMPILER_IS_MINGW)
 
 if (CYGWIN)
@@ -234,3 +236,4 @@ target_include_directories( "${LIBNAME}"
     )
 
 POCO_INSTALL("${LIBNAME}")
+

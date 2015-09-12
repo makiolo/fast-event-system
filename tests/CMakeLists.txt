@@ -8,6 +8,8 @@ CREATE_TEST("test_async_delay" fes)
 CREATE_TEST("test_bench" fes)
 CREATE_TEST("test_nan" fes)
 CREATE_TEST("test_clang" "")
+CREATE_TEST("test_sequence" fes)
+CREATE_TEST("test_parallel" fes)
 
 # find_package
 include_directories(SYSTEM ../verypoco/include)

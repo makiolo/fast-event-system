@@ -22,13 +22,14 @@
 #include <sys/time.h>
 #endif
 
-
-namespace Poco {
-
-
-SemaphoreImpl::SemaphoreImpl(int n, int max): _n(n), _max(max)
+namespace Poco
 {
-	poco_assert (n >= 0 && max > 0 && n <= max);
+
+SemaphoreImpl::SemaphoreImpl(int n, int max)
+	: _n(n)
+	, _max(max)
+{
+	poco_assert(n >= 0 && max > 0 && n <= max);
 
 #if defined(POCO_VXWORKS)
 	// This workaround is for VxWorks 5.x where
@@ -50,12 +51,33 @@ SemaphoreImpl::~SemaphoreImpl()
 	pthread_mutex_destroy(&_mutex);
 }
 
+void SemaphoreImpl::setImpl()
+{
+	if (pthread_mutex_lock(&_mutex))
+		throw SystemException("cannot signal semaphore (lock)");
+	if (_n < _max)
+	{
+		++_n;
+	}
+	else
+	{
+		pthread_mutex_unlock(&_mutex);
+		throw SystemException("cannot signal semaphore: count would exceed maximum");
+	}
+	if (pthread_cond_signal(&_cond))
+	{
+		pthread_mutex_unlock(&_mutex);
+		throw SystemException("cannot signal semaphore");
+	}
+	pthread_mutex_unlock(&_mutex);
+}
+
 
 void SemaphoreImpl::waitImpl()
 {
 	if (pthread_mutex_lock(&_mutex))
-		throw SystemException("wait for semaphore failed (lock)"); 
-	while (_n < 1) 
+		throw SystemException("wait for semaphore failed (lock)");
+	while (_n < 1)
 	{
 		if (pthread_cond_wait(&_cond, &_mutex))
 		{
@@ -75,13 +97,13 @@ bool SemaphoreImpl::waitImpl(long milliseconds)
 
 #if defined(__VMS)
 	struct timespec delta;
-	delta.tv_sec  = milliseconds / 1000;
-	delta.tv_nsec = (milliseconds % 1000)*1000000;
+	delta.tv_sec = milliseconds / 1000;
+	delta.tv_nsec = (milliseconds % 1000) * 1000000;
 	pthread_get_expiration_np(&delta, &abstime);
 #elif defined(POCO_VXWORKS)
 	clock_gettime(CLOCK_REALTIME, &abstime);
-	abstime.tv_sec  += milliseconds / 1000;
-	abstime.tv_nsec += (milliseconds % 1000)*1000000;
+	abstime.tv_sec += milliseconds / 1000;
+	abstime.tv_nsec += (milliseconds % 1000) * 1000000;
 	if (abstime.tv_nsec >= 1000000000)
 	{
 		abstime.tv_nsec -= 1000000000;
@@ -90,8 +112,8 @@ bool SemaphoreImpl::waitImpl(long milliseconds)
 #else
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	abstime.tv_sec  = tv.tv_sec + milliseconds / 1000;
-	abstime.tv_nsec = tv.tv_usec*1000 + (milliseconds % 1000)*1000000;
+	abstime.tv_sec = tv.tv_sec + milliseconds / 1000;
+	abstime.tv_nsec = tv.tv_usec * 1000 + (milliseconds % 1000) * 1000000;
 	if (abstime.tv_nsec >= 1000000000)
 	{
 		abstime.tv_nsec -= 1000000000;
@@ -100,20 +122,24 @@ bool SemaphoreImpl::waitImpl(long milliseconds)
 #endif
 
 	if (pthread_mutex_lock(&_mutex) != 0)
-		throw SystemException("wait for semaphore failed (lock)"); 
-	while (_n < 1) 
+		throw SystemException("wait for semaphore failed (lock)");
+	while (_n < 1)
 	{
 		if ((rc = pthread_cond_timedwait(&_cond, &_mutex, &abstime)))
 		{
-			if (rc == ETIMEDOUT) break;
+			if (rc == ETIMEDOUT)
+				break;
 			pthread_mutex_unlock(&_mutex);
 			throw SystemException("cannot wait for semaphore");
 		}
 	}
-	if (rc == 0) --_n;
+	if (rc == 0)
+	{
+		--_n;
+	}
 	pthread_mutex_unlock(&_mutex);
 	return rc == 0;
 }
 
 
-} // namespace Poco
+}  // namespace Poco

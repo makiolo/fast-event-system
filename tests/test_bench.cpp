@@ -7,6 +7,7 @@
 #include <chrono>
 #include <sstream>
 #include <fstream>
+#include <scheduler/h/sas.h>
 
 template <typename T>
 using weakptr = std::weak_ptr<T>;
@@ -140,31 +141,46 @@ public:
 
 int main_measured_algorithm_1(int, const char**)
 {
-	auto entity = std::make_shared<Entity>();
-	auto render1 = std::make_shared<Render>(entity);
-	auto render2 = std::make_shared<Render>(entity);
-	auto render3 = std::make_shared<Render>(entity);
-	auto render4 = std::make_shared<Render>(entity);
-	auto render5 = std::make_shared<Render>(entity);
-	auto render6 = std::make_shared<Render>(entity);
+	double total = 0.0;
+	total = asyncply::sequence(1.0,
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		}
+	);
+	if(total != 6.0)
+	{
+		std::cout << "invalid result: " << total << std::endl;
+		throw std::exception();
+	}
 	return 0;
 }
 
 int main_measured_algorithm_2(int, const char**)
 {
-	auto entity = std::make_shared<Entity>();
-	auto render1 = std::make_shared<RenderOLD>(entity);
-	auto render2 = std::make_shared<RenderOLD>(entity);
-	auto render3 = std::make_shared<RenderOLD>(entity);
-	auto render4 = std::make_shared<RenderOLD>(entity);
-	auto render5 = std::make_shared<RenderOLD>(entity);
-	auto render6 = std::make_shared<RenderOLD>(entity);
+
 	return 0;
 }
 
 double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, const char**))
 {
-	long long N = 1;
+	long long N = 1e3;
 	double elapsedtime;
 	{
 		measure_scoped timer(elapsedtime);
@@ -188,3 +204,4 @@ int main(int argc, const char* argv[])
 }
 
 #pragma GCC diagnostic pop
+

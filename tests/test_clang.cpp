@@ -21,7 +21,5 @@ int main(int, const char**)
 	std::cout << "has feature memory_sanitizer" << std::endl;
 #endif
 #endif
-	char buffer[1000];
-	std::cout << buffer << std::endl;
 	return 0;
 }

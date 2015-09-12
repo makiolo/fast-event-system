@@ -11,6 +11,7 @@
 #include <atomic>
 #include <mutex>
 #include <csignal>
+#include <exception>
 #include <fes/h/fes.h>
 #include <animator/h/interpolation.h>
 #include <Poco/Thread.h>
@@ -26,18 +27,27 @@ namespace asyncply
 
 template <typename R>
 class task;
+
 template <typename Function>
 using task_of_functor = task<typename std::result_of<Function()>::type>;
+
 template <typename Function>
 using shared_task = std::shared_ptr<task_of_functor<Function>>;
+
+template <typename Function>
+shared_task<Function> run(Function&& f);
+
+template <typename Function, typename FunctionPost>
+shared_task<Function> run(Function&& f, FunctionPost&& fp);
 
 template <typename R>
 class future
 {
 public:
-	future(Poco::Semaphore& mutex)
-		: _semaphore(mutex)
-		, _ready(0)
+	future(Poco::Semaphore& sem)
+		: _semaphore(sem)
+		, _ready(false)
+		, _has_exception(false)
 	{
 	}
 
@@ -45,30 +55,15 @@ public:
 
 	R& get()
 	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		while (_ready <= 0)
+		Poco::Mutex::ScopedLock lock(_lock);
+		while (!_ready)
 		{
 			_semaphore.wait();
-			if (_exception)
+			if (_has_exception && _exception)
 			{
 				std::rethrow_exception(_exception);
 			}
-			++_ready;
-		}
-		return _value;
-	}
-
-	R& get_post()
-	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		while (_ready <= 1)
-		{
-			_semaphore.wait();
-			if (_exception)
-			{
-				std::rethrow_exception(_exception);
-			}
-			++_ready;
+			_ready = true;
 		}
 		return _value;
 	}
@@ -77,23 +72,28 @@ public:
 
 	void set_value(R&& value) noexcept { _value = std::forward<R>(value); }
 
-	void set_exception(std::exception_ptr p) noexcept { _exception = p; }
+	void set_exception(std::exception_ptr p) noexcept
+	{
+	   	_exception = p;
+		_has_exception = true;
+	}
 
 protected:
-	mutable Poco::Mutex _zone;
+	Poco::Mutex _lock;
 	Poco::Semaphore& _semaphore;
-	R _value;
+	std::atomic<bool> _ready;
+	std::atomic<bool> _has_exception;
 	std::exception_ptr _exception;
-	mutable std::atomic<int> _ready;
+	R _value;
 };
 
 template <>
 class future<void>
 {
 public:
-	future(Poco::Semaphore& mutex)
-		: _semaphore(mutex)
-		, _ready(0)
+	future(Poco::Semaphore& sem)
+		: _semaphore(sem)
+		, _ready(false)
 	{
 	}
 
@@ -101,39 +101,25 @@ public:
 
 	void get()
 	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		while (_ready <= 0)
+		Poco::Mutex::ScopedLock lock(_lock);
+		while (!_ready)
 		{
 			_semaphore.wait();
 			if (_exception)
 			{
 				std::rethrow_exception(_exception);
 			}
-			++_ready;
-		}
-	}
-
-	void get_post()
-	{
-		Poco::Mutex::ScopedLock lock(_zone);
-		while (_ready <= 1)
-		{
-			_semaphore.wait();
-			if (_exception)
-			{
-				std::rethrow_exception(_exception);
-			}
-			++_ready;
+			_ready = true;
 		}
 	}
 
 	void set_exception(std::exception_ptr p) noexcept { _exception = p; }
 
 protected:
-	mutable Poco::Mutex _zone;
+	Poco::Mutex _lock;
 	Poco::Semaphore& _semaphore;
 	std::exception_ptr _exception;
-	mutable std::atomic<int> _ready;
+	std::atomic<bool> _ready;
 };
 
 template <typename R>
@@ -142,7 +128,7 @@ class promise
 public:
 	promise()
 		: _future(std::make_shared<future<R>>(_semaphore))
-		, _semaphore(0, 2)
+		, _semaphore(0, 1)
 	{
 	}
 
@@ -151,12 +137,13 @@ public:
 	std::shared_ptr<future<R>> get_future() const { return _future; }
 
 	void set_value(const R& value) noexcept { _future->set_value(value); }
+	R& get_value() { return _future->get(); }
 
 	void set_value(R&& value) noexcept { _future->set_value(std::forward<R>(value)); }
 
 	void set_exception(std::exception_ptr p) noexcept { _future->set_exception(p); }
 
-	void signal() noexcept { _semaphore.set(); }
+	void signal() { _semaphore.set(); }
 
 protected:
 	std::shared_ptr<future<R>> _future;
@@ -169,7 +156,7 @@ class promise<void>
 public:
 	promise()
 		: _future(std::make_shared<future<void>>(_semaphore))
-		, _semaphore(0, 2)
+		, _semaphore(0, 1)
 	{
 	}
 
@@ -179,7 +166,7 @@ public:
 
 	void set_exception(std::exception_ptr p) noexcept { _future->set_exception(p); }
 
-	void signal() noexcept { _semaphore.set(); }
+	void signal() { _semaphore.set(); }
 
 protected:
 	std::shared_ptr<future<void>> _future;
@@ -196,67 +183,71 @@ public:
 
 	task(const func& method)
 		: _method(method)
+		, _post_method(nullptr)
+		, _has_post(false)
 	{
 	}
 
-	virtual ~task() { get_post(); }
+	task(const func& method, const post_type& post_method)
+		: _method(method)
+		, _post_method(post_method)
+		, _has_post(true)
+	{
+	}
+
+	virtual ~task() { get(); }
 
 	task(const task&) = delete;
 	task& operator=(const task&) = delete;
 
-	R& get() { return get_future()->get(); }
-
-	R& get_post() { return get_future()->get_post(); }
-
-	std::shared_ptr<future<R>> get_future() const { return _result.get_future(); }
+	R& get()
+	{
+		if (_post_method)
+			return _result_post.get_future()->get();
+		else
+			return _result.get_future()->get();
+	}
 
 	void run() override
 	{
-		R r;
+		try
+		{
+			_result.set_value(_method());
+		}
+		catch (...)
 		{
 			try
 			{
-				r = _method();
-				_result.set_value(r);
-				// riesgo de setear el post demasiado tarde
+				_result.set_exception(std::current_exception());
 			}
 			catch (...)
 			{
-				try
-				{
-					_result.set_exception(std::current_exception());
-				}
-				catch (...)
-				{
-					;
-				}
+				;
 			}
 		}
 		_result.signal();
 
-		if (_post_method)
+		if (_has_post && _post_method)
 		{
+			auto post_task = asyncply::run(std::bind(_post_method, std::cref(_result.get_value())));
 			try
 			{
-				r = _post_method(r);
-				_result.set_value(r);
+				_result_post.set_value(post_task->get());
 			}
 			catch (...)
 			{
 				try
 				{
-					_result.set_exception(std::current_exception());
+					_result_post.set_exception(std::current_exception());
 				}
 				catch (...)
 				{
 					;
 				}
 			}
+			_result_post.signal();
 		}
-		_result.signal();
 	}
-
-	void post(const post_type& post_method) noexcept { _post_method = post_method; }
 
 protected:
 	task() { ; }
@@ -264,7 +255,9 @@ protected:
 protected:
 	func _method;
 	promise<R> _result;
+	promise<R> _result_post;
 	post_type _post_method;
+	bool _has_post;
 };
 
 template <>
@@ -277,63 +270,70 @@ public:
 
 	task(const func& method)
 		: _method(method)
+		, _has_post(false)
 	{
 	}
 
-	virtual ~task() noexcept { get_post(); }
+	task(const func& method, const post_type& post_method)
+		: _method(method)
+		, _post_method(post_method)
+		, _has_post(true)
+	{
+	}
+
+	virtual ~task() noexcept { get(); }
 
 	task(const task& te) = delete;
 	task& operator=(const task& te) = delete;
 
-	void get() { get_future()->get(); }
-
-	void get_post() { get_future()->get_post(); }
-
-	std::shared_ptr<future<void>> get_future() const { return _result.get_future(); }
+	void get()
+	{
+		if (_post_method)
+			_result_post.get_future()->get();
+		else
+			_result.get_future()->get();
+	}
 
 	void run() override
 	{
+		try
+		{
+			_method();
+		}
+		catch (...)
 		{
 			try
 			{
-				_method();
+				_result.set_exception(std::current_exception());
 			}
 			catch (...)
 			{
-				try
-				{
-					_result.set_exception(std::current_exception());
-				}
-				catch (...)
-				{
-					;
-				}
+				;
 			}
 		}
 		_result.signal();
 
-		if (_post_method)
+		if (_has_post && _post_method)
 		{
+			auto post_task = asyncply::run(std::bind(_post_method));
 			try
 			{
-				_post_method();
+				post_task->get();
 			}
 			catch (...)
 			{
 				try
 				{
-					_result.set_exception(std::current_exception());
+					_result_post.set_exception(std::current_exception());
 				}
 				catch (...)
 				{
 					;
 				}
 			}
+			_result_post.signal();
 		}
-		_result.signal();
 	}
-
-	void post(const post_type& post_method) noexcept { _post_method = post_method; }
 
 protected:
 	task() { ; }
@@ -341,7 +341,9 @@ protected:
 protected:
 	func _method;
 	promise<void> _result;
+	promise<void> _result_post;
 	post_type _post_method;
+	bool _has_post;
 };
 
 /////////////////////////////////////// RUN //////////////////////////////////
@@ -350,6 +352,15 @@ template <typename Function>
 shared_task<Function> run(Function&& f)
 {
 	auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f));
+	Poco::ThreadPool::defaultPool().start(*job);
+	return job;
+}
+
+template <typename Function, typename FunctionPost>
+shared_task<Function> run(Function&& f, FunctionPost&& fp)
+{
+	auto job = std::make_shared<task_of_functor<Function>>(
+		std::forward<Function>(f), std::forward<FunctionPost>(fp));
 	Poco::ThreadPool::defaultPool().start(*job);
 	return job;
 }
@@ -402,15 +413,16 @@ std::function<Data(const Data&)> _sequence(Function&& f, Functions&&... fs)
 {
 	return [&](const Data& data)
 	{
-		auto job = asyncply::run([&f, &data]()
+		auto job = asyncply::run(
+			[&f, &data]()
 			{
 				return f(data);
-			});
-		job->post([&](const Data& d)
+			},
+			[&](const Data& d)
 			{
 				return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(d);
 			});
-		return job->get_post();
+		return job->get();
 	};
 }
 
@@ -501,10 +513,9 @@ public:
 	{
 		if (_job)
 		{
-			_job->get_future()->get();
+			_job->get();
 		}
-		_job = asyncply::run(std::bind(cmd, std::ref(self)));
-		_job->post([this]()
+		_job = asyncply::run(std::bind(cmd, std::ref(self)), [this]()
 			{
 				this->busy = false;
 			});
@@ -571,9 +582,10 @@ public:
 
 		if (_job)
 		{
-			_job->get_future()->get();
+			_job->get();
 		}
-		_job = run([start, end, totaltime, &cmd, &self]()
+		_job = run(
+			[start, end, totaltime, &cmd, &self]()
 			{
 				const int FPS = 60;
 				const int FRAMETIME = 1000 / FPS;
@@ -603,8 +615,8 @@ public:
 						std::this_thread::sleep_for(std::chrono::milliseconds(sleeptime));
 					}
 				}
-			});
-		_job->post([this]()
+			},
+			[this]()
 			{
 				this->busy = false;
 			});

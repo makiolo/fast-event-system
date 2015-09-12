@@ -469,11 +469,15 @@ class async_fast
 public:
 	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...>>;
 
-	async_fast() = default;
+	async_fast()
+		: _size_exact(0)
+	{ ; }
+
 	async_fast(size_t initial_allocation)
 		: _queue(initial_allocation)
-	{
-	}
+		, _size_exact(0)
+	{ ; }
+
 	~async_fast() = default;
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
