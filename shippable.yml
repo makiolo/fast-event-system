@@ -14,7 +14,10 @@ before_install:
             sudo apt-get install -qq cmake;
             sudo apt-get install -qq $SUPPORT;
             sudo apt-get install -qq $PACKAGE;
-            sudo apt-get install python-lxml;
+            sudo apt-get install -qq python-lxml;
+            sudo apt-get install -qq libxslt-dev;
+            sudo apt-get install -qq libxml2-dev;
+            sudo pip install -U lxml;
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
 
