@@ -15,9 +15,10 @@ before_install:
             sudo apt-get install -qq $SUPPORT;
             sudo apt-get install -qq $PACKAGE;
             sudo apt-get install -qq python-lxml;
-            sudo apt-get install -qq libxslt-dev;
+            sudo apt-get install -qq libxslt1-dev;
+            sudo apt-get install -qq libzlib1g-dev;
             sudo apt-get install -qq libxml2-dev;
-            STATIC_DEPS=true sudo pip install -U lxml;
+            sudo easy_install lxml;
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
 
