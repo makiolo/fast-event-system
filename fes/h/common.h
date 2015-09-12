@@ -1,4 +1,4 @@
-// design-patterns-cpp14 by Ricardo Marmolejo García is licensed under a Creative Commons
+// design-patterns-cpp14 by Ricardo Marmolejo Garcï¿½a is licensed under a Creative Commons
 // Reconocimiento 4.0 Internacional License.
 // http://creativecommons.org/licenses/by/4.0/
 //
@@ -55,16 +55,19 @@ struct is_placeholder<placeholder_template<N>> : integral_constant<int, N + 1>
 template <int... Is>
 struct seq
 {
+    virtual ~seq() { }
 };
 
 template <int N, int... Is>
 struct gens : gens<N - 1, N - 1, Is...>
 {
+    virtual ~gens() { }
 };
 
 template <int... Is>
 struct gens<0, Is...> : seq<Is...>
 {
+    virtual ~gens() { }
 };
 
 template <class T1, class... T>

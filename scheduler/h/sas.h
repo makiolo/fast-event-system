@@ -92,7 +92,9 @@ class future<void>
 {
 public:
 	future(Poco::Semaphore& sem)
-		: _semaphore(sem)
+        : _lock()
+		, _semaphore(sem)
+        , _exception()
 		, _ready(false)
 	{
 	}
@@ -250,9 +252,6 @@ public:
 	}
 
 protected:
-	task() { ; }
-
-protected:
 	func _method;
 	promise<R> _result;
 	promise<R> _result_post;
@@ -270,12 +269,17 @@ public:
 
 	task(const func& method)
 		: _method(method)
+        , _result()
+        , _result_post()
+        , _post_method()
 		, _has_post(false)
 	{
 	}
 
 	task(const func& method, const post_type& post_method)
 		: _method(method)
+        , _result()
+        , _result_post()
 		, _post_method(post_method)
 		, _has_post(true)
 	{
@@ -334,9 +338,6 @@ public:
 			_result_post.signal();
 		}
 	}
-
-protected:
-	task() { ; }
 
 protected:
 	func _method;
@@ -668,7 +669,7 @@ public:
 	talker(const talker&) = delete;
 	talker& operator=(const talker&) = delete;
 
-	void connect(FOLLOWERS& talker) { _planner_others.connect(talker); }
+	void connect(FOLLOWERS& t) { _planner_others.connect(t); }
 
 	inline void call_others(
 		const command_others& command, fes::deltatime milli = fes::deltatime(0), int priority = 0)

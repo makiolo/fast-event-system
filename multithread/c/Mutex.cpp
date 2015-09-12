@@ -6,6 +6,8 @@ namespace asyncply
 {
 
 mutex::mutex()
+    : _mutex()
+    , _attr()
 {
 #if defined(LINUX)
 	pthread_mutexattr_init(&_attr);

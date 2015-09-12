@@ -16,11 +16,15 @@ public:
 	circular_queue()
 		: _top_index(0)
 		, _bottom_index(0)
-		, _number_works(0)
+        , _mutex()
+        , _number_works(0)
 	{
 	}
 
 	~circular_queue() {}
+
+    circular_queue(const circular_queue& other) = delete;
+    circular_queue& operator=(const circular_queue& other) = delete;
 
 	void push(T* element)
 	{

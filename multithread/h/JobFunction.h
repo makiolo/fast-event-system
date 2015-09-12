@@ -10,12 +10,16 @@ class job_function : public job
 {
 public:
 	job_function(const std::function<job::StateJob()>& function)
+        : _function( function )
+        , _callback( true )
 	{
-		_function = function;
-		_callback = true;
+
 	}
 
-	job_function() { _callback = false; }
+	job_function()
+        : _function( nullptr )
+        , _callback(false)
+    { ; }
 
 	~job_function(void) {}
 

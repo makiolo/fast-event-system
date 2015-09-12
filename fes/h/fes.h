@@ -75,8 +75,8 @@ class method
 public:
 	using function = std::function<void(const Args&...)>;
 
-	method(const function& method)
-		: _method(method)
+	method(const function& m)
+		: _method(m)
 	{
 	}
 
@@ -119,9 +119,8 @@ public:
 		;
 	}
 
-	internal_connection(const internal_connection<Args...>& other) = delete;
-	const internal_connection<Args...>& operator=(const internal_connection<Args...>& other)
-		= delete;
+	internal_connection(const internal_connection& other) = delete;
+	internal_connection& operator=(const internal_connection& other) = delete;
 
 	void disconnect()
 	{
@@ -154,7 +153,7 @@ public:
 	{
 	}
 
-	connection<Args...>& operator=(const weak_connection<Args...>& other)
+	connection& operator=(const weak_connection<Args...>& other)
 	{
 		_connection = other;
 		return *this;
@@ -162,9 +161,9 @@ public:
 
 	~connection()
 	{
-		if (auto connection = _connection.lock())
+		if (auto conn = _connection.lock())
 		{
-			connection->disconnect();
+			conn->disconnect();
 		}
 	}
 
@@ -189,7 +188,12 @@ public:
 	using methods = methods_t<Args...>;
 
 	//! default constructor
-	sync() = default;
+	sync()
+        : _registered()
+        , _conns()
+    {
+
+    }
 	//! default destructor
 	~sync() { ; }
 
@@ -344,7 +348,12 @@ class async_delay
 public:
 	using container_type = std::vector<message<Args...>>;
 
-	async_delay() = default;
+	async_delay()
+        : _output()
+        , _queue()
+    {
+
+    }
 	~async_delay() = default;
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
@@ -470,11 +479,14 @@ public:
 	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...>>;
 
 	async_fast()
-		: _size_exact(0)
+        : _output()
+        , _queue()
+		, _size_exact(0)
 	{ ; }
 
 	async_fast(size_t initial_allocation)
-		: _queue(initial_allocation)
+        : _output()
+		, _queue(initial_allocation)
 		, _size_exact(0)
 	{ ; }
 

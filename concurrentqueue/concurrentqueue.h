@@ -293,12 +293,21 @@ namespace details
 		ProducerToken* token;
 
 		ConcurrentQueueProducerTypelessBase()
-			: inactive(false), token(nullptr)
+			: next(nullptr), inactive(false), token(nullptr)
 		{
 		}
+
+        virtual ~ConcurrentQueueProducerTypelessBase()
+        {
+            ;
+        }
+
+        ConcurrentQueueProducerTypelessBase(const ConcurrentQueueProducerTypelessBase& other) = delete;
+        ConcurrentQueueProducerTypelessBase& operator=(const ConcurrentQueueProducerTypelessBase& other) = delete;
 	};
 
 	template<bool use32> struct _hash_32_or_64 {
+        virtual ~_hash_32_or_64() {  }
 		static inline std::uint32_t hash(std::uint32_t h)
 		{
 			// MurmurHash3 finalizer -- see https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp
@@ -313,6 +322,7 @@ namespace details
 		}
 	};
 	template<> struct _hash_32_or_64<1> {
+        virtual ~_hash_32_or_64() {  }
 		static inline std::uint64_t hash(std::uint64_t h)
 		{
 			h ^= h >> 33;
@@ -322,7 +332,12 @@ namespace details
 			return h ^ (h >> 33);
 		}
 	};
-	template<std::size_t size> struct hash_32_or_64 : public _hash_32_or_64<(size > 4)> {  };
+
+	template<std::size_t size>
+    struct hash_32_or_64 : public _hash_32_or_64<(size > 4)>
+    {
+        virtual ~hash_32_or_64() {  }
+    };
 
 	static inline size_t hash_thread_id(thread_id_t id)
 	{
@@ -480,13 +495,42 @@ namespace details
 #endif
 #endif
 
-	template<typename T> struct static_is_lock_free_num { enum { value = 0 }; };
-	template<> struct static_is_lock_free_num<signed char> { enum { value = ATOMIC_CHAR_LOCK_FREE }; };
-	template<> struct static_is_lock_free_num<short> { enum { value = ATOMIC_SHORT_LOCK_FREE }; };
-	template<> struct static_is_lock_free_num<int> { enum { value = ATOMIC_INT_LOCK_FREE }; };
-	template<> struct static_is_lock_free_num<long> { enum { value = ATOMIC_LONG_LOCK_FREE }; };
-	template<> struct static_is_lock_free_num<long long> { enum { value = ATOMIC_LLONG_LOCK_FREE }; };
-	template<typename T> struct static_is_lock_free : static_is_lock_free_num<typename std::make_signed<T>::type> {  };
+	template<typename T> struct static_is_lock_free_num
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = 0 };
+    };
+	template<> struct static_is_lock_free_num<signed char>
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = ATOMIC_CHAR_LOCK_FREE };
+    };
+	template<> struct static_is_lock_free_num<short>
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = ATOMIC_SHORT_LOCK_FREE };
+    };
+	template<> struct static_is_lock_free_num<int>
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = ATOMIC_INT_LOCK_FREE };
+    };
+	template<> struct static_is_lock_free_num<long>
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = ATOMIC_LONG_LOCK_FREE };
+    };
+	template<> struct static_is_lock_free_num<long long>
+    {
+        virtual ~static_is_lock_free_num() { ; }
+        enum { value = ATOMIC_LLONG_LOCK_FREE };
+    };
+
+	template<typename T>
+    struct static_is_lock_free : static_is_lock_free_num<typename std::make_signed<T>::type>
+    {
+        virtual ~static_is_lock_free() { ; }
+    };
 	template<> struct static_is_lock_free<bool> { enum { value = ATOMIC_BOOL_LOCK_FREE }; };
 	template<typename U> struct static_is_lock_free<U*> { enum { value = ATOMIC_POINTER_LOCK_FREE }; };
 }
@@ -1549,6 +1593,9 @@ private:
 		}
 
 		virtual ~ProducerBase() { };
+
+        ProducerBase(const ProducerBase& other) = delete;
+        ProducerBase& operator=(const ProducerBase& other) = delete;
 
 		template<typename U>
 		inline bool dequeue(U& element)

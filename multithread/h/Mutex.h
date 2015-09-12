@@ -18,6 +18,9 @@ public:
 	mutex();
 	~mutex();
 
+    mutex(const mutex& other) = delete;
+    mutex& operator=(const mutex& other) = delete;
+
 	inline void lock()
 	//! lock this mutex
 	{

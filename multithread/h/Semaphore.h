@@ -33,10 +33,12 @@ public:
 	typedef scoped_lock<semaphore> scoped_lock_t;
 
 	semaphore(uint32_t concurrency = 1, bool isForSync = false);
-	~semaphore();
+	virtual ~semaphore();
 
+    semaphore(const semaphore& other) = delete;
+    semaphore& operator=(const semaphore& other) = delete;
 	///
-	/// Reduce el valor del semaforo. Bloquea la región critica. Esta operación tiene múltiples
+	/// Reduce el valor del semaforo. Bloquea la regiï¿½n critica. Esta operaciï¿½n tiene mï¿½ltiples
 	/// nombres.
 	///  * wait (s)
 	///	 * {
@@ -73,7 +75,7 @@ public:
 	}
 
 	///
-	/// Aumenta el semaforo. Libera la región critica.
+	/// Aumenta el semaforo. Libera la regiï¿½n critica.
 	///    signal(s)
 	///    {
 	///        if s == 0

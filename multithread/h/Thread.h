@@ -7,7 +7,9 @@ namespace asyncply
 class multithread_API thread
 {
 public:
-	thread(void) {}
+	thread(void)
+        : _thread(0)
+    {}
 
 	virtual ~thread(void) {}
 

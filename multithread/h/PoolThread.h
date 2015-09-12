@@ -14,6 +14,9 @@ public:
 	pool_thread(uint32_t numThreads = 4);
 	virtual ~pool_thread(void);
 
+	pool_thread(const pool_thread& other) = delete;
+    pool_thread& operator=(const pool_thread& other) = delete;
+
 	void Stop();
 
 	circular_queue<job>* get_queue() const { return _queue; }

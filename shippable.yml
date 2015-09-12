@@ -1,0 +1,40 @@
+language: python  # is lie, cpp is not supported
+
+compiler:
+    - gcc
+
+os:
+    - linux
+
+env:
+    - FL_CONF=Debug REAL_CC=gcc REAL_CXX=g++
+    - FL_CONF=Release REAL_CC=gcc REAL_CXX=g++
+
+before_install:
+    - sudo apt-get update -qq
+
+install:
+    - wget http://www.biicode.com/downloads/latest/ubuntu64
+    - mv ubuntu64 bii-ubuntu64.deb
+    - sudo dpkg -i bii-ubuntu64.deb && sudo apt-get -f install
+    - rm bii-ubuntu64.deb
+    - wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+    - tar -xzf cmake-3.0.2-Linux-64.tar.gz
+    - sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+    - rm -rf cmake-3.0.2-Linux-64
+    - rm cmake-3.0.2-Linux-64.tar.gz
+
+before_script:
+    - export CC=$REAL_CC
+    - export CXX=$REAL_CXX
+
+script:
+    - mkdir -p $FL_CONF
+    - cd $FL_CONF
+    - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF
+    - make -j2
+    - make test ARGS="-VV"
+
+after_success:
+    - echo build ok
+

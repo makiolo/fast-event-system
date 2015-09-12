@@ -6,8 +6,12 @@ namespace asyncply
 {
 
 pool_thread::pool_thread(uint32_t numThreads /*= 4*/)
+    : _number_threads( std::min<uint32_t>(numThreads, THREADCOUNT_MAX) )
+    , _started( false )
+    , _queue(nullptr)
+    , _any_job(nullptr)
+    , _workers_finished(nullptr)
 {
-	_number_threads = std::min<uint32_t>(numThreads, THREADCOUNT_MAX);
 
 	assert(_number_threads > 0);
 	assert(_number_threads <= THREADCOUNT_MAX);
@@ -93,7 +97,7 @@ void pool_thread::Stop()
 		_any_job->signal();
 	}
 
-	// El hilo terminará cuando todos los hilos terminen
+	// El hilo terminarï¿½ cuando todos los hilos terminen
 	join();
 
 	// ya no esta iniciado

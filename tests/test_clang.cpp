@@ -1,4 +1,5 @@
 #include <iostream>
+
 int main(int, const char**)
 {
 #if defined(__has_feature)

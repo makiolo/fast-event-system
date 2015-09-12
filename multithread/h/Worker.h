@@ -10,12 +10,16 @@ class multithread_API worker
 {
 public:
 	worker(pool_thread* owner)
+        : _owner(owner)
+        , _interrupted(false)
 	{
-		_owner = owner;
-		_interrupted = false;
+
 	}
 
 	~worker() {}
+
+    worker(const worker& other) = delete;
+    worker& operator=(const worker& other) = delete;
 
 	void execute();
 

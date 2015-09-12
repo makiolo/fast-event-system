@@ -40,6 +40,8 @@ macro(ENABLE_MODERN_CPP)
         add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
 		# convert error in warnings
 		add_definitions(-Wno-error=shadow)
+        add_definitions(-Wno-error=long-long)
+        add_definitions(-Wno-error=aggregate-return)
 		# In Linux default now is not export symbols
 		add_definitions(-fvisibility=hidden)
         SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread" )
@@ -224,7 +226,6 @@ function(GENERATE_LIB)
     endwhile()
 
     INCLUDE_DIRECTORIES(..)
-	INCLUDE_DIRECTORIES(h/detail)
 
     file( GLOB SOURCE_FILES [Cc]/*.c [Cc]/*.cpp [Cc]/*.cxx *.cpp *.c *.cxx )
     file( GLOB HEADERS_FILES [Hh]/*.h [Hh]/*.hpp [Hh]/*.hxx [Hh][Pp][Pp]/*.hpp [Hh][Pp][Pp]/*.hxx *.h *.hpp *.hxx )

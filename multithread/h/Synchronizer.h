@@ -14,7 +14,7 @@ public:
 	{
 	}
 
-	~synchronizer() {}
+	virtual ~synchronizer() {}
 
 	inline void wait(uint32_t count = 1) const
 	{

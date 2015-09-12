@@ -23,7 +23,7 @@
 #define FES_VERSION_MINOR 0
 #define FES_VERSION ((FES_VERSION_MAJOR << 16) | FES_VERSION_MINOR)
 
-#ifdef WINDOWS
+#ifdef _WIN32
 
 typedef __int64 Int64;
 typedef signed int Int32;
