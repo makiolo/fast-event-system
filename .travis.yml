@@ -1,17 +1,34 @@
 language: cpp
+
 compiler:
     - gcc
+
 os:
     - linux
+
 env:
     - FL_CONF=Debug REAL_CC=gcc REAL_CXX=g++
     - FL_CONF=Release REAL_CC=gcc REAL_CXX=g++
-script:
+
+before_install:
+    - echo $LANG
+    - echo $LC_ALL
+
+before_script:
     - export CC=$REAL_CC
     - export CXX=$REAL_CXX
+
+script:
     - mkdir -p $FL_CONF
     - cd $FL_CONF
     - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF
     - make -j2
     - make test ARGS="-VV"
+
+after_success:
+    - echo build ok
+
+branches:
+    only:
+        - master
 
