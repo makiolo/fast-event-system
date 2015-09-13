@@ -18,11 +18,11 @@ before_install:
             if [ "$PACKAGE" = "clang-3.6" ];
             then
                 sudo apt-get install -qq llvm-3.6-tools;
-            fi
+            fi;
             if [ "$COVERAGE" = "1" ];
             then
                 sudo pip install codecov;
-            fi
+            fi;
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
 
