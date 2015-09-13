@@ -21,7 +21,7 @@ before_install:
             fi
             if [ "$COVERAGE" = "1" ];
             then
-                sudo pip install codecov
+                sudo pip install codecov;
             fi
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
@@ -35,7 +35,7 @@ script:
     - find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
     -   if [ "$COVERAGE" = "1" ];
         then
-            echo upload coverage tests
+            echo upload coverage tests;
         fi
 
 env:
