@@ -33,7 +33,7 @@ macro(COMMONS_FLAGS)
 	# ONLY RELEASE
 	IF(COVERAGE)
 		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping" )
-		#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize-coverage=func" )
+		#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -coverage" )
 	endif()
 endmacro()
 

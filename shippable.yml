@@ -29,7 +29,6 @@ script:
     - make -j12
     - ctest -j12 -R test_.  --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 .
     - find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
-    - cat tests/*.coverage
 
 env:
     # - REAL_CC=clang-3.3 EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=clang++-3.3 PACKAGE=clang-3.3 SUPPORT=g++-4.8 COVERAGE=0 SANITIZER=
