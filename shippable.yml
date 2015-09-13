@@ -19,6 +19,10 @@ before_install:
             then
                 sudo apt-get install -qq llvm-3.6-tools;
             fi
+            if [ "$COVERAGE" = "1" ];
+            then
+                sudo pip install codecov
+            fi
       fi
     - export CC=${REAL_CC} CXX=${REAL_CXX}
 
@@ -29,6 +33,10 @@ script:
     - make -j12
     - ctest -j12 --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 .
     - find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
+    -   if [ "$COVERAGE" = "1" ];
+        then
+            echo upload coverage tests
+        fi
 
 env:
     # - REAL_CC=clang-3.3 EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=clang++-3.3 PACKAGE=clang-3.3 SUPPORT=g++-4.8 COVERAGE=0 SANITIZER=
@@ -43,12 +51,14 @@ env:
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1y FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1z FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
-    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1y FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
+    # DEBUG + RELEASE
+    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
+    # COVERAGE
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=1 SANITIZER=
+    # SANITIZERS
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=address
-    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=address-full
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=memory
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=thread
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1z FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=

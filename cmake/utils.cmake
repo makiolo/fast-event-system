@@ -33,7 +33,9 @@ macro(COMMONS_FLAGS)
 	# ONLY RELEASE
 	IF(COVERAGE)
 		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping" )
-		#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -coverage" )
+		add_definitions(-coverage)
+		add_definitions(-O0)
+		#SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L/usr/lib/llvm-3.6/lib/clang/3.6.2/lib/linux/libclang_rt.profile-x86_64.a" )
 	endif()
 endmacro()
 
