@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo Running test $1 with coverage
-export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.6
-export ASAN_OPTIONS=check_initialization_order=1
+echo Running test: $1
+export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-3.6)
+export ASAN_OPTIONS="check_initialization_order=1"
 rm $1.coverage 2> /dev/null
 rm $1.gcno 2> /dev/null
 rm default.profraw 2> /dev/null
