@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="name_module_angular" ng-controller="name_controller as ns">
+<head>
+	<meta charset="UTF-8" />
+	<title>Hola mundo</title>
+	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="../node_modules/angular-ui-bootstrap/ui-bootstrap-csp.css">
+	<script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="../node_modules/angular/angular.min.js"></script>
+	<script type="text/javascript" src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../node_modules/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
+	<script type="text/javascript" src="../node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<script type="text/javascript" src="../node_modules/angular-utils-pagination/dirPagination.js"></script>
+	<script type="text/javascript" src="../js/angular.js"></script>
+
+</head>
+<body>
+	<!-- http://getbootstrap.com/components/ -->
+	<!-- https://angular&#45;ui.github.io/bootstrap/ -->
+
+
+
+	<!-- <pre>DEBUG: {{ ns.debug }}</pre> -->
+
+
+
+    <div class="btn-group">
+        <label class="btn btn-primary" ng-model="ns.region" btn-radio="'all'">Todo</label>
+        <label class="btn btn-success" ng-model="ns.region" btn-radio="'region/americas'">America</label>
+        <label class="btn btn-success" ng-model="ns.region" btn-radio="'region/europe'">Europa</label>
+        <label class="btn btn-success" ng-model="ns.region" btn-radio="'region/asia'">Asia</label>
+        <label class="btn btn-success" ng-model="ns.region" btn-radio="'region/africa'">Africa</label>
+        <label class="btn btn-success" ng-model="ns.region" btn-radio="'region/oceania'">Oceania</label>
+    </div>
+
+
+
+
+	<br />
+	<br />
+	  <div class="col-lg-6">
+		<div class="input-group">
+		  <input type="text" class="form-control" placeholder="Filter by ..." ng-model="ns.filter" ng-keyup="$event.keyCode == 13 && ns.onSearch()"/>
+		</div>
+	  </div>
+	<br />
+	<br />
+	<dir-pagination-controls></dir-pagination-controls>
+	<br />
+
+
+
+	<div class="panel panel-default" dir-paginate="country in ns.cache | filter:ns.filter | orderBy:'-population' | itemsPerPage: 5">
+	  <div class="panel-heading">{{ country.nativeName }}</div>
+	  <div class="panel-body">
+			<!-- {{ country }}<br /> -->
+			<img src="http://www.geonames.org/flags/x/{{ country.alpha2Code | lowercase }}.gif" style="width:120px;height:80px;margin-right:10px;float:left" />
+			<a href="https://www.google.es/maps/@{{ country.latlng[0] }},{{ country.latlng[1] }},5z" target="_blank">{{ country.translations['es'] }} ({{ country.nativeName }})</a><br />
+			Capital: {{ country.capital }}<br />
+			Poblacion: {{ country.population | number:0 }}<br />
+			Monedas: <span ng-repeat="currency in country.currencies">{{ currency }}, </span><br />
+			<br/>
+	  </div>
+	</div>
+
+
+
+</body>
+</html>
