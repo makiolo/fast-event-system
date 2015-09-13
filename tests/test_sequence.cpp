@@ -34,7 +34,6 @@ int main(int, const char **)
 		}
 	}
 	std::cout << "result ok" << std::endl;
-	Poco::ThreadPool::defaultPool().joinAll();
 	return 0;
 }
 
