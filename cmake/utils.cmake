@@ -1,3 +1,6 @@
+option(COVERAGE "active coverage (only clang)" FALSE)
+option(SANITIZER "active sanitizers (address,address-full,memory,thread) (only clang)" "")
+
 macro(GENERATE_CLANG)
 	# Generate .clang_complete for full completation in vim + clang_complete
 	set(extra_parameters "")
@@ -13,6 +16,27 @@ macro(GENERATE_CLANG)
 	FILE(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/.clang_complete" "${extra_parameters}\n")
 endmacro()
 
+macro(COMMONS_FLAGS)
+	# ONLY DEBUG
+	if(SANITIZER)
+		add_definitions(-g3)
+		#add_definitions(-fsanitize=address-full)
+		#add_definitions(-fsanitize=memory)
+		#add_definitions(-fsanitize=thread)
+		#set(SANITIZE "address-full")
+		#set(SANITIZE "memory")
+		#set(SANITIZER "thread")
+		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize=${SANITIZER}" )
+		SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZER}" )
+		add_definitions(-fsanitize=${SANITIZER})
+	endif()
+	# ONLY RELEASE
+	IF(COVERAGE)
+		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping" )
+		#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize-coverage=func" )
+	endif()
+endmacro()
+
 macro(ENABLE_MODERN_CPP)
 
     if(WIN32)
@@ -20,16 +44,6 @@ macro(ENABLE_MODERN_CPP)
         #add_definitions(/GR-)
         #add_definitions(/D_HAS_EXCEPTIONS=0)
     else()
-		if(FALSE)
-			add_definitions(-g3)
-			#add_definitions(-fsanitize=address-full)
-			#add_definitions(-fsanitize=memory)
-			#add_definitions(-fsanitize=thread)
-			set(SANITIZE "address-full")
-			SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fsanitize=${SANITIZE}" )
-			SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZE}" )
-			add_definitions(-fsanitize=${SANITIZE})
-		endif()
         # add_definitions(-fno-rtti -fno-exceptions )
 		# activate all warnings and convert in errors
         add_definitions(-Wall -Weffc++ -pedantic -pedantic-errors -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion)
@@ -81,10 +95,14 @@ macro(ENABLE_MODERN_CPP)
 endmacro()
 
 macro(CREATE_TEST TESTNAME TESTDEPENDS)
+	enable_testing()
 	include_directories(..)
+	COMMONS_FLAGS()
 	ADD_EXECUTABLE(${TESTNAME} ${TESTNAME}.cpp)
 	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
-	ADD_TEST(NAME ${TESTNAME} COMMAND ${TESTNAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+	ADD_TEST(	NAME ${TESTNAME}
+				COMMAND ${CMAKE_SOURCE_DIR}/cmake/run_test.sh ${TESTNAME}
+				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endmacro()
 
 macro(GET_SYSTEM_INFO)
@@ -165,6 +183,7 @@ function(GENERATE_EXE _EXECUTABLE_NAME _SOURCE_FILES _HEADERS_FILES)
 	# -g -fsanitize=thread (condiciones de carrera)
 	# -g -fsanitize=memory (detectar variables no inicializadas)
 
+	COMMONS_FLAGS()
     IF(WIN32)
 		add_definitions(/WX /W4)
         ADD_EXECUTABLE(${_EXECUTABLE_NAME} WIN32 ${_SOURCE_FILES} ${_HEADERS_FILES})
@@ -257,13 +276,14 @@ function(GENERATE_LIB)
 		add_definitions(/WX /W4)
 	endif()
 
+	COMMONS_FLAGS()
     ADD_LIBRARY(${LIBNAME} SHARED ${SOURCE_FILES} ${HEADERS_FILES} ${EXTRA_SOURCES})
     TARGET_LINK_LIBRARIES(${LIBNAME} ${TARGET_DEPENDENCIES} ${TARGET_3RDPARTY_DEPENDENCIES})
 	#set_target_properties(${LIBNAME} PROPERTIES SUFFIX .pyd)
 	IF(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX .dll)
 	ENDIF()
-	
+
     if(HAVE_PCH)
         add_definitions(-Zm200)
         #include(cotire)
@@ -290,6 +310,7 @@ function(GENERATE_LIB)
 
         source_group("Tests" FILES ${TESTS_SOURCES})
 
+		COMMONS_FLAGS()
         ADD_EXECUTABLE(${LIBNAME}.Tests ${TESTS_SOURCES})
         TARGET_LINK_LIBRARIES(${LIBNAME}.Tests ${TARGET_DEPENDENCIES} ${TARGET_3RDPARTY_DEPENDENCIES} ${LIBNAME})
         ADD_TEST(   NAME ${LIBNAME}.Tests
