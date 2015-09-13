@@ -2,7 +2,7 @@ FROM ubuntu:15.04
 
 ENV REAL_CC clang-3.6
 ENV EXTRA_DEF -std=c++14
-ENV FL_CONF Release
+ENV BUILD_MODE Release
 ENV REAL_CXX clang++-3.6
 ENV PACKAGE clang-3.6
 ENV SUPPORT g++-4.9
@@ -10,6 +10,8 @@ ENV COVERAGE 0
 ENV SANITIZER ""
 ENV CC ${REAL_CC}
 ENV CXX ${REAL_CXX}
+ENV REPOSITORY_USER makiolo
+ENV REPOSITORY fast-event-system
 
 RUN apt-get update -qq
 RUN apt-get install -qq software-properties-common
@@ -27,10 +29,11 @@ RUN apt-get install -qq xsltproc
 RUN apt-get install -qq llvm-3.6-tools
 RUN apt-get install -qq git
 
-RUN git clone https://github.com/makiolo/fast-event-system.git
-RUN mkdir -p fast-event-system/$FL_CONF/shippable/testresults/
-RUN cd fast-event-system/$FL_CONF && cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF -DCOVERAGE=$COVERAGE -DSANITIZER=$SANITIZER
-RUN cd fast-event-system/$FL_CONF && make -j12
-RUN cd fast-event-system/$FL_CONF && ctest .. -j12 --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 || true
-RUN cd fast-event-system/$FL_CONF && find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
+RUN git clone https://github.com/$REPOSITORY_USER/$REPOSITORY.git
+RUN mkdir -p $REPOSITORY/$BUILD_MODE/
+RUN mkdir -p $REPOSITORY/shippable/testresults/
+RUN cd $REPOSITORY/$BUILD_MODE && cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$BUILD_MODE -DEXTRA_DEF=$EXTRA_DEF -DCOVERAGE=$COVERAGE -DSANITIZER=$SANITIZER
+RUN cd $REPOSITORY/$BUILD_MODE && make -j12
+RUN cd $REPOSITORY/$BUILD_MODE && ctest .. -j12 --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 || true
+RUN find $REPOSITORY/$BUILD_MODE/Testing/ -name "*.xml" | xargs xsltproc $REPOSITORY/cmake/junit/CTest2JUnit.xsl > $REPOSITORY/shippable/testresults/tests.xml
 
