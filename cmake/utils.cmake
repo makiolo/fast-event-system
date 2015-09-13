@@ -17,7 +17,6 @@ macro(GENERATE_CLANG)
 endmacro()
 
 macro(COMMONS_FLAGS)
-	# ONLY DEBUG
 	if(SANITIZER)
 		add_definitions(-g3)
 		#add_definitions(-fsanitize=address-full)
@@ -30,12 +29,9 @@ macro(COMMONS_FLAGS)
 		SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${SANITIZER}" )
 		add_definitions(-fsanitize=${SANITIZER})
 	endif()
-	# ONLY RELEASE
 	IF(COVERAGE)
 		SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping" )
 		add_definitions(-coverage)
-		add_definitions(-O0)
-		#SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L/usr/lib/llvm-3.6/lib/clang/3.6.2/lib/linux/libclang_rt.profile-x86_64.a" )
 	endif()
 endmacro()
 
@@ -97,13 +93,12 @@ macro(ENABLE_MODERN_CPP)
 endmacro()
 
 macro(CREATE_TEST TESTNAME TESTDEPENDS)
-	enable_testing()
 	include_directories(..)
 	COMMONS_FLAGS()
 	ADD_EXECUTABLE(${TESTNAME} ${TESTNAME}.cpp)
 	target_link_libraries(${TESTNAME} ${TESTDEPENDS})
 	ADD_TEST(	NAME ${TESTNAME}
-				COMMAND ${CMAKE_SOURCE_DIR}/cmake/run_test.sh ${TESTNAME}
+		COMMAND ${CMAKE_SOURCE_DIR}/cmake/run_test.sh ${TESTNAME}
 				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endmacro()
 

@@ -3,6 +3,7 @@ add_subdirectory(verypoco)
 
 PROJECT(FAST-EVENT-SYSTEM CXX)
 cmake_minimum_required(VERSION 2.8)
+enable_testing()
 
 get_filename_component(FES_CURRENT_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 include(${FES_CURRENT_DIR}/cmake/utils.cmake)
