@@ -1,4 +1,3 @@
-# out of project
 add_subdirectory(verypoco)
 
 PROJECT(FAST-EVENT-SYSTEM CXX)
