@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	~future() noexcept {}
+	~future() {}
 
 	R& get()
 	{
@@ -99,7 +99,7 @@ public:
 	{
 	}
 
-	~future() noexcept {}
+	~future() {}
 
 	void get()
 	{
@@ -134,7 +134,7 @@ public:
 	{
 	}
 
-	~promise() noexcept {}
+	~promise() {}
 
 	std::shared_ptr<future<R>> get_future() const { return _future; }
 
@@ -162,7 +162,7 @@ public:
 	{
 	}
 
-	~promise() noexcept {}
+	~promise() {}
 
 	std::shared_ptr<future<void>> get_future() const { return _future; }
 
@@ -285,7 +285,7 @@ public:
 	{
 	}
 
-	virtual ~task() noexcept { get(); }
+	virtual ~task() { get(); }
 
 	task(const task& te) = delete;
 	task& operator=(const task& te) = delete;
