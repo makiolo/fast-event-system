@@ -10,10 +10,10 @@ RUN add-apt-repository --yes ppa:andykimpe/cmake
 RUN apt-get install -qq wget
 RUN wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | apt-key add -
 RUN apt-get install -qq cmake
-RUN apt-get install -qq clang-3.3
-RUN apt-get install -qq clang-3.4
+# RUN apt-get install -qq clang-3.3
+# RUN apt-get install -qq clang-3.4
 RUN apt-get install -qq clang-3.6
-RUN apt-get install -qq g++-4.8
+# RUN apt-get install -qq g++-4.8
 RUN apt-get install -qq g++-4.9
 RUN apt-get install -qq xsltproc
 RUN apt-get install -qq llvm-3.6-tools
