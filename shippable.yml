@@ -2,33 +2,10 @@ language: python # lie, is cpp
 os:
     - linux
 
-before_install:
-    - if [ "$TRAVIS_OS_NAME" = "linux" ];
-      then
-            wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -;
-            sudo add-apt-repository --yes "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main";
-            sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
-            sudo add-apt-repository --yes ppa:h-rayflood/llvm;
-            sudo add-apt-repository --yes ppa:andykimpe/cmake;
-            sudo apt-get update -qq;
-            sudo apt-get install -qq cmake;
-            sudo apt-get install -qq $SUPPORT;
-            sudo apt-get install -qq $PACKAGE;
-            sudo apt-get install -qq xsltproc;
-            if [ "$PACKAGE" = "clang-3.6" ];
-            then
-                sudo apt-get install -qq llvm-3.6-tools;
-            fi;
-            if [ "$COVERAGE" = "1" ];
-            then
-                sudo pip install codecov;
-            fi;
-      fi
-    - export CC=${REAL_CC} CXX=${REAL_CXX}
-
 script:
     - mkdir -p $FL_CONF
     - cd $FL_CONF
+    - export CC=${REAL_CC} CXX=${REAL_CXX}
     - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF -DCOVERAGE=$COVERAGE -DSANITIZER=$SANITIZER
     - make -j12
     - ctest .. -j12 --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 || true
