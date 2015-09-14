@@ -18,3 +18,5 @@ RUN apt-get install -qq g++-4.9
 RUN apt-get install -qq xsltproc
 RUN apt-get install -qq llvm-3.6-tools
 RUN apt-get install -qq git
+RUN apt-get install -qq kbtin
+

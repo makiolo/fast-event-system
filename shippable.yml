@@ -12,7 +12,7 @@ script:
     - find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
     -   if [ "$COVERAGE" = "1" ];
         then
-            COVERITY_SCAN_TOKEN=$COVERITY_SCAN_TOKEN COVERITY_SCAN_PROJECT_NAME="makiolo/fast-event-system" COVERITY_SCAN_NOTIFICATION_EMAIL="makiolo@gmail.com" COVERITY_SCAN_BUILD_COMMAND="make -j4" COVERITY_SCAN_BUILD_COMMAND_PREPEND="cmake .. -DEXTRA_DEF=-std=c++11 -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=0" ../cmake/ci_build_coverity_scan.sh;
+            echo COVERITY_SCAN_TOKEN=XXXXXXXXXX COVERITY_SCAN_PROJECT_NAME="makiolo/fast-event-system" COVERITY_SCAN_NOTIFICATION_EMAIL="makiolo@gmail.com" COVERITY_SCAN_BUILD_COMMAND="make -j4" COVERITY_SCAN_BUILD_COMMAND_PREPEND="cmake .. -DEXTRA_DEF=-std=c++11 -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=0" ../cmake/ci_build_coverity_scan.sh;
         fi
 
 env:
@@ -33,7 +33,7 @@ env:
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # COVERAGE
-    # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=1 SANITIZER=
+    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=1 SANITIZER=
     # SANITIZERS
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=address
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=memory
