@@ -3,12 +3,11 @@
 function print_if_has_content()
 {
 	file=$1
-	minimumsize=100
+	minimumsize=400
 	actualsize=$(wc -c <"$file")
 	if [ $actualsize -ge $minimumsize ];
 	then
 		cat $file
-		exit 1
 	fi
 }
 
