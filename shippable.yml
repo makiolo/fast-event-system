@@ -6,7 +6,7 @@ script:
     - mkdir -p $FL_CONF
     - cd $FL_CONF
     - export CC=${REAL_CC} CXX=${REAL_CXX}
-    - rm CMakeCache.txt 2> /dev/null
+    - rm CMakeCache.txt || true
     - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF -DCOVERAGE=$COVERAGE -DSANITIZER=$SANITIZER -DCMAKE_MODULE_PATH=$(pwd)/../cmake -DCMAKE_PREFIX_PATH=$(pwd)/../cmake
     - make -j12
     - ctest .. -j12 --output-log run_tests.log --no-compress-output --output-on-failure --schedule-random -T Test --timeout 15 || true
