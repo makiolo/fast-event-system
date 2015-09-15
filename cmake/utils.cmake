@@ -31,7 +31,8 @@ macro(COMMONS_FLAGS)
 
 	# find_package
 	include_directories(BEFORE "/usr/include")
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -l/usr/lib/libtcmalloc.so")
+	link_directories(/usr/lib)
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
 endmacro()
 
 macro(ENABLE_MODERN_CPP)
