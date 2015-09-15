@@ -33,7 +33,8 @@ find_path(GPERFTOOLS_INCLUDE_DIR
   NAMES gperftools/heap-profiler.h
   HINTS ${Gperftools_ROOT_DIR}/include)
 
-set(GPERFTOOLS_LIBRARIES ${GPERFTOOLS_TCMALLOC_AND_PROFILER})
+# TODO: removed profiler
+set(GPERFTOOLS_LIBRARIES ${GPERFTOOLS_TCMALLOC})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
