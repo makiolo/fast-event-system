@@ -28,8 +28,19 @@ macro(COMMONS_FLAGS)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
 		add_definitions(-coverage)
 	endif()
+
+	# find_package
+
 	find_path(Gperftools_ROOT_DIR PATHS /usr /usr/local)
-	find_package(Gperftools QUIET)
+
+	find_library(GPERFTOOLS_TCMALLOC
+	  NAMES tcmalloc
+	  HINTS ${Gperftools_ROOT_DIR}/lib)
+
+	find_path(GPERFTOOLS_INCLUDE_DIR
+	  NAMES gperftools/heap-profiler.h
+	  HINTS ${Gperftools_ROOT_DIR}/include)
+
 	include_directories(BEFORE ${GPERFTOOLS_INCLUDE_DIR})
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GPERFTOOLS_TCMALLOC}")
 endmacro()
