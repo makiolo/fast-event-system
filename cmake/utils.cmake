@@ -30,19 +30,8 @@ macro(COMMONS_FLAGS)
 	endif()
 
 	# find_package
-
-	find_path(Gperftools_ROOT_DIR PATHS /usr /usr/local)
-
-	find_library(GPERFTOOLS_TCMALLOC
-	  NAMES tcmalloc
-	  HINTS ${Gperftools_ROOT_DIR}/lib)
-
-	find_path(GPERFTOOLS_INCLUDE_DIR
-	  NAMES gperftools/heap-profiler.h
-	  HINTS ${Gperftools_ROOT_DIR}/include)
-
-	include_directories(BEFORE ${GPERFTOOLS_INCLUDE_DIR})
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GPERFTOOLS_TCMALLOC}")
+	include_directories(BEFORE "/usr/include")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -l/usr/lib/libtcmalloc.so")
 endmacro()
 
 macro(ENABLE_MODERN_CPP)
