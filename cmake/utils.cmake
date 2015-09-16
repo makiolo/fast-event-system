@@ -30,8 +30,9 @@ macro(COMMONS_FLAGS)
 	endif()
 
 	# find_package
-	include_directories(BEFORE "/usr/include")
-	link_directories(/usr/lib)
+	set(Gperftools_ROOT_DIR "${CMAKE_SOURCE_DIR}/gperftools-bin")
+	include_directories(BEFORE ${Gperftools_ROOT_DIR}/include)
+	link_directories(${Gperftools_ROOT_DIR}/lib)
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
 endmacro()
 
