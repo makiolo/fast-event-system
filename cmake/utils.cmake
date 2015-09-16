@@ -51,7 +51,8 @@ macro(ENABLE_MODERN_CPP)
 		add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow)
         add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused)
         add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
-        add_definitions(-Wthread-safety)
+		# only gcc
+		#add_definitions(-Wthread-safety)
 		# convert error in warnings
 		add_definitions(-Wno-error=shadow)
         add_definitions(-Wno-error=long-long)
