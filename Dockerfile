@@ -17,7 +17,6 @@ RUN apt-get install -qq llvm-3.6-tools
 RUN apt-get install -qq git
 RUN apt-get install -qq kbtin
 RUN apt-get install -qq libtool
-RUN apt-get install -qq libunwind
 
 RUN mkdir -p toolchain
 RUN cd /tmp && wget https://github.com/gperftools/gperftools/releases/download/gperftools-2.4/gperftools-2.4.tar.gz
