@@ -29,9 +29,8 @@ macro(COMMONS_FLAGS)
 		add_definitions(-coverage)
 	endif()
 
-	set(toolchain_ROOT "${CMAKE_SOURCE_DIR}/../toolchain")
-	include_directories(BEFORE ${toolchain_ROOT}/include)
-	link_directories(${toolchain_ROOT}/lib)
+	include_directories(BEFORE ${TOOLCHAIN_ROOT}/include)
+	link_directories(${TOOLCHAIN_ROOT}/lib)
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
 endmacro()
 
