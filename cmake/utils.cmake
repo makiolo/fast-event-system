@@ -29,10 +29,9 @@ macro(COMMONS_FLAGS)
 		add_definitions(-coverage)
 	endif()
 
-	# find_package
-	set(Gperftools_ROOT_DIR "${CMAKE_SOURCE_DIR}/gperftools-bin")
-	include_directories(BEFORE ${Gperftools_ROOT_DIR}/include)
-	link_directories(${Gperftools_ROOT_DIR}/lib)
+	set(toolchain_ROOT "${CMAKE_SOURCE_DIR}/../toolchain")
+	include_directories(BEFORE ${toolchain_ROOT}/include)
+	link_directories(${toolchain_ROOT}/lib)
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
 endmacro()
 
