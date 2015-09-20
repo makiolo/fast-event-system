@@ -187,14 +187,12 @@ class sync
 public:
 	using methods = methods_t<Args...>;
 
-	//! default constructor
 	sync()
         : _registered()
         , _conns()
     {
-
+		;
     }
-	//! default destructor
 	~sync() { ; }
 
 	sync(const sync& other) = delete;
@@ -354,7 +352,12 @@ public:
     {
 
     }
-	~async_delay() = default;
+
+	~async_delay()
+	{
+		;
+	}
+
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
 
@@ -365,7 +368,10 @@ public:
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
 
-	void operator()(deltatime delay, const Args&... data) { operator()(0, delay, data...); }
+	void operator()(deltatime delay, const Args&... data)
+	{
+		operator()(0, delay, data...);
+	}
 
 	void operator()(int priority, const Args&... data)
 	{
@@ -490,7 +496,11 @@ public:
 		, _size_exact(0)
 	{ ; }
 
-	~async_fast() = default;
+	~async_fast()
+	{
+		;
+	}
+
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
 
@@ -594,3 +604,4 @@ protected:
 }  // end namespace
 
 #endif
+
