@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
+FIND_PACKAGE(Boost REQUIRED)
+IF(Boost_FOUND)
+	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+	CREATE_TEST("test_boost" fes ${Boost_LIBRARIES})
+endif()
+
 CREATE_TEST("test_fes" fes)
 CREATE_TEST("test_sync" fes)
 CREATE_TEST("test_async_fast" fes)

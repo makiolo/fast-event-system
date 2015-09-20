@@ -164,7 +164,7 @@ int main_measured_algorithm_1(int, const char**)
 			return data + 1.0;
 		}
 	);
-	if(total != 6.0)
+	if(std::abs(total - 6.0) < 1e-3)
 	{
 		std::cout << "invalid result: " << total << std::endl;
 		throw std::exception();
@@ -188,7 +188,7 @@ double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, cons
 		for (int i = 0; i < N; ++i)
 			volatile int result = algorithm(argc, argv);
 	}
-	return (elapsedtime * 1e9) / N;  // return mean time
+	return (elapsedtime * 1e9) / double(N);  // return mean time
 }
 
 int main(int argc, const char* argv[])

@@ -35,7 +35,7 @@ int main(int, const char **)
 				std::cout << "exception: " << e.what() << std::endl;
 			}
 		}
-		if(aggregation != 32.0)
+		if(std::abs(aggregation - 32.0) < 1e-3)
 		{
 			std::cout << "invalid total " << aggregation << std::endl;
 			throw std::exception();

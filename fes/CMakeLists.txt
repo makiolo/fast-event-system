@@ -8,8 +8,14 @@ endif()
 add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DPOCO_NO_AUTOMATIC_LIBS -DPOCO_DLL)
 
-IF(NOT WIN32)
-	set(LIBS_EXTRA stdc++)
-ENDIF()
-GENERATE_LIB(fes DEPENDENCIES ${LIBS_EXTRA} verypoco multithread)
+# boost
+FIND_PACKAGE(Boost REQUIRED)
+IF(Boost_FOUND)
+	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+	IF(NOT WIN32)
+		set(LIBS_EXTRA stdc++)
+	ENDIF()
+	GENERATE_LIB(fes DEPENDENCIES ${LIBS_EXTRA} verypoco multithread)
+	target_link_libraries(fes ${Boost_LIBRARIES})
+endif()
 
