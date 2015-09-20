@@ -27,7 +27,7 @@ int main(int, const char **)
 				return data + 6.0;
 			}
 		);
-		if(total != 21.0)
+		if(std::abs(total - 21.0) < 1e-3)
 		{
 			std::cout << "not expected result" << std::endl;
 			throw std::exception();
