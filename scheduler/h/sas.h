@@ -412,14 +412,14 @@ std::function<Data(const Data&)> _sequence(Function&& f)
 template <typename Data, typename Function, typename... Functions>
 std::function<Data(const Data&)> _sequence(Function&& f, Functions&&... fs)
 {
-	return [&](const Data& data)
+	return [&f, &fs...](const Data& data)
 	{
 		auto job = asyncply::run(
 			[&f, &data]()
 			{
 				return f(data);
 			},
-			[&](const Data& d)
+			[&fs...](const Data& d)
 			{
 				return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(d);
 			});
@@ -430,7 +430,7 @@ std::function<Data(const Data&)> _sequence(Function&& f, Functions&&... fs)
 template <typename Data, typename... Functions>
 Data sequence(const Data& data, Functions&&... fs)
 {
-	auto job = asyncply::run([&]()
+	auto job = asyncply::run([&data, &fs...]()
 		{
 			return asyncply::_sequence<Data>(std::forward<Functions>(fs)...)(data);
 		});
