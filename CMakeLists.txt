@@ -13,7 +13,7 @@ ENABLE_MODERN_CPP()
 
 add_subdirectory(animator)
 add_subdirectory(multithread)
-add_subdirectory(scheduler)
+add_subdirectory(asyncply)
 add_subdirectory(fes)
 add_subdirectory(tests)
 
