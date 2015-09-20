@@ -29,9 +29,9 @@ macro(COMMONS_FLAGS)
 		add_definitions(-coverage)
 	endif()
 
-	include_directories(BEFORE ${TOOLCHAIN_ROOT}/include)
-	link_directories(${TOOLCHAIN_ROOT}/lib)
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
+	# include_directories(BEFORE ${TOOLCHAIN_ROOT}/include)
+	# link_directories(${TOOLCHAIN_ROOT}/lib)
+	# SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
 endmacro()
 
 macro(ENABLE_MODERN_CPP)
