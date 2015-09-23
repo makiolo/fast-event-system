@@ -25,6 +25,65 @@
 namespace asyncply
 {
 
+template<typename T>
+struct Allocator
+{
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef T value_type;
+
+    template<typename U>
+    struct rebind
+	{
+		typedef Allocator<U> other;
+	};
+
+    Allocator() noexcept
+	{
+		;
+	}
+
+    Allocator(const Allocator&) noexcept {}
+
+    ~Allocator() {}
+
+    template<typename U>
+    Allocator(const Allocator<U>&) noexcept {}
+
+    template<typename U>
+    Allocator& operator = (const Allocator<U>&) { return *this; }
+
+    Allocator<T>& operator = (const Allocator&) { return *this; }
+
+    pointer allocate(size_type n, const void* hint = 0)
+    {
+		return static_cast<pointer>(malloc(n * sizeof(T)));
+    }
+
+    void deallocate(T* ptr, size_type n)
+    {
+		free(ptr);
+    }
+
+protected:
+};
+
+template <typename T, typename U>
+inline bool operator == (const Allocator<T>&, const Allocator<U>&)
+{
+    return true;
+}
+
+template <typename T, typename U>
+inline bool operator != (const Allocator<T>& a, const Allocator<U>& b)
+{
+    return !(a == b);
+}
+
 template <typename R>
 class task;
 
@@ -83,7 +142,7 @@ protected:
 	Poco::Semaphore& _semaphore;
 	std::atomic<bool> _ready;
 	std::atomic<bool> _has_exception;
-	std::atomic<std::exception_ptr> _exception;
+	std::exception_ptr _exception;
 	// atomic ?
 	R _value;
 };
@@ -121,7 +180,7 @@ public:
 protected:
 	Poco::Mutex _lock;
 	Poco::Semaphore& _semaphore;
-	std::atomic<std::exception_ptr> _exception;
+	std::exception_ptr _exception;
 	std::atomic<bool> _ready;
 };
 
@@ -353,7 +412,10 @@ protected:
 template <typename Function>
 shared_task<Function> run(Function&& f)
 {
-	auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f));
+	static Allocator<task_of_functor<Function>> alloc;
+
+	//auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f));
+	auto job = std::allocate_shared<task_of_functor<Function>, Allocator<task_of_functor<Function>>>(alloc, std::forward<Function>(f));
 	Poco::ThreadPool::defaultPool().start(*job);
 	return job;
 }
@@ -361,8 +423,10 @@ shared_task<Function> run(Function&& f)
 template <typename Function, typename FunctionPost>
 shared_task<Function> run(Function&& f, FunctionPost&& fp)
 {
-	auto job = std::make_shared<task_of_functor<Function>>(
-		std::forward<Function>(f), std::forward<FunctionPost>(fp));
+	static Allocator<task_of_functor<Function>> alloc;
+
+	//auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f), std::forward<FunctionPost>(fp));
+	auto job = std::allocate_shared<task_of_functor<Function>, Allocator<task_of_functor<Function> > >(alloc, std::forward<Function>(f), std::forward<FunctionPost>(fp));
 	Poco::ThreadPool::defaultPool().start(*job);
 	return job;
 }
@@ -390,7 +454,7 @@ void parallel(std::vector<shared_task<Function>>& vf, Function&& f, Functions&&.
 }
 
 template <typename Function>
-void parallel(std::vector<shared_task<Function>> vf, Function&& f)
+void parallel(std::vector<shared_task<Function>>& vf, Function&& f)
 {
 	vf.push_back(asyncply::run(std::forward<Function>(f)));
 }

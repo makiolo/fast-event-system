@@ -110,7 +110,7 @@ int main()
 		context.sleep(10);
 	}
 
-	Poco::ThreadPool::defaultPool().joinAll();
+	//Poco::ThreadPool::defaultPool().joinAll();
 	return (0);
 }
 

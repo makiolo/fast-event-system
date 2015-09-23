@@ -35,7 +35,7 @@
 	#endif
 #endif // POCO_OS
 #include "Poco/Mutex.h"
-
+#include <atomic>
 
 namespace Poco {
 
@@ -62,44 +62,44 @@ class poco_API AtomicCounter
 {
 public:
 	typedef int ValueType; /// The underlying integer type.
-	
+
 	AtomicCounter();
 		/// Creates a new AtomicCounter and initializes it to zero.
-		
+
 	explicit AtomicCounter(ValueType initialValue);
 		/// Creates a new AtomicCounter and initializes it with
 		/// the given value.
-	
+
 	AtomicCounter(const AtomicCounter& counter);
 		/// Creates the counter by copying another one.
-	
+
 	~AtomicCounter();
 		/// Destroys the AtomicCounter.
 
 	AtomicCounter& operator = (const AtomicCounter& counter);
 		/// Assigns the value of another AtomicCounter.
-		
+
 	AtomicCounter& operator = (ValueType value);
 		/// Assigns a value to the counter.
 
 	operator ValueType () const;
 		/// Returns the value of the counter.
-		
+
 	ValueType value() const;
 		/// Returns the value of the counter.
-		
+
 	ValueType operator ++ (); // prefix
 		/// Increments the counter and returns the result.
-		
+
 	ValueType operator ++ (int); // postfix
 		/// Increments the counter and returns the previous value.
-		
+
 	ValueType operator -- (); // prefix
 		/// Decrements the counter and returns the result.
-		
+
 	ValueType operator -- (int); // postfix
 		/// Decrements the counter and returns the previous value.
-		
+
 	bool operator ! () const;
 		/// Returns true if the counter is zero, false otherwise.
 
@@ -111,13 +111,8 @@ private:
 #elif defined(POCO_HAVE_GCC_ATOMICS)
 	typedef int ImplType;
 #else // generic implementation based on FastMutex
-	struct ImplType
-	{
-		mutable FastMutex mutex;
-		volatile int      value;
-	};
+	typedef std::atomic<int> ImplType;
 #endif // POCO_OS
-
 	ImplType _counter;
 };
 
@@ -136,7 +131,7 @@ inline AtomicCounter::operator AtomicCounter::ValueType () const
 	return _counter;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::value() const
 {
 	return _counter;
@@ -148,7 +143,7 @@ inline AtomicCounter::ValueType AtomicCounter::operator ++ () // prefix
 	return InterlockedIncrement(&_counter);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator ++ (int) // postfix
 {
 	ValueType result = InterlockedIncrement(&_counter);
@@ -161,14 +156,14 @@ inline AtomicCounter::ValueType AtomicCounter::operator -- () // prefix
 	return InterlockedDecrement(&_counter);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator -- (int) // postfix
 {
 	ValueType result = InterlockedDecrement(&_counter);
 	return ++result;
 }
 
-	
+
 inline bool AtomicCounter::operator ! () const
 {
 	return _counter == 0;
@@ -184,7 +179,7 @@ inline AtomicCounter::operator AtomicCounter::ValueType () const
 	return _counter;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::value() const
 {
 	return _counter;
@@ -196,7 +191,7 @@ inline AtomicCounter::ValueType AtomicCounter::operator ++ () // prefix
 	return OSAtomicIncrement32(&_counter);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator ++ (int) // postfix
 {
 	ValueType result = OSAtomicIncrement32(&_counter);
@@ -209,14 +204,14 @@ inline AtomicCounter::ValueType AtomicCounter::operator -- () // prefix
 	return OSAtomicDecrement32(&_counter);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator -- (int) // postfix
 {
 	ValueType result = OSAtomicDecrement32(&_counter);
 	return ++result;
 }
 
-	
+
 inline bool AtomicCounter::operator ! () const
 {
 	return _counter == 0;
@@ -231,7 +226,7 @@ inline AtomicCounter::operator AtomicCounter::ValueType () const
 	return _counter;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::value() const
 {
 	return _counter;
@@ -243,7 +238,7 @@ inline AtomicCounter::ValueType AtomicCounter::operator ++ () // prefix
 	return __sync_add_and_fetch(&_counter, 1);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator ++ (int) // postfix
 {
 	return __sync_fetch_and_add(&_counter, 1);
@@ -255,13 +250,13 @@ inline AtomicCounter::ValueType AtomicCounter::operator -- () // prefix
 	return __sync_sub_and_fetch(&_counter, 1);
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator -- (int) // postfix
 {
 	return __sync_fetch_and_sub(&_counter, 1);
 }
 
-	
+
 inline bool AtomicCounter::operator ! () const
 {
 	return _counter == 0;
@@ -274,44 +269,28 @@ inline bool AtomicCounter::operator ! () const
 //
 inline AtomicCounter::operator AtomicCounter::ValueType () const
 {
-	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = _counter.value;
-	}
-	return result;
+	return _counter;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::value() const
 {
-	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = _counter.value;
-	}
-	return result;
+	return _counter;
 }
 
 
 inline AtomicCounter::ValueType AtomicCounter::operator ++ () // prefix
 {
 	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = ++_counter.value;
-	}
+	result = ++_counter;
 	return result;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator ++ (int) // postfix
 {
 	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = _counter.value++;
-	}
+	result = _counter++;
 	return result;
 }
 
@@ -319,35 +298,23 @@ inline AtomicCounter::ValueType AtomicCounter::operator ++ (int) // postfix
 inline AtomicCounter::ValueType AtomicCounter::operator -- () // prefix
 {
 	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = --_counter.value;
-	}
+	result = --_counter;
 	return result;
 }
 
-	
+
 inline AtomicCounter::ValueType AtomicCounter::operator -- (int) // postfix
 {
 	ValueType result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = _counter.value--;
-	}
+	result = _counter--;
 	return result;
 }
 
-	
+
 inline bool AtomicCounter::operator ! () const
 {
-	bool result;
-	{
-		FastMutex::ScopedLock lock(_counter.mutex);
-		result = _counter.value == 0;
-	}
-	return result;
+	return _counter == 0;
 }
-
 
 #endif // POCO_OS
 

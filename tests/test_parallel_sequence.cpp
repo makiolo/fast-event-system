@@ -48,8 +48,8 @@ int main(int, const char **)
 			std::cout << "invalid total " << aggregation << std::endl;
 			throw std::exception();
 		}
+		std::cout << "aggregation = " << aggregation << std::endl;
 	}
 	std::cout << "result ok" << std::endl;
-	Poco::ThreadPool::defaultPool().joinAll();
 	return 0;
 }

@@ -23,7 +23,7 @@
 #include "Poco/Foundation.h"
 #include "Poco/Exception.h"
 #include <semLib.h>
-
+#include <atomic>
 
 namespace Poco {
 
@@ -31,16 +31,16 @@ namespace Poco {
 class poco_API EventImpl
 {
 protected:
-	EventImpl(bool autoReset);		
+	EventImpl(bool autoReset);
 	~EventImpl();
 	void setImpl();
 	void waitImpl();
 	bool waitImpl(long milliseconds);
 	void resetImpl();
-	
+
 private:
 	bool          _auto;
-	volatile bool _state;
+	std::atomic<bool> _state;
 	SEM_ID        _sem;
 };
 

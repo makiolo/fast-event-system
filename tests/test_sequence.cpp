@@ -32,6 +32,7 @@ int main(int, const char **)
 			std::cout << "not expected result" << std::endl;
 			throw std::exception();
 		}
+		std::cout << "total: " << total << std::endl;
 	}
 	std::cout << "result ok" << std::endl;
 	return 0;
