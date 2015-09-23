@@ -2,7 +2,7 @@
 
 int main(int, const char **)
 {
-	for(int i=0; i<10000;++i)
+	for(int i=0; i<100;++i)
 	{
 		double total = 1.0;
 		total = asyncply::sequence(total,
