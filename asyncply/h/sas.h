@@ -68,11 +68,11 @@ public:
 		return _value;
 	}
 
-	void set_value(const R& value) noexcept { _value = value; }
+	void set_value(const R& value) { _value = value; }
 
-	void set_value(R&& value) noexcept { _value = std::forward<R>(value); }
+	void set_value(R&& value) { _value = std::forward<R>(value); }
 
-	void set_exception(std::exception_ptr p) noexcept
+	void set_exception(std::exception_ptr p)
 	{
 	   	_exception = p;
 		_has_exception = true;
@@ -83,7 +83,8 @@ protected:
 	Poco::Semaphore& _semaphore;
 	std::atomic<bool> _ready;
 	std::atomic<bool> _has_exception;
-	std::exception_ptr _exception;
+	std::atomic<std::exception_ptr> _exception;
+	// atomic ?
 	R _value;
 };
 
@@ -92,9 +93,9 @@ class future<void>
 {
 public:
 	future(Poco::Semaphore& sem)
-        : _lock()
+        	: _lock()
 		, _semaphore(sem)
-        , _exception()
+        	, _exception()
 		, _ready(false)
 	{
 	}
@@ -115,12 +116,12 @@ public:
 		}
 	}
 
-	void set_exception(std::exception_ptr p) noexcept { _exception = p; }
+	void set_exception(std::exception_ptr p) { _exception = p; }
 
 protected:
 	Poco::Mutex _lock;
 	Poco::Semaphore& _semaphore;
-	std::exception_ptr _exception;
+	std::atomic<std::exception_ptr> _exception;
 	std::atomic<bool> _ready;
 };
 
@@ -138,12 +139,12 @@ public:
 
 	std::shared_ptr<future<R>> get_future() const { return _future; }
 
-	void set_value(const R& value) noexcept { _future->set_value(value); }
+	void set_value(const R& value) { _future->set_value(value); }
 	R& get_value() { return _future->get(); }
 
-	void set_value(R&& value) noexcept { _future->set_value(std::forward<R>(value)); }
+	void set_value(R&& value) { _future->set_value(std::forward<R>(value)); }
 
-	void set_exception(std::exception_ptr p) noexcept { _future->set_exception(p); }
+	void set_exception(std::exception_ptr p) { _future->set_exception(p); }
 
 	void signal() { _semaphore.set(); }
 
@@ -166,7 +167,7 @@ public:
 
 	std::shared_ptr<future<void>> get_future() const { return _future; }
 
-	void set_exception(std::exception_ptr p) noexcept { _future->set_exception(p); }
+	void set_exception(std::exception_ptr p) { _future->set_exception(p); }
 
 	void signal() { _semaphore.set(); }
 
