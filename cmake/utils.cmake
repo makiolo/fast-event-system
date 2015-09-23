@@ -56,7 +56,7 @@ macro(ENABLE_MODERN_CPP)
         add_definitions(-Wdisabled-optimization -Werror -Wfloat-equal -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k)
         add_definitions(-Wimport  -Winit-self  -Winline -Winvalid-pch -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute)
 		add_definitions(-Wmissing-include-dirs -Wmissing-noreturn -Wpacked -Wpointer-arith -Wredundant-decls -Wshadow)
-        add_definitions(-Wstack-protector -Wstrict-aliasing=2 -Wunreachable-code -Wunused)
+        add_definitions(-Wstack-protector -Wunreachable-code -Wunused)
         add_definitions(-Wunused-parameter -Wvariadic-macros -Wwrite-strings)
 		add_definitions(-Wswitch-default -Wswitch-enum)
 		# only gcc
@@ -71,6 +71,9 @@ macro(ENABLE_MODERN_CPP)
 			add_definitions(-Wno-aggregate-return)
 			add_definitions(-Wno-long-long)
 			add_definitions(-Wno-shadow)
+			add_definitions(-Wno-strict-aliasing)
+		else()
+			add_definitions(-Wstrict-aliasing=2)
 		endif()
 
 		# In Linux default now is not export symbols
