@@ -414,8 +414,7 @@ shared_task<Function> run(Function&& f)
 {
 	static Allocator<task_of_functor<Function>> alloc;
 
-	//auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f));
-	auto job = std::allocate_shared<task_of_functor<Function>, Allocator<task_of_functor<Function>>>(alloc, std::forward<Function>(f));
+	auto job = std::allocate_shared< task_of_functor<Function> >(alloc, std::forward<Function>(f));
 	Poco::ThreadPool::defaultPool().start(*job);
 	return job;
 }
@@ -425,8 +424,7 @@ shared_task<Function> run(Function&& f, FunctionPost&& fp)
 {
 	static Allocator<task_of_functor<Function>> alloc;
 
-	//auto job = std::make_shared<task_of_functor<Function>>(std::forward<Function>(f), std::forward<FunctionPost>(fp));
-	auto job = std::allocate_shared<task_of_functor<Function>, Allocator<task_of_functor<Function> > >(alloc, std::forward<Function>(f), std::forward<FunctionPost>(fp));
+	auto job = std::allocate_shared<task_of_functor<Function> >(alloc, std::forward<Function>(f), std::forward<FunctionPost>(fp));
 	Poco::ThreadPool::defaultPool().start(*job);
 	return job;
 }
