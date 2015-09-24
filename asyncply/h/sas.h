@@ -59,12 +59,12 @@ struct Allocator
 
     Allocator<T>& operator = (const Allocator&) { return *this; }
 
-    pointer allocate(size_type n, const void* hint = 0)
+    pointer allocate(size_type n, const void* = 0)
     {
 		return static_cast<pointer>(malloc(n * sizeof(T)));
     }
 
-    void deallocate(T* ptr, size_type n)
+    void deallocate(T* ptr, size_type)
     {
 		free(ptr);
     }

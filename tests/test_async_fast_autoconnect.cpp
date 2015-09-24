@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fes/h/fes.h>
+#include <fes/h/async_fast.h>
 
 int main(int, const char**)
 {
@@ -24,3 +24,4 @@ int main(int, const char**)
 
 	return (counter == N ? 0 : 1);
 }
+

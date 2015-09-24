@@ -65,6 +65,7 @@ macro(ENABLE_MODERN_CPP)
         add_definitions(-Wno-error=long-long)
         add_definitions(-Wno-error=aggregate-return)
         add_definitions(-Wno-error=aggregate-return)
+		add_definitions(-Wno-error=unused-variable)
 		add_definitions(-Wno-error=unused-parameter)
 
 		if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")

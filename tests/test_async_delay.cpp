@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fes/h/fes.h>
+#include <fes/h/async_delay.h>
 
 int main(int, const char**)
 {
@@ -36,3 +36,4 @@ int main(int, const char**)
 
 	return is_dispatched ? 0 : 1;
 }
+
