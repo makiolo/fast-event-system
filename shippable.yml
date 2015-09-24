@@ -2,9 +2,11 @@ language: python # lie, is cpp
 os:
     - linux
 
-script:
+before_install:
     - export LC_ALL=en_US.UTF-8
     - export LANG=en_US.UTF-8
+
+script:
     - mkdir -p $FL_CONF
     - cd $FL_CONF
     - export CC=${REAL_CC} CXX=${REAL_CXX}
