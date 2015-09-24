@@ -4,35 +4,36 @@ int main(int, const char **)
 {
 	for(int i=0; i<100;++i)
 	{
-		std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
-		asyncply::parallel(vjobs,
-		   [&]()
+		template <typename T> using shared_task = std::shared_ptr<asyncply::task<T> >;
+		std::vector<shared_task<double> > vjobs;
+		asyncply::parallel(vjobs, 
+		   []()
 		   {
-			   return 8.0;
+			   return 9.0;
 		   },
-		   [&]()
+		   []()
 		   {
-			   return 8.0;
+			   return 7.0;
 		   },
-		   [&]()
+		   []()
 		   {
-			   return 8.0;
+			   return 10.0;
 		   },
-		   [&]()
+		   []()
 		   {
-			   return 8.0;
+			   return 6.0;
 		   });
 		double aggregation = 0.0;
 		for (auto& job : vjobs)
 		{
 			try
 			{
-				double partial = job->get();
-				aggregation += partial;
+				aggregation += job->get();
 			}
 			catch (std::exception& e)
 			{
 				std::cout << "exception: " << e.what() << std::endl;
+				throw;
 			}
 		}
 		if(std::abs(aggregation - 32.0) > 1e-3)
