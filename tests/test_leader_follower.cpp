@@ -1,6 +1,7 @@
 // Ricardo Marmolejo Garcia
 // 15-04-2015
 
+#include <iostream>
 #include <thread>
 #include <memory>
 #include <asyncply/h/sas.h>

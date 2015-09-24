@@ -12,7 +12,6 @@
 #include <mutex>
 #include <csignal>
 #include <exception>
-#include <fes/h/fes.h>
 #include <animator/h/interpolation.h>
 #include <Poco/Thread.h>
 #include <Poco/ThreadPool.h>
@@ -21,6 +20,7 @@
 #include <Poco/Condition.h>
 #include <Poco/Mutex.h>
 #include <Poco/Semaphore.h>
+#include <fes/h/async_delay.h>
 
 namespace asyncply
 {
@@ -501,48 +501,8 @@ Data sequence(const Data& data, Functions&&... fs)
 }
 
 /*
-using Leaf = std::function<void()>;
-using CompositeLeaf = std::function<Leaf(const Leaf&)>;
-
-Leaf operator >>= (const CompositeLeaf& a, const Leaf& b)
-{
-	return a(b);
-}
-
-CompositeLeaf repeat(int n)
-{
-	return [=](const Leaf& f)
-	{
-		return [&]()
-		{
-			for(int cont = 0; cont < n; ++cont)
-			{
-				f();
-			}
-		};
-	};
-}
-*/
-
-/*
-		using call_type = boost::coroutines::asymmetric_coroutine<void>::pull_type;
-		using yield_type = boost::coroutines::asymmetric_coroutine<void>::push_type;
-
-		run( sync_function, parm1, parm2
-		).step(
-			[](yield_type& yield, return_type& ret)
-			{
-				comprar_huevos();
-				yield();
-				cocinar_huevos();
-				yield();
-				ret(100);
-			}
-		).post(
-			[&](int finish_result) {
-
-			}
-		);
+	using call_type = boost::coroutines::asymmetric_coroutine<void>::pull_type;
+	using yield_type = boost::coroutines::asymmetric_coroutine<void>::push_type;
 */
 
 template <typename T>
@@ -686,8 +646,7 @@ public:
 			});
 	}
 
-	inline void call(const command& cmd, float start, float end, float totaltime,
-		fes::deltatime milli = fes::deltatime(0), int priority = 0)
+	inline void call(const command& cmd, float start, float end, float totaltime, fes::deltatime milli = fes::deltatime(0), int priority = 0)
 	{
 		_commands(priority, milli, std::make_tuple(cmd, start, end, totaltime));
 	}
