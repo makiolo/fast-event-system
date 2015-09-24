@@ -1,6 +1,3 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-
 #include <iostream>
 #include <memory>
 #include <ctime>
@@ -174,13 +171,40 @@ int main_measured_algorithm_1(int, const char**)
 
 int main_measured_algorithm_2(int, const char**)
 {
-
+	double total = 0.0;
+	total = asyncply::sequence(1.0,
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		},
+		[](double data)
+		{
+			return data + 1.0;
+		}
+	);
+	if(std::abs(total - 6.0) > 1e-3)
+	{
+		std::cout << "invalid result: " << total << std::endl;
+		throw std::exception();
+	}
 	return 0;
 }
 
 double launch_benchmark(int argc, const char* argv[], int (*algorithm)(int, const char**))
 {
-	long long N = 1e3;
+	long long N = 1e2;
 	double elapsedtime;
 	{
 		measure_scoped timer(elapsedtime);
@@ -202,6 +226,4 @@ int main(int argc, const char* argv[])
 
 	return 0;
 }
-
-#pragma GCC diagnostic pop
 

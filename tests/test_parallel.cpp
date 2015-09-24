@@ -4,9 +4,8 @@ int main(int, const char **)
 {
 	for(int i=0; i<100;++i)
 	{
-		template <typename T> using shared_task = std::shared_ptr<asyncply::task<T> >;
-		std::vector<shared_task<double> > vjobs;
-		asyncply::parallel(vjobs, 
+		std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
+		asyncply::parallel(vjobs,
 		   []()
 		   {
 			   return 9.0;

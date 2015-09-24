@@ -62,9 +62,9 @@ RESULTS_DIR=cov-int
 make clean
 rm CMakeCache.txt 2> /dev/null
 rm -Rf CMakeFiles/ 2> /dev/null
-export CC=clang-3.6
-export CXX=clang++-3.6
-../coverity/bin/cov-configure  --comptype clangcxx --compiler $(which $CC)
+export CC=gcc-4.9
+export CXX=g++-4.9
+../coverity/bin/cov-configure --gcc
 eval "${COVERITY_SCAN_BUILD_COMMAND_PREPEND}"
 COVERITY_UNSUPPORTED=0 ../coverity/bin/cov-build --dir $RESULTS_DIR $COV_BUILD_OPTIONS $COVERITY_SCAN_BUILD_COMMAND
 ../coverity/bin/cov-import-scm --dir $RESULTS_DIR --scm git --log $RESULTS_DIR/scm_log.txt 2>&1
@@ -75,8 +75,6 @@ RESULTS_ARCHIVE=analysis-results.tgz
 tar czf $RESULTS_ARCHIVE $RESULTS_DIR
 SHA=`git rev-parse --short HEAD`
 tail cov-int/build-log.txt
-
-exit 1
 
 echo -e "\033[33;1mUploading Coverity Scan Analysis results...\033[0m"
 response=$(curl \
