@@ -25,7 +25,7 @@ env:
     # - REAL_CC=clang-3.4 EXTRA_DEF=-std=c++1y FL_CONF=Debug REAL_CXX=clang++-3.4 PACKAGE=clang-3.4 SUPPORT=g++-4.8 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.4 EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=clang++-3.4 PACKAGE=clang-3.4 SUPPORT=g++-4.8 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.4 EXTRA_DEF=-std=c++1y FL_CONF=Release REAL_CXX=clang++-3.4 PACKAGE=clang-3.4 SUPPORT=g++-4.8 COVERAGE=0 SANITIZER=
-    # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
+    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1y FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1z FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1y FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
@@ -34,11 +34,11 @@ env:
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # COVERAGE
-    # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=1 SANITIZER=
+    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=1 SANITIZER=
     # SANITIZERS
-    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=address
-    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=memory
-    - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=thread
+    #- REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=address
+    #- REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=memory
+    #- REAL_CC=clang-3.6 EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=thread
     # - REAL_CC=clang-3.6 EXTRA_DEF=-std=c++1z FL_CONF=Release REAL_CXX=clang++-3.6 PACKAGE=clang-3.6 SUPPORT=g++-4.9 COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.7   EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=g++-4.7     PACKAGE=g++-4.7   SUPPORT= COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.7   EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=g++-4.7     PACKAGE=g++-4.7   SUPPORT= COVERAGE=0 SANITIZER=
@@ -46,9 +46,9 @@ env:
     # - REAL_CC=gcc-4.8   EXTRA_DEF=-std=c++1y FL_CONF=Debug REAL_CXX=g++-4.8     PACKAGE=g++-4.8   SUPPORT= COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.8   EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=g++-4.8     PACKAGE=g++-4.8   SUPPORT= COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.8   EXTRA_DEF=-std=c++1y FL_CONF=Release REAL_CXX=g++-4.8     PACKAGE=g++-4.8   SUPPORT= COVERAGE=0 SANITIZER=
-    # - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=g++-4.9     PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
+    - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++11 FL_CONF=Debug REAL_CXX=g++-4.9     PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++1y FL_CONF=Debug REAL_CXX=g++-4.9     PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
-    # - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=g++-4.9     PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
+    - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++14 FL_CONF=Debug REAL_CXX=g++-4.9     PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
     - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++11 FL_CONF=Release REAL_CXX=g++-4.9 PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
     # - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++1y FL_CONF=Release REAL_CXX=g++-4.9 PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
     - REAL_CC=gcc-4.9   EXTRA_DEF=-std=c++14 FL_CONF=Release REAL_CXX=g++-4.9 PACKAGE=g++-4.9   SUPPORT= COVERAGE=0 SANITIZER=
