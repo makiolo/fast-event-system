@@ -2,15 +2,17 @@
 #include "multithread/h/MultiThreading.h"
 #include "multithread/h/Mutex.h"
 
-namespace asyncply
-{
+namespace asyncply {
 
 mutex::mutex()
-    : _mutex()
-    , _attr()
+	: _mutex()
+	, _attr()
 {
 #if defined(LINUX)
-	pthread_mutexattr_init(&_attr);
+	if (pthread_mutexattr_init(&_attr) != 0)
+	{
+		throw std::runtime_error("error initializing mutex");
+	}
 	pthread_mutexattr_settype(&_attr, PTHREAD_MUTEX_NORMAL);
 	pthread_mutex_init(&_mutex, &_attr);
 #elif defined(__APPLE__)
@@ -32,4 +34,6 @@ mutex::~mutex()
 	DeleteCriticalSection(&_section_critical);
 #endif
 }
+
 }
+

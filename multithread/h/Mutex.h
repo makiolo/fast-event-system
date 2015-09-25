@@ -3,8 +3,7 @@
 
 #include "Semaphore.h"
 
-namespace asyncply
-{
+namespace asyncply {
 
 class multithread_API mutex
 /*!
@@ -18,14 +17,17 @@ public:
 	mutex();
 	~mutex();
 
-    mutex(const mutex& other) = delete;
-    mutex& operator=(const mutex& other) = delete;
+	mutex(const mutex& other) = delete;
+	mutex& operator=(const mutex& other) = delete;
 
 	inline void lock()
 	//! lock this mutex
 	{
 #if defined(LINUX)
-		pthread_mutex_lock(&_mutex);
+		if(pthread_mutex_lock(&_mutex) != 0)
+		{
+			throw std::runtime_error("error in mutex::lock()");
+		}
 #elif defined(__APPLE__)
 		_sem.lock();
 #else
@@ -67,6 +69,7 @@ protected:
 	CRITICAL_SECTION _section_critical;
 #endif
 };
+
 }
 
 #endif  // _MUTEX_H_

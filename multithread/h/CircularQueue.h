@@ -16,15 +16,15 @@ public:
 	circular_queue()
 		: _top_index(0)
 		, _bottom_index(0)
-        , _mutex()
-        , _number_works(0)
+		, _number_works(0)
+		, _mutex()
 	{
 	}
 
 	~circular_queue() {}
 
-    circular_queue(const circular_queue& other) = delete;
-    circular_queue& operator=(const circular_queue& other) = delete;
+	circular_queue(const circular_queue& other) = delete;
+	circular_queue& operator=(const circular_queue& other) = delete;
 
 	void push(T* element)
 	{
@@ -60,17 +60,18 @@ public:
 		}
 	}
 
-	inline int size() { return _number_works; }
+	inline int size() const { return _number_works; }
 
-	mutex& get_mutex() { return _mutex; }
+	mutex& get_mutex() const { return _mutex; }
 
 private:
 	T* _queue[MAX_ELEMENTS];
 	int _top_index;
 	int _bottom_index;
-	mutex _mutex;
 	int _number_works;
+	mutable mutex _mutex;
 };
+
 }
 
 #endif  // _CIRCULAR_QUEUE_H_

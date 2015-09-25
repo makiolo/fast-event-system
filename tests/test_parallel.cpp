@@ -3,47 +3,55 @@
 
 int main(int, const char **)
 {
-	for(int i=0; i<100;++i)
+	try
 	{
-		std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
-		asyncply::parallel(vjobs,
-		   []()
-		   {
-			   return 9.0;
-		   },
-		   []()
-		   {
-			   return 7.0;
-		   },
-		   []()
-		   {
-			   return 10.0;
-		   },
-		   []()
-		   {
-			   return 6.0;
-		   });
-		double aggregation = 0.0;
-		for (auto& job : vjobs)
+		for(int i=0; i<100;++i)
 		{
-			try
+			std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
+			asyncply::parallel(vjobs,
+			   []()
+			   {
+				   return 9.0;
+			   },
+			   []()
+			   {
+				   return 7.0;
+			   },
+			   []()
+			   {
+				   return 10.0;
+			   },
+			   []()
+			   {
+				   return 6.0;
+			   });
+			double aggregation = 0.0;
+			for (auto& job : vjobs)
 			{
-				aggregation += job->get();
+				try
+				{
+					aggregation += job->get();
+				}
+				catch (std::exception& e)
+				{
+					std::cout << "exception: " << e.what() << std::endl;
+					throw;
+				}
 			}
-			catch (std::exception& e)
+			if(std::abs(aggregation - 32.0) > 1e-3)
 			{
-				std::cout << "exception: " << e.what() << std::endl;
-				throw;
+				std::cout << "invalid total " << aggregation << std::endl;
+				return 1;
 			}
+			std::cout << "total " << aggregation << std::endl;
 		}
-		if(std::abs(aggregation - 32.0) > 1e-3)
-		{
-			std::cout << "invalid total " << aggregation << std::endl;
-			throw std::exception();
-		}
-		std::cout << "total " << aggregation << std::endl;
+		std::cout << "result ok" << std::endl;
 	}
-	std::cout << "result ok" << std::endl;
+	catch(std::exception& e)
+	{
+		std::cout << "general exception " << e.what() << std::endl;
+		return 1;
+	}
 	return 0;
 }
 

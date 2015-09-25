@@ -1,7 +1,8 @@
 #ifndef _FUTURE_H_
 #define _FUTURE_H_
 
-namespace asyncply {
+namespace asyncply
+{
 
 template <typename R>
 class task;
@@ -26,6 +27,7 @@ public:
 		: _semaphore(sem)
 		, _ready(false)
 		, _has_exception(false)
+		, _value()
 	{
 	}
 
@@ -52,7 +54,7 @@ public:
 
 	void set_exception(std::exception_ptr p)
 	{
-	   	_exception = p;
+		_exception = p;
 		_has_exception = true;
 	}
 
@@ -71,9 +73,9 @@ class future<void>
 {
 public:
 	future(Poco::Semaphore& sem)
-        	: _lock()
+		: _lock()
 		, _semaphore(sem)
-        	, _exception()
+		, _exception()
 		, _ready(false)
 	{
 	}
@@ -106,4 +108,3 @@ protected:
 }
 
 #endif
-
