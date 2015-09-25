@@ -13,7 +13,7 @@ script:
     - rm CMakeCache.txt || true
     - cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=$FL_CONF -DEXTRA_DEF=$EXTRA_DEF -DCOVERAGE=$COVERAGE -DSANITIZER=$SANITIZER -DCMAKE_MODULE_PATH=$(pwd)/../cmake -DCMAKE_PREFIX_PATH=$(pwd)/../cmake
     - make -j12
-    - ctest .. -j12 --no-compress-output --output-on-failure --schedule-random -T Test --timeout 20 || true
+    - ctest .. -j12 --no-compress-output --output-on-failure --schedule-random -T Test --timeout 30 || true
     - find Testing/ -name "*.xml" | xargs xsltproc ../cmake/junit/CTest2JUnit.xsl > ../shippable/testresults/tests.xml
 
 env:
