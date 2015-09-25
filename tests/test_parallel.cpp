@@ -1,5 +1,7 @@
 #include <iostream>
-#include <asyncply/h/sas.h>
+#include <vector>
+#include <asyncply/h/parallel.h>
+#include <asyncply/h/task.h>
 
 int main(int, const char **)
 {

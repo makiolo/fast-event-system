@@ -1,23 +1,13 @@
 #ifndef _FUTURE_H_
 #define _FUTURE_H_
 
+#include <atomic>
+#include <exception>
+#include <Poco/Mutex.h>
+#include <Poco/Semaphore.h>
+
 namespace asyncply
 {
-
-template <typename R>
-class task;
-
-template <typename Function>
-using task_of_functor = task<typename std::result_of<Function()>::type>;
-
-template <typename Function>
-using shared_task = std::shared_ptr<task_of_functor<Function>>;
-
-template <typename Function>
-shared_task<Function> run(Function&& f);
-
-template <typename Function, typename FunctionPost>
-shared_task<Function> run(Function&& f, FunctionPost&& fp);
 
 template <typename R>
 class future

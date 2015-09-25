@@ -1,6 +1,9 @@
 #ifndef _TALKER_H_
 #define _TALKER_H_
 
+#include <thread>
+#include <asyncply/h/commands_queue.h>
+
 namespace asyncply {
 
 template <typename SELF, typename FOLLOWERS = SELF>

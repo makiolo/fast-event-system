@@ -1,6 +1,14 @@
 #ifndef _ANIMATIONS_QUEUE_H_
 #define _ANIMATIONS_QUEUE_H_
 
+#include <tuple>
+#include <vector>
+#include <memory>
+#include <atomic>
+#include <functional>
+#include <asyncply/h/run.h>
+#include <fes/h/async_delay.h>
+
 namespace asyncply {
 
 template <typename T>

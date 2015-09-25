@@ -1,6 +1,13 @@
 #ifndef _COMMANDS_QUEUE_H_
 #define _COMMANDS_QUEUE_H_
 
+#include <vector>
+#include <memory>
+#include <atomic>
+#include <functional>
+#include <asyncply/h/run.h>
+#include <fes/h/async_delay.h>
+
 namespace asyncply {
 
 template <typename T>

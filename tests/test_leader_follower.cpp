@@ -1,12 +1,8 @@
-// Ricardo Marmolejo Garcia
-// 15-04-2015
-
 #include <iostream>
 #include <thread>
 #include <memory>
-#include <asyncply/h/sas.h>
-#include <animator/h/interpolation.h>
-#include <Poco/Mutex.h>
+#include <string>
+#include <asyncply/h/talker.h>
 
 class Context
 {
@@ -68,7 +64,7 @@ int main()
 	std::ios_base::sync_with_stdio(false);
 
 	Context context;
-	Person person1("Person A", context);
+	Person person1("talker", context);
 
 	person1.call_me([&](Person& self)
 		{
@@ -111,7 +107,6 @@ int main()
 		context.sleep(10);
 	}
 
-	//Poco::ThreadPool::defaultPool().joinAll();
 	return (0);
 }
 

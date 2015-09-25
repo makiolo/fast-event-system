@@ -1,6 +1,11 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 
+#include <functional>
+#include <Poco/Runnable.h>
+#include <asyncply/h/promise.h>
+#include <asyncply/h/run_fwd.h>
+
 namespace asyncply {
 
 template <typename R>
@@ -16,6 +21,7 @@ public:
 		, _post_method(nullptr)
 		, _has_post(false)
 	{
+		;
 	}
 
 	task(const func& method, const post_type& post_method)
@@ -23,6 +29,7 @@ public:
 		, _post_method(post_method)
 		, _has_post(true)
 	{
+		;
 	}
 
 	virtual ~task() { get(); }

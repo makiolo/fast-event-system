@@ -1,6 +1,8 @@
 #ifndef _ALLOCATOR_H_
 #define _ALLOCATOR_H_
 
+#include <cstddef>
+
 namespace asyncply {
 
 template<typename T>
@@ -46,8 +48,6 @@ struct Allocator
     {
 		free(ptr);
     }
-
-protected:
 };
 
 template <typename T, typename U>
