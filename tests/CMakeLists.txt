@@ -16,6 +16,7 @@ CREATE_TEST("test_nan" fes)
 CREATE_TEST("test_sequence" fes)
 CREATE_TEST("test_parallel" fes)
 CREATE_TEST("test_parallel_sequence" fes)
+CREATE_TEST("test_consumer_producer" fes)
 
 # find_package
 include_directories(SYSTEM ../verypoco/include)
