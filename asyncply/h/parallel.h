@@ -33,7 +33,12 @@ void parallel(std::vector<shared_task<Function>>& vf, Function&& f)
 }
 
 template <  typename Function,
-			typename... Functions>
+			typename... Functions,
+			typename std::enable_if<
+				(!std::is_same<typename std::result_of<Function()>::type, bool>::value) &&
+				(!std::is_void<typename std::result_of<Function()>::type>::value)
+			>::type
+	>
 typename std::result_of<Function()>::type parallel(Function&& f, Functions&&... fs)
 {
 	using ret_t = typename std::result_of<Function()>::type;
@@ -48,7 +53,9 @@ typename std::result_of<Function()>::type parallel(Function&& f, Functions&&... 
 
 template <  typename Function,
 			typename... Functions,
-			typename = std::enable_if_t<std::is_same<typename std::result_of<Function()>::type, bool>::value>
+			typename std::enable_if<
+				std::is_same<typename std::result_of<Function()>::type, bool>::value
+			>::type
 	>
 bool parallel(Function&& f, Functions&&... fs)
 {
@@ -63,7 +70,9 @@ bool parallel(Function&& f, Functions&&... fs)
 
 template <  typename Function,
 			typename... Functions,
-			typename = std::enable_if_t<std::is_void<typename std::result_of<Function()>::type>::value>
+			class = typename std::enable_if<
+				std::is_void<typename std::result_of<Function()>::type>::value
+			>::type
 	>
 void parallel(Function&& f, Functions&&... fs)
 {
