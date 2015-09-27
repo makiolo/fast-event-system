@@ -12,6 +12,8 @@
 #include <boost/function.hpp>
 #include <boost/coroutine/coroutine.hpp>
 
+// namespace asyncply {
+
 template <typename T>
 class basic_pipeline
 {
@@ -57,6 +59,8 @@ public:
 		}
 	}
 };
+
+// }
 
 #endif
 

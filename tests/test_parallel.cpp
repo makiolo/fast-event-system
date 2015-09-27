@@ -9,8 +9,11 @@ int main(int, const char **)
 	{
 		for(int i=0; i<100;++i)
 		{
+
+
+
 			std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
-			asyncply::parallel(vjobs,
+			asyncply::_parallel(vjobs,
 			   []()
 			   {
 				   return 9.0;
@@ -45,7 +48,30 @@ int main(int, const char **)
 				std::cout << "invalid total " << aggregation << std::endl;
 				return 1;
 			}
-			std::cout << "total " << aggregation << std::endl;
+
+			auto total = asyncply::parallel(
+			   []()
+			   {
+				   return 9.0;
+			   },
+			   []()
+			   {
+				   return 7.0;
+			   },
+			   []()
+			   {
+				   return 10.0;
+			   },
+			   []()
+			   {
+				   return 6.0;
+			   });
+			if(std::abs(aggregation - total) > 1e-3)
+			{
+				std::cout << "invalid total " << total << std::endl;
+				return 1;
+			}
+
 		}
 		std::cout << "result ok" << std::endl;
 	}

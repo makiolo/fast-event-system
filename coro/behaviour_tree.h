@@ -20,6 +20,8 @@
 
 #include <coro/pipeline.h>
 
+// namespace asyncply {
+
 using StatusCode = enum
 {
 	RUNNING = 0,
@@ -31,27 +33,7 @@ using StatusCode = enum
 
 using behaviour = flow_pipeline<StatusCode>;
 
-behaviour::link _for(int n)
-{
-	return [n](behaviour::in&, behaviour::out& yield)
-	{
-		// ignore source
-		for(int i=0; i<n; ++i)
-		{
-			yield(RUNNING);
-		}
-		yield(COMPLETED);
-	};
-}
-
-behaviour::link _jump()
-{
-	return [](behaviour::in&, behaviour::out& yield)
-	{
-		std::cout << "JUMPING!!" << std::endl;
-		yield(COMPLETED);
-	};
-}
+// }
 
 #endif
 

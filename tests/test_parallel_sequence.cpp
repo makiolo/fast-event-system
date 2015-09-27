@@ -11,7 +11,7 @@ int main(int, const char **)
 		for(int i=0; i<100;++i)
 		{
 			std::vector<std::shared_ptr<asyncply::task<double>>> vjobs;
-			asyncply::parallel(vjobs,
+			asyncply::_parallel(vjobs,
 							   [&]()
 							   {
 								   return asyncply::sequence(7.0,

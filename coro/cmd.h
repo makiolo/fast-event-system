@@ -20,7 +20,28 @@
 
 #include <coro/pipeline.h>
 
+// namespace asyncply {
+
 using cmd = basic_pipeline<std::string>;
+
+// cmd::link operator,(const cmd::link& a, const cmd::link& b)
+// {
+// 	return [&a, &b](cmd::in& source, cmd::out&)
+// 	{
+// 		cmd::in prev(
+// 			[&source, &a](cmd::out& yield)
+// 			{
+// 				a(source, yield);
+// 			}
+// 		);
+// 		cmd::in f(
+// 			[&prev, &b](cmd::out& yield)
+// 			{
+// 				b(prev, yield);
+// 			}
+// 		);
+// 	};
+// }
 
 cmd::link cat(const std::string& filename)
 {
@@ -60,7 +81,7 @@ void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files
 		{
 			if(fs::is_directory(f->path()))
 			{
-				find_tree(f->path().string(), files);
+				find_tree(f->path(), files);
 			}
 			else
 			{
@@ -221,18 +242,26 @@ cmd::link cut(const char* delim, int field)
 	};
 }
 
-cmd::link echo()
+cmd::link in(const std::vector<std::string>& strs)
 {
-	return [](cmd::in& source, cmd::out&)
+	return [&strs](cmd::in&, cmd::out& yield)
 	{
-		for (; source; source())
+		for(auto& str : strs)
 		{
-			std::cout << source.get() << std::endl;
+			yield(str);
 		}
 	};
 }
 
-cmd::link write(std::vector<std::string>& strs)
+cmd::link in(const std::string& str)
+{
+	return [&str](cmd::in&, cmd::out& yield)
+	{
+		yield(str);
+	};
+}
+
+cmd::link out(std::vector<std::string>& strs)
 {
 	return [&strs](cmd::in& source, cmd::out&)
 	{
@@ -243,13 +272,24 @@ cmd::link write(std::vector<std::string>& strs)
 	};
 }
 
-cmd::link write(std::string& str)
+cmd::link out(std::string& str)
 {
 	return [&str](cmd::in& source, cmd::out&)
 	{
 		if(source)
 		{
 			str = source.get();
+		}
+	};
+}
+
+cmd::link out()
+{
+	return [](cmd::in& source, cmd::out&)
+	{
+		for (; source; source())
+		{
+			std::cout << source.get() << std::endl;
 		}
 	};
 }
@@ -323,6 +363,8 @@ cmd::link run(const std::string& cmd)
 		pclose(in);
 	};
 }
+
+// }
 
 #endif
 

@@ -16,4 +16,5 @@ add_subdirectory(multithread)
 add_subdirectory(asyncply)
 add_subdirectory(fes)
 add_subdirectory(tests)
+add_subdirectory(tests2)
 
