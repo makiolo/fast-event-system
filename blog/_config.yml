@@ -2,8 +2,8 @@ title: Fast event system
 email: makiolo@gmail.com
 description: >
     fes blog
-baseurl: ""
-url: "http://yourdomain.com"
+baseurl: "/blog"
+url: "http://makiolo.github.io/fast-event-system"
 twitter_username: makiolo
 github_username:  makiolo
 markdown: kramdown
