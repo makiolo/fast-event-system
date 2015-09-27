@@ -1,6 +1,3 @@
-// Copyright (C) 2013, Aldrin D'Souza.
-// License: http://opensource.org/licenses/BSD-2-Clause
-
 #ifndef _BEHAVIOUR_TREE_H_
 #define _BEHAVIOUR_TREE_H_
 
