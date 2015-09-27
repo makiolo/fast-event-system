@@ -1,0 +1,9 @@
+<map id="verypoco/include/Poco/Pipe.h" name="verypoco/include/Poco/Pipe.h">
+<area shape="rect" id="node2" href="$_pipe_stream_8h.html" title="verypoco/include/Poco\l/PipeStream.h" alt="" coords="25,97,179,138"/>
+<area shape="rect" id="node4" href="$_pipe_8cpp.html" title="verypoco/src/Pipe.cpp" alt="" coords="204,104,356,131"/>
+<area shape="rect" id="node5" href="$_process___u_n_i_x_8cpp.html" title="verypoco/src/Process\l_UNIX.cpp" alt="" coords="380,97,528,138"/>
+<area shape="rect" id="node6" href="$_process___w_i_n32_8cpp.html" title="verypoco/src/Process\l_WIN32.cpp" alt="" coords="553,97,701,138"/>
+<area shape="rect" id="node7" href="$_process___w_i_n32_u_8cpp.html" title="verypoco/src/Process\l_WIN32U.cpp" alt="" coords="727,97,875,138"/>
+<area shape="rect" id="node8" href="$_process___w_i_n_c_e_8cpp.html" title="verypoco/src/Process\l_WINCE.cpp" alt="" coords="900,97,1048,138"/>
+<area shape="rect" id="node3" href="$_pipe_stream_8cpp.html" title="verypoco/src/PipeStream.cpp" alt="" coords="5,187,200,213"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="verypoco/src/zlib.h" name="verypoco/src/zlib.h">
+<area shape="rect" id="node2" href="$zutil_8h.html" title="verypoco/src/zutil.h" alt="" coords="713,80,848,107"/>
+<area shape="rect" id="node13" href="$compress_8c.html" title="verypoco/src/compress.c" alt="" coords="913,80,1081,107"/>
+<area shape="rect" id="node14" href="$gzguts_8h.html" title="verypoco/src/gzguts.h" alt="" coords="1183,80,1333,107"/>
+<area shape="rect" id="node3" href="$adler32_8c.html" title="verypoco/src/adler32.c" alt="" coords="5,155,159,181"/>
+<area shape="rect" id="node4" href="$crc32_8c.html" title="verypoco/src/crc32.c" alt="" coords="184,155,328,181"/>
+<area shape="rect" id="node5" href="$deflate_8h.html" title="verypoco/src/deflate.h" alt="" coords="353,155,503,181"/>
+<area shape="rect" id="node8" href="$infback_8c.html" title="verypoco/src/infback.c" alt="" coords="528,155,681,181"/>
+<area shape="rect" id="node9" href="$inffast_8c.html" title="verypoco/src/inffast.c" alt="" coords="707,155,855,181"/>
+<area shape="rect" id="node10" href="$inflate_8c.html" title="verypoco/src/inflate.c" alt="" coords="880,155,1027,181"/>
+<area shape="rect" id="node11" href="$inftrees_8c.html" title="verypoco/src/inftrees.c" alt="" coords="1051,155,1204,181"/>
+<area shape="rect" id="node12" href="$zutil_8c.html" title="verypoco/src/zutil.c" alt="" coords="1229,155,1364,181"/>
+<area shape="rect" id="node6" href="$deflate_8c.html" title="verypoco/src/deflate.c" alt="" coords="267,229,417,256"/>
+<area shape="rect" id="node7" href="$trees_8c.html" title="verypoco/src/trees.c" alt="" coords="443,229,583,256"/>
+</map>

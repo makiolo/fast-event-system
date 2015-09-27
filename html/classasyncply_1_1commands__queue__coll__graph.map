@@ -1,0 +1,4 @@
+<map id="commands_queue&lt; T &gt;" name="commands_queue&lt; T &gt;">
+<area shape="rect" id="node3" href="$classfes_1_1async__delay.html" title="{async_delay\&lt; command \&gt;\n||+ async_delay()\l+ async_delay()\l+ ~async_delay()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ dispatch_one()\l+ empty()\land 8 more...\l# _dispatch_one()\l# dispatch_one()\l}" alt="" coords="248,501,456,795"/>
+<area shape="rect" id="node4" href="$classfes_1_1sync.html" title="{sync\&lt; Args... \&gt;\n||+ sync()\l+ sync()\l+ ~sync()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ operator()()\l+ operator=()\l# _connect()\l}" alt="" coords="163,176,289,435"/>
+</map>

@@ -1,0 +1,25 @@
+<map id="verypoco/include/Poco/BufferAllocator.h" name="verypoco/include/Poco/BufferAllocator.h">
+<area shape="rect" id="node2" href="$_buffered_bidirectional_stream_buf_8h.html" title="verypoco/include/Poco\l/BufferedBidirectionalStream\lBuf.h" alt="" coords="319,96,507,152"/>
+<area shape="rect" id="node12" href="$_buffered_stream_buf_8h.html" title="verypoco/include/Poco\l/BufferedStreamBuf.h" alt="" coords="872,103,1025,145"/>
+<area shape="rect" id="node3" href="$_f_i_f_o_buffer_stream_8h.html" title="verypoco/include/Poco\l/FIFOBufferStream.h" alt="" coords="48,201,201,242"/>
+<area shape="rect" id="node5" href="$_file_stream___p_o_s_i_x_8h.html" title="verypoco/include/Poco\l/FileStream_POSIX.h" alt="" coords="247,201,400,242"/>
+<area shape="rect" id="node11" href="$_file_stream___w_i_n32_8h.html" title="verypoco/include/Poco\l/FileStream_WIN32.h" alt="" coords="425,201,579,242"/>
+<area shape="rect" id="node4" href="$_f_i_f_o_buffer_stream_8cpp.html" title="verypoco/src/FIFOBufferStream.cpp" alt="" coords="5,299,237,325"/>
+<area shape="rect" id="node6" href="$_file_stream_8h.html" title="verypoco/include/Poco\l/FileStream.h" alt="" coords="263,291,416,333"/>
+<area shape="rect" id="node7" href="$_file_stream_8cpp.html" title="verypoco/src/FileStream.cpp" alt="" coords="91,472,280,499"/>
+<area shape="rect" id="node8" href="$_file_stream___p_o_s_i_x_8cpp.html" title="verypoco/src/FileStream\l_POSIX.cpp" alt="" coords="163,382,327,423"/>
+<area shape="rect" id="node9" href="$_file_stream___w_i_n32_8cpp.html" title="verypoco/src/FileStream\l_WIN32.cpp" alt="" coords="351,382,515,423"/>
+<area shape="rect" id="node10" href="$_file_stream_factory_8cpp.html" title="verypoco/src/FileStreamFactory.cpp" alt="" coords="539,389,772,416"/>
+<area shape="rect" id="node13" href="$_deflating_stream_8h.html" title="verypoco/include/Poco\l/DeflatingStream.h" alt="" coords="604,201,757,242"/>
+<area shape="rect" id="node15" href="$_digest_stream_8h.html" title="verypoco/include/Poco\l/DigestStream.h" alt="" coords="783,201,936,242"/>
+<area shape="rect" id="node17" href="$_inflating_stream_8h.html" title="verypoco/include/Poco\l/InflatingStream.h" alt="" coords="961,201,1115,242"/>
+<area shape="rect" id="node19" href="$_pipe_stream_8h.html" title="verypoco/include/Poco\l/PipeStream.h" alt="" coords="1165,201,1319,242"/>
+<area shape="rect" id="node21" href="$_random_stream_8h.html" title="verypoco/include/Poco\l/RandomStream.h" alt="" coords="1509,201,1663,242"/>
+<area shape="rect" id="node14" href="$_deflating_stream_8cpp.html" title="verypoco/src/DeflatingStream.cpp" alt="" coords="457,299,676,325"/>
+<area shape="rect" id="node16" href="$_digest_stream_8cpp.html" title="verypoco/src/DigestStream.cpp" alt="" coords="701,299,907,325"/>
+<area shape="rect" id="node18" href="$_inflating_stream_8cpp.html" title="verypoco/src/InflatingStream.cpp" alt="" coords="931,299,1145,325"/>
+<area shape="rect" id="node20" href="$_pipe_stream_8cpp.html" title="verypoco/src/PipeStream.cpp" alt="" coords="1171,299,1365,325"/>
+<area shape="rect" id="node22" href="$_random_8cpp.html" title="verypoco/src/Random.cpp" alt="" coords="1390,299,1564,325"/>
+<area shape="rect" id="node23" href="$_random_stream_8cpp.html" title="verypoco/src/RandomStream.cpp" alt="" coords="1589,299,1805,325"/>
+<area shape="rect" id="node24" href="$_u_u_i_d_generator_8cpp.html" title="verypoco/src/UUIDGenerator.cpp" alt="" coords="1830,299,2047,325"/>
+</map>

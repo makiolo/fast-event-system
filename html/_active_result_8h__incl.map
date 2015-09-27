@@ -1,0 +1,17 @@
+<map id="verypoco/include/Poco/ActiveResult.h" name="verypoco/include/Poco/ActiveResult.h">
+<area shape="rect" id="node2" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="531,469,661,496"/>
+<area shape="rect" id="node10" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="227,245,329,272"/>
+<area shape="rect" id="node11" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="195,395,321,421"/>
+<area shape="rect" id="node17" href="$_event_8h.html" title="Poco/Event.h" alt="" coords="494,245,595,272"/>
+<area shape="rect" id="node19" href="$_ref_counted_object_8h.html" title="Poco/RefCountedObject.h" alt="" coords="612,96,786,123"/>
+<area shape="rect" id="node3" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="115,544,219,571"/>
+<area shape="rect" id="node4" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="244,544,359,571"/>
+<area shape="rect" id="node5" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="385,544,510,571"/>
+<area shape="rect" id="node7" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="534,544,659,571"/>
+<area shape="rect" id="node9" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="735,544,837,571"/>
+<area shape="rect" id="node13" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="33,395,171,421"/>
+<area shape="rect" id="node14" href="$_mutex___p_o_s_i_x_8h.html" title="Poco/Mutex_POSIX.h" alt="" coords="284,320,434,347"/>
+<area shape="rect" id="node18" href="$_event___p_o_s_i_x_8h.html" title="Poco/Event_POSIX.h" alt="" coords="459,320,607,347"/>
+<area shape="rect" id="node20" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="622,171,775,197"/>
+<area shape="rect" id="node21" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="630,245,769,272"/>
+</map>

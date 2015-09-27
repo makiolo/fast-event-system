@@ -1,0 +1,26 @@
+var sas_8h =
+[
+    [ "animations_queue", "classasyncply_1_1animations__queue.html", "classasyncply_1_1animations__queue" ],
+    [ "commands_queue", "classasyncply_1_1commands__queue.html", "classasyncply_1_1commands__queue" ],
+    [ "future", "classasyncply_1_1future.html", "classasyncply_1_1future" ],
+    [ "future< void >", "classasyncply_1_1future_3_01void_01_4.html", "classasyncply_1_1future_3_01void_01_4" ],
+    [ "promise", "classasyncply_1_1promise.html", "classasyncply_1_1promise" ],
+    [ "promise< void >", "classasyncply_1_1promise_3_01void_01_4.html", "classasyncply_1_1promise_3_01void_01_4" ],
+    [ "talker", "classasyncply_1_1talker.html", "classasyncply_1_1talker" ],
+    [ "task", "classasyncply_1_1task.html", "classasyncply_1_1task" ],
+    [ "task", "classasyncply_1_1task.html", "classasyncply_1_1task" ],
+    [ "task< void >", "classasyncply_1_1task_3_01void_01_4.html", "classasyncply_1_1task_3_01void_01_4" ],
+    [ "debug_cast", "sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "debug_cast", "sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "debug_cast", "sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "shared_task", "sas_8h.html#a69bbdcc7d8cc2089da5adc2ea2dcae6e", null ],
+    [ "task_of_functor", "sas_8h.html#a84f714fcbfa434092f5a592b8e048385", null ],
+    [ "_parallel", "sas_8h.html#a3033a029b5f6aaa1cb656349d7278957", null ],
+    [ "_parallel", "sas_8h.html#aa4a66bc5753e9e438490b7f60f8750c2", null ],
+    [ "_sequence", "sas_8h.html#ae487a655176531762fe644154789f41f", null ],
+    [ "_sequence", "sas_8h.html#a6717a8ddb1895187f71caa475679cc32", null ],
+    [ "parallel", "sas_8h.html#ad7e7fa23a2f48f6a413794f8fd15e000", null ],
+    [ "parallel", "sas_8h.html#a8212a07acfdc170aa4ddc3c8b81ee2a0", null ],
+    [ "run", "sas_8h.html#ac70c2bc430ac69b226708367cfad7b69", null ],
+    [ "sequence", "sas_8h.html#ac578f47a62b56415093c916b0b4b18eb", null ]
+];

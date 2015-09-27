@@ -1,0 +1,28 @@
+var class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4 =
+[
+    [ "VarHolderImpl", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#af77af49aed97e3bee5847c82ead28dcc", null ],
+    [ "~VarHolderImpl", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a2acfd829456610129230a9b41502cd80", null ],
+    [ "clone", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#aa26fcf9a1e3c4426a796eaf12da94f62", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#accd8574b0ed30a2a5c076f46142cc469", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#abba84420fb796eca95baec0cfbded13b", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a4920d48418091161e1bcd1473ff55a23", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#aef9d73a33e93428f623114ef7d662a57", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a65cab0edc82e4f6f47e2caa9bb4e8d40", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a0e4d5e27688a7f0c889f7f83df44a5e3", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a4977fbac7fc3da0a8f57701352e684b3", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a54ffe3022bd8698fec91febbc5b5ae26", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a3507c61edc63c9b86a27f300d1a3121e", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a6bf7ccdd6edcb9925fbb5bb592c13710", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a62c0055dba84fa619b2713c49e1d37ba", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a237dabe2577c8c61651d1992ae364c46", null ],
+    [ "convert", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a7537fc5ee6860befbc346756efcf4642", null ],
+    [ "isArray", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#ab8cc5f689b37e6752dede5651964ca00", null ],
+    [ "isBoolean", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a978aeaec7b30dd9ab4a791c8d73a9ea9", null ],
+    [ "isInteger", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a728b4acff3535b24d537b76a585163ec", null ],
+    [ "isNumeric", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#ad3d02833f9e5d42c9f42262187f78467", null ],
+    [ "isSigned", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a3800763b2eab79246a523301baee52ea", null ],
+    [ "isString", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a269a9f0d49074173e72b69ce868b0983", null ],
+    [ "isStruct", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a2293c5604514d383167918cf39ced256", null ],
+    [ "type", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#a0675a7130ced77625241b7bba7a0b8b0", null ],
+    [ "value", "class_poco_1_1_dynamic_1_1_var_holder_impl_3_01double_01_4.html#ab0e7c67254d0b3b13cdf8654334a1471", null ]
+];

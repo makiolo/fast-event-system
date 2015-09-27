@@ -1,0 +1,17 @@
+<map id="verypoco/src/SharedMemory_DUMMY.cpp" name="verypoco/src/SharedMemory_DUMMY.cpp">
+<area shape="rect" id="node2" href="$_shared_memory___d_u_m_m_y_8h.html" title="Poco/SharedMemory_DUMMY.h" alt="" coords="133,96,347,123"/>
+<area shape="rect" id="node3" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="492,544,621,571"/>
+<area shape="rect" id="node11" href="$_shared_memory_8h.html" title="Poco/SharedMemory.h" alt="" coords="43,469,196,496"/>
+<area shape="rect" id="node13" href="$_ref_counted_object_8h.html" title="Poco/RefCountedObject.h" alt="" coords="278,171,452,197"/>
+<area shape="rect" id="node4" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="773,619,877,645"/>
+<area shape="rect" id="node5" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="305,619,420,645"/>
+<area shape="rect" id="node6" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="155,619,280,645"/>
+<area shape="rect" id="node8" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="496,619,621,645"/>
+<area shape="rect" id="node10" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="646,619,748,645"/>
+<area shape="rect" id="node14" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="379,245,532,272"/>
+<area shape="rect" id="node15" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="329,320,468,347"/>
+<area shape="rect" id="node17" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="611,320,713,347"/>
+<area shape="rect" id="node18" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="883,469,1008,496"/>
+<area shape="rect" id="node20" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="593,395,732,421"/>
+<area shape="rect" id="node21" href="$_mutex___p_o_s_i_x_8h.html" title="Poco/Mutex_POSIX.h" alt="" coords="757,395,907,421"/>
+</map>

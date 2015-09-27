@@ -1,0 +1,34 @@
+<map id="verypoco/include/Poco/PriorityEvent.h" name="verypoco/include/Poco/PriorityEvent.h">
+<area shape="rect" id="node2" href="$_abstract_event_8h.html" title="Poco/AbstractEvent.h" alt="" coords="1685,96,1835,123"/>
+<area shape="rect" id="node40" href="$_priority_strategy_8h.html" title="Poco/PriorityStrategy.h" alt="" coords="1915,320,2072,347"/>
+<area shape="rect" id="node42" href="$_abstract_priority_delegate_8h.html" title="Poco/AbstractPriorityDelegate.h" alt="" coords="2209,768,2417,795"/>
+<area shape="rect" id="node3" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="1357,917,1487,944"/>
+<area shape="rect" id="node11" href="$_singleton_holder_8h.html" title="Poco/SingletonHolder.h" alt="" coords="1873,619,2031,645"/>
+<area shape="rect" id="node12" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="1430,693,1532,720"/>
+<area shape="rect" id="node19" href="$_shared_ptr_8h.html" title="Poco/SharedPtr.h" alt="" coords="1607,544,1732,571"/>
+<area shape="rect" id="node24" href="$_active_result_8h.html" title="Poco/ActiveResult.h" alt="" coords="1323,469,1465,496"/>
+<area shape="rect" id="node28" href="$_active_method_8h.html" title="Poco/ActiveMethod.h" alt="" coords="887,171,1033,197"/>
+<area shape="rect" id="node4" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="941,992,1045,1019"/>
+<area shape="rect" id="node5" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="1070,992,1185,1019"/>
+<area shape="rect" id="node6" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="1211,992,1336,1019"/>
+<area shape="rect" id="node8" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="1360,992,1485,1019"/>
+<area shape="rect" id="node10" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="1561,992,1663,1019"/>
+<area shape="rect" id="node13" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="657,843,783,869"/>
+<area shape="rect" id="node15" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="1485,843,1624,869"/>
+<area shape="rect" id="node16" href="$_mutex___p_o_s_i_x_8h.html" title="Poco/Mutex_POSIX.h" alt="" coords="1158,768,1308,795"/>
+<area shape="rect" id="node20" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="1592,619,1745,645"/>
+<area shape="rect" id="node21" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="1557,693,1696,720"/>
+<area shape="rect" id="node25" href="$_event_8h.html" title="Poco/Event.h" alt="" coords="737,619,839,645"/>
+<area shape="rect" id="node27" href="$_ref_counted_object_8h.html" title="Poco/RefCountedObject.h" alt="" coords="1089,544,1263,571"/>
+<area shape="rect" id="node26" href="$_event___p_o_s_i_x_8h.html" title="Poco/Event_POSIX.h" alt="" coords="933,768,1081,795"/>
+<area shape="rect" id="node29" href="$_active_runnable_8h.html" title="Poco/ActiveRunnable.h" alt="" coords="243,395,401,421"/>
+<area shape="rect" id="node31" href="$_auto_ptr_8h.html" title="Poco/AutoPtr.h" alt="" coords="145,544,255,571"/>
+<area shape="rect" id="node32" href="$_active_starter_8h.html" title="Poco/ActiveStarter.h" alt="" coords="717,245,859,272"/>
+<area shape="rect" id="node30" href="$_runnable_8h.html" title="Poco/Runnable.h" alt="" coords="280,544,403,571"/>
+<area shape="rect" id="node33" href="$_thread_pool_8h.html" title="Poco/ThreadPool.h" alt="" coords="815,320,948,347"/>
+<area shape="rect" id="node34" href="$verypoco_2include_2_poco_2_thread_8h.html" title="Poco/Thread.h" alt="" coords="828,395,935,421"/>
+<area shape="rect" id="node35" href="$_thread___p_o_s_i_x_8h.html" title="Poco/Thread_POSIX.h" alt="" coords="687,469,840,496"/>
+<area shape="rect" id="node36" href="$_signal_handler_8h.html" title="Poco/SignalHandler.h" alt="" coords="406,693,553,720"/>
+<area shape="rect" id="node41" href="$_notification_strategy_8h.html" title="Poco/NotificationStrategy.h" alt="" coords="1950,469,2132,496"/>
+<area shape="rect" id="node43" href="$_abstract_delegate_8h.html" title="Poco/AbstractDelegate.h" alt="" coords="2259,843,2427,869"/>
+</map>

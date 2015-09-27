@@ -1,0 +1,36 @@
+<map id="verypoco/src/VarIterator.cpp" name="verypoco/src/VarIterator.cpp">
+<area shape="rect" id="node2" href="$_var_iterator_8h.html" title="Poco/Dynamic/VarIterator.h" alt="" coords="165,229,349,256"/>
+<area shape="rect" id="node15" href="$_var_8h.html" title="Poco/Dynamic/Var.h" alt="" coords="438,155,580,181"/>
+<area shape="rect" id="node48" href="$_struct_8h.html" title="Poco/Dynamic/Struct.h" alt="" coords="634,80,792,107"/>
+<area shape="rect" id="node3" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="556,528,681,555"/>
+<area shape="rect" id="node4" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="1180,677,1309,704"/>
+<area shape="rect" id="node5" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="1333,752,1437,779"/>
+<area shape="rect" id="node6" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="1462,752,1577,779"/>
+<area shape="rect" id="node7" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="1603,752,1728,779"/>
+<area shape="rect" id="node9" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="1183,752,1308,779"/>
+<area shape="rect" id="node11" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="1005,752,1107,779"/>
+<area shape="rect" id="node16" href="$_format_8h.html" title="Poco/Format.h" alt="" coords="447,229,555,256"/>
+<area shape="rect" id="node22" href="$_shared_ptr_8h.html" title="Poco/SharedPtr.h" alt="" coords="708,304,833,331"/>
+<area shape="rect" id="node28" href="$_var_holder_8h.html" title="Poco/Dynamic/VarHolder.h" alt="" coords="1267,229,1448,256"/>
+<area shape="rect" id="node17" href="$_any_8h.html" title="Poco/Any.h" alt="" coords="593,304,684,331"/>
+<area shape="rect" id="node18" href="$_meta_programming_8h.html" title="Poco/MetaProgramming.h" alt="" coords="359,528,532,555"/>
+<area shape="rect" id="node23" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="839,379,992,405"/>
+<area shape="rect" id="node24" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="783,453,921,480"/>
+<area shape="rect" id="node26" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="655,453,757,480"/>
+<area shape="rect" id="node27" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="777,603,916,629"/>
+<area shape="rect" id="node29" href="$_number_formatter_8h.html" title="Poco/NumberFormatter.h" alt="" coords="1421,304,1589,331"/>
+<area shape="rect" id="node32" href="$_number_parser_8h.html" title="Poco/NumberParser.h" alt="" coords="1646,379,1796,405"/>
+<area shape="rect" id="node33" href="$_date_time_8h.html" title="Poco/DateTime.h" alt="" coords="2039,453,2163,480"/>
+<area shape="rect" id="node34" href="$_timestamp_8h.html" title="Poco/Timestamp.h" alt="" coords="2150,603,2281,629"/>
+<area shape="rect" id="node37" href="$_local_date_time_8h.html" title="Poco/LocalDateTime.h" alt="" coords="2024,379,2177,405"/>
+<area shape="rect" id="node38" href="$_date_time_format_8h.html" title="Poco/DateTimeFormat.h" alt="" coords="1223,603,1387,629"/>
+<area shape="rect" id="node39" href="$_date_time_formatter_8h.html" title="Poco/DateTimeFormatter.h" alt="" coords="1875,304,2055,331"/>
+<area shape="rect" id="node40" href="$_date_time_parser_8h.html" title="Poco/DateTimeParser.h" alt="" coords="2253,379,2416,405"/>
+<area shape="rect" id="node41" href="$_string_8h.html" title="Poco/String.h" alt="" coords="1044,304,1145,331"/>
+<area shape="rect" id="node43" href="$_unicode_converter_8h.html" title="Poco/UnicodeConverter.h" alt="" coords="1149,528,1320,555"/>
+<area shape="rect" id="node44" href="$_u_t_f_string_8h.html" title="Poco/UTFString.h" alt="" coords="5,603,131,629"/>
+<area shape="rect" id="node45" href="$_u_t_f8_string_8h.html" title="Poco/UTF8String.h" alt="" coords="1319,453,1453,480"/>
+<area shape="rect" id="node30" href="$_numeric_string_8h.html" title="Poco/NumericString.h" alt="" coords="1471,379,1621,405"/>
+<area shape="rect" id="node36" href="$_timespan_8h.html" title="Poco/Timespan.h" alt="" coords="1998,528,2121,555"/>
+<area shape="rect" id="node42" href="$_ascii_8h.html" title="Poco/Ascii.h" alt="" coords="1047,453,1143,480"/>
+</map>

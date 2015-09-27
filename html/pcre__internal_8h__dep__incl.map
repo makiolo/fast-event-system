@@ -1,0 +1,24 @@
+<map id="verypoco/src/pcre_internal.h" name="verypoco/src/pcre_internal.h">
+<area shape="rect" id="node2" href="$pcre__byte__order_8c.html" title="verypoco/src/pcre_byte\l_order.c" alt="" coords="5,81,163,122"/>
+<area shape="rect" id="node3" href="$pcre__chartables_8c.html" title="verypoco/src/pcre_chartables.c" alt="" coords="187,88,391,115"/>
+<area shape="rect" id="node4" href="$pcre__compile_8c.html" title="verypoco/src/pcre_compile.c" alt="" coords="416,88,605,115"/>
+<area shape="rect" id="node5" href="$pcre__config_8c.html" title="verypoco/src/pcre_config.c" alt="" coords="629,88,808,115"/>
+<area shape="rect" id="node6" href="$pcre__dfa__exec_8c.html" title="verypoco/src/pcre_dfa\l_exec.c" alt="" coords="833,81,983,122"/>
+<area shape="rect" id="node7" href="$pcre__exec_8c.html" title="verypoco/src/pcre_exec.c" alt="" coords="1007,88,1179,115"/>
+<area shape="rect" id="node8" href="$pcre__fullinfo_8c.html" title="verypoco/src/pcre_fullinfo.c" alt="" coords="1203,88,1385,115"/>
+<area shape="rect" id="node9" href="$pcre__get_8c.html" title="verypoco/src/pcre_get.c" alt="" coords="1411,88,1573,115"/>
+<area shape="rect" id="node10" href="$pcre__globals_8c.html" title="verypoco/src/pcre_globals.c" alt="" coords="1598,88,1783,115"/>
+<area shape="rect" id="node11" href="$pcre__jit__compile_8c.html" title="verypoco/src/pcre_jit\l_compile.c" alt="" coords="1807,81,1949,122"/>
+<area shape="rect" id="node12" href="$pcre__maketables_8c.html" title="verypoco/src/pcre_maketables.c" alt="" coords="1973,88,2183,115"/>
+<area shape="rect" id="node13" href="$pcre__newline_8c.html" title="verypoco/src/pcre_newline.c" alt="" coords="2209,88,2396,115"/>
+<area shape="rect" id="node14" href="$pcre__ord2utf8_8c.html" title="verypoco/src/pcre_ord2utf8.c" alt="" coords="2421,88,2611,115"/>
+<area shape="rect" id="node15" href="$pcre__refcount_8c.html" title="verypoco/src/pcre_refcount.c" alt="" coords="2635,88,2825,115"/>
+<area shape="rect" id="node16" href="$pcre__string__utils_8c.html" title="verypoco/src/pcre_string\l_utils.c" alt="" coords="2851,81,3015,122"/>
+<area shape="rect" id="node17" href="$pcre__study_8c.html" title="verypoco/src/pcre_study.c" alt="" coords="3040,88,3216,115"/>
+<area shape="rect" id="node18" href="$pcre__tables_8c.html" title="verypoco/src/pcre_tables.c" alt="" coords="3240,88,3419,115"/>
+<area shape="rect" id="node19" href="$pcre__ucd_8c.html" title="verypoco/src/pcre_ucd.c" alt="" coords="3443,88,3607,115"/>
+<area shape="rect" id="node20" href="$pcre__valid__utf8_8c.html" title="verypoco/src/pcre_valid\l_utf8.c" alt="" coords="3632,81,3791,122"/>
+<area shape="rect" id="node21" href="$pcre__version_8c.html" title="verypoco/src/pcre_version.c" alt="" coords="3816,88,4003,115"/>
+<area shape="rect" id="node22" href="$pcre__xclass_8c.html" title="verypoco/src/pcre_xclass.c" alt="" coords="4027,88,4209,115"/>
+<area shape="rect" id="node23" href="$_unicode_8cpp.html" title="verypoco/src/Unicode.cpp" alt="" coords="4234,88,4408,115"/>
+</map>

@@ -1,0 +1,26 @@
+var gzguts_8h =
+[
+    [ "gz_state", "structgz__state.html", "structgz__state" ],
+    [ "COPY", "gzguts_8h.html#a9e77d621548de2a80bc9c5909bfa2b8a", null ],
+    [ "DEF_MEM_LEVEL", "gzguts_8h.html#a19c8e60fa32d4ddf303ce988ba97af61", null ],
+    [ "GT_OFF", "gzguts_8h.html#a87ad28552e786eaa1c31fed1950fdff4", null ],
+    [ "GZ_APPEND", "gzguts_8h.html#aae0a1795746b0a2cb7989d2898280a19", null ],
+    [ "GZ_NONE", "gzguts_8h.html#afe4b4578cd8417c83de400ece282ac3b", null ],
+    [ "GZ_READ", "gzguts_8h.html#a97ca7a8b458e75a004e828cb28ac264c", null ],
+    [ "GZ_WRITE", "gzguts_8h.html#a357c4f5723c26966ed9d68c9bd6490c0", null ],
+    [ "GZBUFSIZE", "gzguts_8h.html#ac7601d319250861159389e68594fd72e", null ],
+    [ "GZIP", "gzguts_8h.html#a9564352992f7a4001386d1c8e2977571", null ],
+    [ "local", "gzguts_8h.html#a08023ea6765c99d60a6a3840cd07156e", null ],
+    [ "LOOK", "gzguts_8h.html#a6d13af6430ff1d6f44ece076ff35b04f", null ],
+    [ "ZLIB_INTERNAL", "gzguts_8h.html#a59d4d7ef4d73655c759211ec33a5d44f", null ],
+    [ "zstrerror", "gzguts_8h.html#af252c05931f39dd0b297fe9b8e174b8b", null ],
+    [ "gz_statep", "gzguts_8h.html#a61cc5fd801c75428baf77a040dac8094", null ],
+    [ "free", "gzguts_8h.html#aafde19f7d36ca163a143579c1b125b6d", null ],
+    [ "gz_error", "gzguts_8h.html#a2fe79629146ccfd77a79e29f06e20b66", null ],
+    [ "gz_intmax", "gzguts_8h.html#a972251d5089adec06de60a64f48c4ec2", null ],
+    [ "gzoffset64", "gzguts_8h.html#a9ab968fbd411ecd6f39c7b76a2650899", null ],
+    [ "gzopen64", "gzguts_8h.html#a49450882ef46b40fed4996828d2656c3", null ],
+    [ "gzseek64", "gzguts_8h.html#adc6d4c8b102bf6d69ca58d094afa6fca", null ],
+    [ "gztell64", "gzguts_8h.html#a4fc250a9209fd876e3da656691d6674c", null ],
+    [ "malloc", "gzguts_8h.html#a1fe6941708c67e715d2ed1a73a475257", null ]
+];

@@ -1,0 +1,19 @@
+<map id="verypoco/include/Poco/PriorityNotificationQueue.h" name="verypoco/include/Poco/PriorityNotificationQueue.h">
+<area shape="rect" id="node2" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="575,544,704,571"/>
+<area shape="rect" id="node10" href="$_notification_8h.html" title="Poco/Notification.h" alt="" coords="752,96,886,123"/>
+<area shape="rect" id="node11" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="562,320,664,347"/>
+<area shape="rect" id="node24" href="$_event_8h.html" title="Poco/Event.h" alt="" coords="220,320,322,347"/>
+<area shape="rect" id="node3" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="158,619,263,645"/>
+<area shape="rect" id="node4" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="288,619,403,645"/>
+<area shape="rect" id="node5" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="428,619,554,645"/>
+<area shape="rect" id="node7" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="628,619,754,645"/>
+<area shape="rect" id="node9" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="778,619,880,645"/>
+<area shape="rect" id="node18" href="$_ref_counted_object_8h.html" title="Poco/RefCountedObject.h" alt="" coords="732,171,906,197"/>
+<area shape="rect" id="node22" href="$_auto_ptr_8h.html" title="Poco/AutoPtr.h" alt="" coords="41,395,151,421"/>
+<area shape="rect" id="node12" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="188,469,314,496"/>
+<area shape="rect" id="node14" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="678,469,816,496"/>
+<area shape="rect" id="node15" href="$_mutex___p_o_s_i_x_8h.html" title="Poco/Mutex_POSIX.h" alt="" coords="452,395,602,421"/>
+<area shape="rect" id="node19" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="719,245,872,272"/>
+<area shape="rect" id="node20" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="740,320,879,347"/>
+<area shape="rect" id="node25" href="$_event___p_o_s_i_x_8h.html" title="Poco/Event_POSIX.h" alt="" coords="278,395,426,421"/>
+</map>

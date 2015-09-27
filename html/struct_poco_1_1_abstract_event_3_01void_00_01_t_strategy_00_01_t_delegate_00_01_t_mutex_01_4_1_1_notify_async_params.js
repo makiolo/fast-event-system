@@ -1,0 +1,7 @@
+var struct_poco_1_1_abstract_event_3_01void_00_01_t_strategy_00_01_t_delegate_00_01_t_mutex_01_4_1_1_notify_async_params =
+[
+    [ "NotifyAsyncParams", "struct_poco_1_1_abstract_event_3_01void_00_01_t_strategy_00_01_t_delegate_00_01_t_mutex_01_4_1_1_notify_async_params.html#a48d8b391f8eb5bfef41f0aa0cfb5eab4", null ],
+    [ "enabled", "struct_poco_1_1_abstract_event_3_01void_00_01_t_strategy_00_01_t_delegate_00_01_t_mutex_01_4_1_1_notify_async_params.html#aa2917d799d595b4a546ca2df34f68f77", null ],
+    [ "pSender", "struct_poco_1_1_abstract_event_3_01void_00_01_t_strategy_00_01_t_delegate_00_01_t_mutex_01_4_1_1_notify_async_params.html#a807089ea8904e38a127d642145f4679f", null ],
+    [ "ptrStrat", "struct_poco_1_1_abstract_event_3_01void_00_01_t_strategy_00_01_t_delegate_00_01_t_mutex_01_4_1_1_notify_async_params.html#a6fe3f9f426bf80bfc45bef0c45db0cfe", null ]
+];

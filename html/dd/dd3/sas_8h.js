@@ -1,0 +1,26 @@
+var sas_8h =
+[
+    [ "animations_queue", "d4/d8c/classasyncply_1_1animations__queue.html", "d4/d8c/classasyncply_1_1animations__queue" ],
+    [ "commands_queue", "d1/da2/classasyncply_1_1commands__queue.html", "d1/da2/classasyncply_1_1commands__queue" ],
+    [ "future", "db/d7a/classasyncply_1_1future.html", "db/d7a/classasyncply_1_1future" ],
+    [ "future< void >", "d1/d2e/classasyncply_1_1future_3_01void_01_4.html", "d1/d2e/classasyncply_1_1future_3_01void_01_4" ],
+    [ "promise", "d1/d57/classasyncply_1_1promise.html", "d1/d57/classasyncply_1_1promise" ],
+    [ "promise< void >", "d2/d70/classasyncply_1_1promise_3_01void_01_4.html", "d2/d70/classasyncply_1_1promise_3_01void_01_4" ],
+    [ "talker", "da/dd1/classasyncply_1_1talker.html", "da/dd1/classasyncply_1_1talker" ],
+    [ "task", "d9/d4b/classasyncply_1_1task.html", "d9/d4b/classasyncply_1_1task" ],
+    [ "task", "d9/d4b/classasyncply_1_1task.html", "d9/d4b/classasyncply_1_1task" ],
+    [ "task< void >", "d6/d1b/classasyncply_1_1task_3_01void_01_4.html", "d6/d1b/classasyncply_1_1task_3_01void_01_4" ],
+    [ "debug_cast", "dd/dd3/sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "debug_cast", "dd/dd3/sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "debug_cast", "dd/dd3/sas_8h.html#a1571c1579e4cd698d66d75de0690ae24", null ],
+    [ "shared_task", "dd/dd3/sas_8h.html#a61b0b4c6a9161bc82d0f7f5206d52565", null ],
+    [ "task_of_functor", "dd/dd3/sas_8h.html#ad1a21f1f17b52de36d0c919f15210b7e", null ],
+    [ "_parallel", "dd/dd3/sas_8h.html#a13960ab4743144686b1666b48b3b54d9", null ],
+    [ "_parallel", "dd/dd3/sas_8h.html#a4e8fc906c2b6f8652048921c2549a55a", null ],
+    [ "_sequence", "dd/dd3/sas_8h.html#ae487a655176531762fe644154789f41f", null ],
+    [ "_sequence", "dd/dd3/sas_8h.html#a6717a8ddb1895187f71caa475679cc32", null ],
+    [ "parallel", "dd/dd3/sas_8h.html#ab688b85e845f468605e370819a1dec71", null ],
+    [ "parallel", "dd/dd3/sas_8h.html#a87cae54129574ab43a536ec9759afe0c", null ],
+    [ "run", "dd/dd3/sas_8h.html#ac70c2bc430ac69b226708367cfad7b69", null ],
+    [ "sequence", "dd/dd3/sas_8h.html#ac578f47a62b56415093c916b0b4b18eb", null ]
+];

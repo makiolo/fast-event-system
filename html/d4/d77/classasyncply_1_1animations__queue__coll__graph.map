@@ -1,0 +1,4 @@
+<map id="animations_queue&lt; T &gt;" name="animations_queue&lt; T &gt;">
+<area shape="rect" id="node2" href="$dd/d0a/classfes_1_1async__delay.html" title="{async_delay\&lt; animation \&gt;\n|# _queue\l|+ async_delay()\l+ async_delay()\l+ ~async_delay()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ dispatch_one()\l+ empty()\land 8 more...\l# _dispatch_one()\l# dispatch_one()\l}" alt="" coords="49,501,257,795"/>
+<area shape="rect" id="node3" href="$d0/dbd/classfes_1_1sync.html" title="{sync\&lt; Args...\&gt;\n||+ sync()\l+ sync()\l+ ~sync()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ connect()\l+ operator()()\l+ operator=()\l# _connect()\l}" alt="" coords="92,176,215,435"/>
+</map>

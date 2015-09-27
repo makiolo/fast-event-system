@@ -1,0 +1,12 @@
+<map id="verypoco/include/Poco/FileStream.h" name="verypoco/include/Poco/FileStream.h">
+<area shape="rect" id="node2" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="160,336,290,363"/>
+<area shape="rect" id="node10" href="$_file_stream___p_o_s_i_x_8h.html" title="Poco/FileStream_POSIX.h" alt="" coords="419,96,598,123"/>
+<area shape="rect" id="node3" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="301,411,406,437"/>
+<area shape="rect" id="node4" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="581,411,696,437"/>
+<area shape="rect" id="node5" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="431,411,556,437"/>
+<area shape="rect" id="node7" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="24,411,150,437"/>
+<area shape="rect" id="node9" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="174,411,276,437"/>
+<area shape="rect" id="node11" href="$_buffered_bidirectional_stream_buf_8h.html" title="Poco/BufferedBidirectional\lStreamBuf.h" alt="" coords="402,171,578,213"/>
+<area shape="rect" id="node12" href="$_buffer_allocator_8h.html" title="Poco/BufferAllocator.h" alt="" coords="644,261,796,288"/>
+<area shape="rect" id="node14" href="$_stream_util_8h.html" title="Poco/StreamUtil.h" alt="" coords="250,261,379,288"/>
+</map>

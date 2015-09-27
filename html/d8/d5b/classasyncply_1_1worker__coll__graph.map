@@ -1,0 +1,7 @@
+<map id="worker" name="worker">
+<area shape="rect" id="node2" href="$d3/df0/classasyncply_1_1pool__thread.html" title="{pool_thread\n|# _number_threads\l# _started\l# _threads\l|+ pool_thread()\l+ pool_thread()\l+ ~pool_thread()\l+ get_number_threads()\l+ get_queue()\l+ get_synchronizer_workers\l_finished()\l+ operator=()\l+ Stop()\l+ submit()\l+ HandleGlobalMyPoolThread()\l# execute()\l# Start()\l}" alt="" coords="163,571,412,899"/>
+<area shape="rect" id="node3" href="$df/d9a/classasyncply_1_1thread.html" title="{thread\n||+ thread()\l+ ~thread()\l+ execute()\l+ join()\l+ Run()\l+ HandleGlobalMyThread()\l}" alt="" coords="180,290,396,462"/>
+<area shape="rect" id="node4" href="$df/d35/classasyncply_1_1circular__queue.html" title="{circular_queue\&lt; asyncply\l::job \&gt;\n||+ circular_queue()\l+ circular_queue()\l+ ~circular_queue()\l+ get_mutex()\l+ operator=()\l+ pop()\l+ push()\l+ size()\l}" alt="" coords="421,264,624,488"/>
+<area shape="rect" id="node5" href="$d7/d65/classasyncply_1_1synchronizer.html" title="{synchronizer\n||+ synchronizer()\l+ ~synchronizer()\l+ signal()\l+ wait()\l}" alt="" coords="649,307,793,445"/>
+<area shape="rect" id="node6" href="$d9/d56/classasyncply_1_1semaphore.html" title="{semaphore\n|# _concurrency\l# _semaphore\l|+ semaphore()\l+ semaphore()\l+ ~semaphore()\l+ get_value()\l+ lock()\l+ operator=()\l+ unlock()\l}" alt="" coords="654,6,788,213"/>
+</map>

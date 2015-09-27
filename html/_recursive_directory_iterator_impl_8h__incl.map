@@ -1,0 +1,14 @@
+<map id="verypoco/include/Poco/RecursiveDirectoryIteratorImpl.h" name="verypoco/include/Poco/RecursiveDirectoryIteratorImpl.h">
+<area shape="rect" id="node2" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="421,408,551,435"/>
+<area shape="rect" id="node10" href="$_directory_iterator_strategy_8h.html" title="Poco/DirectoryIteratorStrategy.h" alt="" coords="629,109,839,136"/>
+<area shape="rect" id="node3" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="5,483,109,509"/>
+<area shape="rect" id="node4" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="134,483,249,509"/>
+<area shape="rect" id="node5" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="275,483,400,509"/>
+<area shape="rect" id="node7" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="475,483,600,509"/>
+<area shape="rect" id="node9" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="625,483,727,509"/>
+<area shape="rect" id="node11" href="$_directory_iterator_8h.html" title="Poco/DirectoryIterator.h" alt="" coords="513,184,673,211"/>
+<area shape="rect" id="node12" href="$_file_8h.html" title="Poco/File.h" alt="" coords="425,259,513,285"/>
+<area shape="rect" id="node17" href="$_path_8h.html" title="Poco/Path.h" alt="" coords="538,259,632,285"/>
+<area shape="rect" id="node13" href="$_timestamp_8h.html" title="Poco/Timestamp.h" alt="" coords="117,333,248,360"/>
+<area shape="rect" id="node16" href="$_file___v_m_s_8h.html" title="Poco/File_VMS.h" alt="" coords="325,333,448,360"/>
+</map>

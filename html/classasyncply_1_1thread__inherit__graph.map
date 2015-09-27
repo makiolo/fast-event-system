@@ -1,0 +1,3 @@
+<map id="thread" name="thread">
+<area shape="rect" id="node2" href="$classasyncply_1_1pool__thread.html" title="{pool_thread\n|# _any_job\l# _number_threads\l# _queue\l# _started\l# _threads\l# _workers\l# _workers_finished\l|+ pool_thread()\l+ ~pool_thread()\l+ get_number_threads()\l+ get_queue()\l+ get_synchronizer_workers\l_finished()\l+ Stop()\l+ submit()\l+ HandleGlobalMyPoolThread()\l# execute()\l# Start()\l}" alt="" coords="5,227,253,589"/>
+</map>

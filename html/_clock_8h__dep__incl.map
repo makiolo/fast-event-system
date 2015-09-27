@@ -1,0 +1,9 @@
+<map id="verypoco/include/Poco/Clock.h" name="verypoco/include/Poco/Clock.h">
+<area shape="rect" id="node2" href="$_stopwatch_8h.html" title="verypoco/include/Poco\l/Stopwatch.h" alt="" coords="36,97,189,138"/>
+<area shape="rect" id="node4" href="$_timed_notification_queue_8h.html" title="verypoco/include/Poco\l/TimedNotificationQueue.h" alt="" coords="230,97,407,138"/>
+<area shape="rect" id="node6" href="$_timer_8h.html" title="verypoco/include/Poco\l/Timer.h" alt="" coords="432,97,585,138"/>
+<area shape="rect" id="node8" href="$_clock_8cpp.html" title="verypoco/src/Clock.cpp" alt="" coords="611,104,769,131"/>
+<area shape="rect" id="node3" href="$_stopwatch_8cpp.html" title="verypoco/src/Stopwatch.cpp" alt="" coords="5,195,192,221"/>
+<area shape="rect" id="node5" href="$_timed_notification_queue_8cpp.html" title="verypoco/src/TimedNotification\lQueue.cpp" alt="" coords="217,187,420,229"/>
+<area shape="rect" id="node7" href="$_timer_8cpp.html" title="verypoco/src/Timer.cpp" alt="" coords="445,195,603,221"/>
+</map>

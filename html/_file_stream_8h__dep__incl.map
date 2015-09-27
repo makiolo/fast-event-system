@@ -1,0 +1,6 @@
+<map id="verypoco/include/Poco/FileStream.h" name="verypoco/include/Poco/FileStream.h">
+<area shape="rect" id="node2" href="$_file_stream_8cpp.html" title="verypoco/src/FileStream.cpp" alt="" coords="5,187,195,213"/>
+<area shape="rect" id="node3" href="$_file_stream___p_o_s_i_x_8cpp.html" title="verypoco/src/FileStream\l_POSIX.cpp" alt="" coords="78,97,241,138"/>
+<area shape="rect" id="node4" href="$_file_stream___w_i_n32_8cpp.html" title="verypoco/src/FileStream\l_WIN32.cpp" alt="" coords="266,97,429,138"/>
+<area shape="rect" id="node5" href="$_file_stream_factory_8cpp.html" title="verypoco/src/FileStreamFactory.cpp" alt="" coords="454,104,687,131"/>
+</map>

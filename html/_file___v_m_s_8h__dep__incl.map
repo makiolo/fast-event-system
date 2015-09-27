@@ -1,0 +1,25 @@
+<map id="verypoco/include/Poco/File_VMS.h" name="verypoco/include/Poco/File_VMS.h">
+<area shape="rect" id="node2" href="$_file_8h.html" title="verypoco/include/Poco\l/File.h" alt="" coords="995,97,1148,138"/>
+<area shape="rect" id="node24" href="$_file___v_m_s_8cpp.html" title="verypoco/src/File_VMS.cpp" alt="" coords="499,104,681,131"/>
+<area shape="rect" id="node3" href="$_directory_iterator_8h.html" title="verypoco/include/Poco\l/DirectoryIterator.h" alt="" coords="495,187,648,229"/>
+<area shape="rect" id="node5" href="$_recursive_directory_iterator_8h.html" title="verypoco/include/Poco\l/RecursiveDirectoryIterator.h" alt="" coords="710,473,900,514"/>
+<area shape="rect" id="node8" href="$_sorted_directory_iterator_8h.html" title="verypoco/include/Poco\l/SortedDirectoryIterator.h" alt="" coords="177,278,345,319"/>
+<area shape="rect" id="node12" href="$_file_8cpp.html" title="verypoco/src/File.cpp" alt="" coords="5,285,152,312"/>
+<area shape="rect" id="node13" href="$_glob_8cpp.html" title="verypoco/src/Glob.cpp" alt="" coords="1070,285,1223,312"/>
+<area shape="rect" id="node14" href="$_directory_watcher_8h.html" title="verypoco/include/Poco\l/DirectoryWatcher.h" alt="" coords="673,187,827,229"/>
+<area shape="rect" id="node15" href="$_temporary_file_8h.html" title="verypoco/include/Poco\l/TemporaryFile.h" alt="" coords="903,187,1056,229"/>
+<area shape="rect" id="node17" href="$_file_stream___p_o_s_i_x_8cpp.html" title="verypoco/src/FileStream\l_POSIX.cpp" alt="" coords="1082,187,1245,229"/>
+<area shape="rect" id="node19" href="$_file_stream___w_i_n32_8cpp.html" title="verypoco/src/FileStream\l_WIN32.cpp" alt="" coords="1270,187,1433,229"/>
+<area shape="rect" id="node20" href="$_file_stream_factory_8cpp.html" title="verypoco/src/FileStreamFactory.cpp" alt="" coords="1458,195,1691,221"/>
+<area shape="rect" id="node21" href="$_path_8cpp.html" title="verypoco/src/Path.cpp" alt="" coords="1715,195,1868,221"/>
+<area shape="rect" id="node22" href="$_shared_memory___p_o_s_i_x_8cpp.html" title="verypoco/src/SharedMemory\l_POSIX.cpp" alt="" coords="1893,187,2083,229"/>
+<area shape="rect" id="node23" href="$_shared_memory___w_i_n32_8cpp.html" title="verypoco/src/SharedMemory\l_WIN32.cpp" alt="" coords="2107,187,2296,229"/>
+<area shape="rect" id="node4" href="$_directory_iterator_strategy_8h.html" title="verypoco/include/Poco\l/DirectoryIteratorStrategy.h" alt="" coords="370,278,549,319"/>
+<area shape="rect" id="node10" href="$_directory_iterator_8cpp.html" title="verypoco/src/DirectoryIterator.cpp" alt="" coords="574,285,793,312"/>
+<area shape="rect" id="node11" href="$_directory_watcher_8cpp.html" title="verypoco/src/DirectoryWatcher.cpp" alt="" coords="818,285,1045,312"/>
+<area shape="rect" id="node6" href="$_recursive_directory_iterator_impl_8h.html" title="verypoco/include/Poco\l/RecursiveDirectoryIterator\lImpl.h" alt="" coords="371,368,549,424"/>
+<area shape="rect" id="node7" href="$_directory_iterator_strategy_8cpp.html" title="verypoco/src/DirectoryIterator\lStrategy.cpp" alt="" coords="573,375,768,417"/>
+<area shape="rect" id="node9" href="$_sorted_directory_iterator_8cpp.html" title="verypoco/src/SortedDirectory\lIterator.cpp" alt="" coords="155,375,347,417"/>
+<area shape="rect" id="node16" href="$_temporary_file_8cpp.html" title="verypoco/src/TemporaryFile.cpp" alt="" coords="1247,285,1456,312"/>
+<area shape="rect" id="node18" href="$_file_stream_8cpp.html" title="verypoco/src/FileStream.cpp" alt="" coords="1481,285,1671,312"/>
+</map>

@@ -1,0 +1,38 @@
+var deflate_8c =
+[
+    [ "config_s", "structconfig__s.html", "structconfig__s" ],
+    [ "static_tree_desc_s", "structstatic__tree__desc__s.html", "structstatic__tree__desc__s" ],
+    [ "check_match", "deflate_8c.html#a4041db99b23ca08963d3e5c284d837d6", null ],
+    [ "CLEAR_HASH", "deflate_8c.html#af328dc05f080f25747abf0edd75b6251", null ],
+    [ "EQUAL", "deflate_8c.html#a214c717b2e51e1993a749ac99df7de58", null ],
+    [ "FLUSH_BLOCK", "deflate_8c.html#aa06152b875cc54ba4389f31444163886", null ],
+    [ "FLUSH_BLOCK_ONLY", "deflate_8c.html#a140a98962b21d3838ef05baf4740e4ed", null ],
+    [ "INSERT_STRING", "deflate_8c.html#a52d7ca8e864a07c0ba4a25d04588168b", null ],
+    [ "NIL", "deflate_8c.html#a263efce0e5cda1d387a1a43f94715445", null ],
+    [ "RANK", "deflate_8c.html#ae68aa1f27ef5ae8dce3fcf0f47d4da98", null ],
+    [ "TOO_FAR", "deflate_8c.html#abeff1f2c9d15b7bddefe44a4360821b3", null ],
+    [ "UPDATE_HASH", "deflate_8c.html#a44b283365d6ca10b7028e639c4a10e67", null ],
+    [ "compress_func", "deflate_8c.html#ab06f84fcb49a37e690badedd1ebab2a0", null ],
+    [ "config", "deflate_8c.html#a4473b5227787415097004fd39f55185e", null ],
+    [ "block_state", "deflate_8c.html#a1048c01fb24f2195a6b9a2a7c12e9454", [
+      [ "need_more", "deflate_8c.html#a1048c01fb24f2195a6b9a2a7c12e9454aa05dd4e7c2f875eee52a6568c244c1e4", null ],
+      [ "block_done", "deflate_8c.html#a1048c01fb24f2195a6b9a2a7c12e9454a94dca976f7dcfb0605e086068f09daa1", null ],
+      [ "finish_started", "deflate_8c.html#a1048c01fb24f2195a6b9a2a7c12e9454a5ff14f05c1ba145fc4da40fb50211140", null ],
+      [ "finish_done", "deflate_8c.html#a1048c01fb24f2195a6b9a2a7c12e9454af1f0edbb0d9d8272a762de3b7be0b50c", null ]
+    ] ],
+    [ "deflate", "deflate_8c.html#a020eb25653da3ef0f1f4f59a82c1e8ae", null ],
+    [ "deflateBound", "deflate_8c.html#a193af31ee07ae28a0db592fe7d257e8d", null ],
+    [ "deflateCopy", "deflate_8c.html#aa38b4c952efce070b3dbb6fdc41d9cf4", null ],
+    [ "deflateEnd", "deflate_8c.html#a6b32d6d4fa68d8aea22445f97048cf67", null ],
+    [ "deflateInit2_", "deflate_8c.html#a5083ff515d5c0686f24241391ff7db56", null ],
+    [ "deflateInit_", "deflate_8c.html#a507fdec6d37c8c3f6959a1f3aa4eaa58", null ],
+    [ "deflateParams", "deflate_8c.html#adb08871bcd410fb9d8d221a1ae378fa8", null ],
+    [ "deflatePending", "deflate_8c.html#ad5ec3a76e0cd78238a6ae3f38e74407d", null ],
+    [ "deflatePrime", "deflate_8c.html#a0376f713dfb9676c3eadaf1bb0c759b5", null ],
+    [ "deflateReset", "deflate_8c.html#a1678e92d49418699a3caa1fb88b8ab52", null ],
+    [ "deflateResetKeep", "deflate_8c.html#a0382abf81b3ec33f7f34b155fc056eb7", null ],
+    [ "deflateSetDictionary", "deflate_8c.html#a49e4f2317baf6ab80f81d0934e49a6b6", null ],
+    [ "deflateSetHeader", "deflate_8c.html#a9a22f76091e3a8e93d22eff573ea684d", null ],
+    [ "deflateTune", "deflate_8c.html#a66ffe828d83d0610fa2f62bb7a076faf", null ],
+    [ "deflate_copyright", "deflate_8c.html#ad281a127f844d29d4410b7b957cc37f6", null ]
+];

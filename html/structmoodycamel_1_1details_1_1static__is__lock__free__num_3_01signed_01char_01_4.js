@@ -1,0 +1,4 @@
+var structmoodycamel_1_1details_1_1static__is__lock__free__num_3_01signed_01char_01_4 =
+[
+    [ "value", "structmoodycamel_1_1details_1_1static__is__lock__free__num_3_01signed_01char_01_4.html#a9a6880bc5c4812f6becc081bf3addfcea6b0d44b168145f439e7d92c18bc2487f", null ]
+];

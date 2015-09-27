@@ -1,0 +1,24 @@
+<map id="verypoco/include/Poco/TaskManager.h" name="verypoco/include/Poco/TaskManager.h">
+<area shape="rect" id="node2" href="$_foundation_8h.html" title="Poco/Foundation.h" alt="" coords="533,619,663,645"/>
+<area shape="rect" id="node10" href="$verypoco_2include_2_poco_2_mutex_8h.html" title="Poco/Mutex.h" alt="" coords="663,395,765,421"/>
+<area shape="rect" id="node17" href="$_task_8h.html" title="Poco/Task.h" alt="" coords="264,171,360,197"/>
+<area shape="rect" id="node25" href="$_auto_ptr_8h.html" title="Poco/AutoPtr.h" alt="" coords="1202,245,1312,272"/>
+<area shape="rect" id="node27" href="$_notification_center_8h.html" title="Poco/NotificationCenter.h" alt="" coords="853,96,1024,123"/>
+<area shape="rect" id="node31" href="$_timestamp_8h.html" title="Poco/Timestamp.h" alt="" coords="1295,96,1427,123"/>
+<area shape="rect" id="node3" href="$_config_8h.html" title="Poco/Config.h" alt="" coords="962,693,1067,720"/>
+<area shape="rect" id="node4" href="$_platform_8h.html" title="Poco/Platform.h" alt="" coords="395,693,511,720"/>
+<area shape="rect" id="node5" href="$_alignment_8h.html" title="Poco/Alignment.h" alt="" coords="685,693,811,720"/>
+<area shape="rect" id="node7" href="$_bugcheck_8h.html" title="Poco/Bugcheck.h" alt="" coords="536,693,661,720"/>
+<area shape="rect" id="node9" href="$_types_8h.html" title="Poco/Types.h" alt="" coords="835,693,937,720"/>
+<area shape="rect" id="node11" href="$_exception_8h.html" title="Poco/Exception.h" alt="" coords="799,544,924,571"/>
+<area shape="rect" id="node13" href="$_scoped_lock_8h.html" title="Poco/ScopedLock.h" alt="" coords="636,544,775,571"/>
+<area shape="rect" id="node14" href="$_mutex___p_o_s_i_x_8h.html" title="Poco/Mutex_POSIX.h" alt="" coords="470,469,620,496"/>
+<area shape="rect" id="node18" href="$_runnable_8h.html" title="Poco/Runnable.h" alt="" coords="93,320,216,347"/>
+<area shape="rect" id="node19" href="$_ref_counted_object_8h.html" title="Poco/RefCountedObject.h" alt="" coords="499,245,673,272"/>
+<area shape="rect" id="node23" href="$_event_8h.html" title="Poco/Event.h" alt="" coords="287,395,388,421"/>
+<area shape="rect" id="node20" href="$_atomic_counter_8h.html" title="Poco/AtomicCounter.h" alt="" coords="803,320,956,347"/>
+<area shape="rect" id="node21" href="$_un_windows_8h.html" title="Poco/UnWindows.h" alt="" coords="845,395,984,421"/>
+<area shape="rect" id="node24" href="$_event___p_o_s_i_x_8h.html" title="Poco/Event_POSIX.h" alt="" coords="296,469,444,496"/>
+<area shape="rect" id="node28" href="$_notification_8h.html" title="Poco/Notification.h" alt="" coords="820,171,953,197"/>
+<area shape="rect" id="node29" href="$_shared_ptr_8h.html" title="Poco/SharedPtr.h" alt="" coords="1048,245,1173,272"/>
+</map>

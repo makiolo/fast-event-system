@@ -1,0 +1,31 @@
+<map id="verypoco/include/Poco/Timespan.h" name="verypoco/include/Poco/Timespan.h">
+<area shape="rect" id="node2" href="$_access_expiration_decorator_8h.html" title="verypoco/include/Poco\l/AccessExpirationDecorator.h" alt="" coords="258,97,453,138"/>
+<area shape="rect" id="node3" href="$_date_time_8h.html" title="verypoco/include/Poco\l/DateTime.h" alt="" coords="479,97,632,138"/>
+<area shape="rect" id="node20" href="$_local_date_time_8cpp.html" title="verypoco/src/LocalDateTime.cpp" alt="" coords="730,285,944,312"/>
+<area shape="rect" id="node21" href="$_date_time_8cpp.html" title="verypoco/src/DateTime.cpp" alt="" coords="651,195,833,221"/>
+<area shape="rect" id="node22" href="$_expiration_decorator_8h.html" title="verypoco/include/Poco\l/ExpirationDecorator.h" alt="" coords="909,97,1063,138"/>
+<area shape="rect" id="node23" href="$_unique_access_expire_strategy_8h.html" title="verypoco/include/Poco\l/UniqueAccessExpireStrategy.h" alt="" coords="1088,97,1296,138"/>
+<area shape="rect" id="node26" href="$_thread___p_o_s_i_x_8cpp.html" title="verypoco/src/Thread\l_POSIX.cpp" alt="" coords="1320,97,1460,138"/>
+<area shape="rect" id="node28" href="$_thread___v_x_8cpp.html" title="verypoco/src/Thread\l_VX.cpp" alt="" coords="1485,97,1625,138"/>
+<area shape="rect" id="node29" href="$_timespan_8cpp.html" title="verypoco/src/Timespan.cpp" alt="" coords="1651,104,1833,131"/>
+<area shape="rect" id="node30" href="$_timestamp_8cpp.html" title="verypoco/src/Timestamp.cpp" alt="" coords="1858,104,2048,131"/>
+<area shape="rect" id="node4" href="$_date_time_formatter_8h.html" title="verypoco/include/Poco\l/DateTimeFormatter.h" alt="" coords="515,278,668,319"/>
+<area shape="rect" id="node5" href="$_var_holder_8h.html" title="verypoco/include/Poco\l/Dynamic/VarHolder.h" alt="" coords="307,369,460,410"/>
+<area shape="rect" id="node17" href="$_date_time_parser_8h.html" title="verypoco/include/Poco\l/DateTimeParser.h" alt="" coords="141,187,295,229"/>
+<area shape="rect" id="node18" href="$_date_time_parser_8cpp.html" title="verypoco/src/DateTimeParser.cpp" alt="" coords="125,285,347,312"/>
+<area shape="rect" id="node19" href="$_local_date_time_8h.html" title="verypoco/include/Poco\l/LocalDateTime.h" alt="" coords="421,187,575,229"/>
+<area shape="rect" id="node16" href="$_date_time_formatter_8cpp.html" title="verypoco/src/DateTimeFormatter.cpp" alt="" coords="486,376,724,403"/>
+<area shape="rect" id="node6" href="$_pair_8h.html" title="verypoco/include/Poco\l/Dynamic/Pair.h" alt="" coords="13,550,167,591"/>
+<area shape="rect" id="node7" href="$_struct_8h.html" title="verypoco/include/Poco\l/Dynamic/Struct.h" alt="" coords="192,550,345,591"/>
+<area shape="rect" id="node11" href="$_var_8h.html" title="verypoco/include/Poco\l/Dynamic/Var.h" alt="" coords="307,459,460,501"/>
+<area shape="rect" id="node14" href="$_var_holder_8cpp.html" title="verypoco/src/VarHolder.cpp" alt="" coords="651,557,835,584"/>
+<area shape="rect" id="node15" href="$_dynamic_any_holder_8h.html" title="verypoco/include/Poco\l/DynamicAnyHolder.h" alt="" coords="536,459,689,501"/>
+<area shape="rect" id="node8" href="$_dynamic_struct_8h.html" title="verypoco/include/Poco\l/DynamicStruct.h" alt="" coords="5,641,159,682"/>
+<area shape="rect" id="node9" href="$_var_8cpp.html" title="verypoco/src/Var.cpp" alt="" coords="184,648,331,675"/>
+<area shape="rect" id="node10" href="$_var_iterator_8cpp.html" title="verypoco/src/VarIterator.cpp" alt="" coords="355,648,541,675"/>
+<area shape="rect" id="node12" href="$_dynamic_any_8h.html" title="verypoco/include/Poco\l/DynamicAny.h" alt="" coords="472,550,625,591"/>
+<area shape="rect" id="node13" href="$_named_tuple_8h.html" title="verypoco/include/Poco\l/NamedTuple.h" alt="" coords="565,641,719,682"/>
+<area shape="rect" id="node24" href="$_unique_access_expire_cache_8h.html" title="verypoco/include/Poco\l/UniqueAccessExpireCache.h" alt="" coords="909,187,1107,229"/>
+<area shape="rect" id="node25" href="$_unique_access_expire_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/UniqueAccessExpireLRUCache.h" alt="" coords="1131,187,1353,229"/>
+<area shape="rect" id="node27" href="$verypoco_2src_2_thread_8cpp.html" title="verypoco/src/Thread.cpp" alt="" coords="1378,195,1544,221"/>
+</map>

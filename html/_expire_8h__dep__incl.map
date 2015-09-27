@@ -1,0 +1,13 @@
+<map id="verypoco/include/Poco/Expire.h" name="verypoco/include/Poco/Expire.h">
+<area shape="rect" id="node2" href="$_delegate_8h.html" title="verypoco/include/Poco\l/Delegate.h" alt="" coords="749,97,903,138"/>
+<area shape="rect" id="node3" href="$_abstract_cache_8h.html" title="verypoco/include/Poco\l/AbstractCache.h" alt="" coords="749,187,903,229"/>
+<area shape="rect" id="node4" href="$_access_expire_cache_8h.html" title="verypoco/include/Poco\l/AccessExpireCache.h" alt="" coords="5,278,160,319"/>
+<area shape="rect" id="node5" href="$_access_expire_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/AccessExpireLRUCache.h" alt="" coords="185,278,367,319"/>
+<area shape="rect" id="node6" href="$_expire_cache_8h.html" title="verypoco/include/Poco\l/ExpireCache.h" alt="" coords="392,278,545,319"/>
+<area shape="rect" id="node7" href="$_expire_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/ExpireLRUCache.h" alt="" coords="571,278,724,319"/>
+<area shape="rect" id="node8" href="$_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/LRUCache.h" alt="" coords="749,278,903,319"/>
+<area shape="rect" id="node9" href="$_unique_access_expire_cache_8h.html" title="verypoco/include/Poco\l/UniqueAccessExpireCache.h" alt="" coords="928,278,1125,319"/>
+<area shape="rect" id="node10" href="$_unique_access_expire_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/UniqueAccessExpireLRUCache.h" alt="" coords="1149,278,1372,319"/>
+<area shape="rect" id="node11" href="$_unique_expire_cache_8h.html" title="verypoco/include/Poco\l/UniqueExpireCache.h" alt="" coords="1397,278,1551,319"/>
+<area shape="rect" id="node12" href="$_unique_expire_l_r_u_cache_8h.html" title="verypoco/include/Poco\l/UniqueExpireLRUCache.h" alt="" coords="1577,278,1756,319"/>
+</map>
