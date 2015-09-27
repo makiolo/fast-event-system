@@ -1,0 +1,10 @@
+title: Fast event system
+email: makiolo@gmail.com
+description: >
+    fes blog
+baseurl: ""
+url: "http://yourdomain.com"
+twitter_username: makiolo
+github_username:  makiolo
+markdown: kramdown
+
