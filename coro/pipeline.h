@@ -11,68 +11,21 @@
 #include <boost/function.hpp>
 #include <boost/coroutine/coroutine.hpp>
 
-// namespace asyncply {
-
-template <typename T>
-class basic_pipeline
-{
-private:
-	using coro = boost::coroutines::coroutine<const T&()>;
-	using coroptr = std::unique_ptr<coro>;
-
-public:
-	using in = coro;
-	using out = typename coro::caller_type;
-	using link = boost::function<void(in&, out&)>;
-
-	basic_pipeline(const std::vector<link>& links)
-	{
-		std::vector<coroptr> coros;
-		coros.emplace_back( coroptr(new coro( [](out&){} )) );
-		for(auto& lnk : links)
-		{
-			coros.emplace_back(coroptr(new coro(boost::bind(lnk, boost::ref(*coros.back().get()), _1))));
-		}
-	}
-};
-
-template <typename T>
-class flow_pipeline
-{
-private:
-	using coro = boost::coroutines::coroutine<const T&()>;
-	using coroptr = std::unique_ptr<coro>;
-
-public:
-	using in = coro;
-	using out = typename coro::caller_type;
-	using link = boost::function<void(in&, out&)>;
-
-	flow_pipeline(const std::vector<link>& links)
-	{
-		std::vector<coroptr> coros;
-		coros.emplace_back( coroptr(new coro( [](out&){} )) );
-		for(auto& lnk : links)
-		{
-			coros.emplace_back( coroptr(new coro(boost::bind(lnk, boost::ref(*coros.back().get()), _1))) );
-		}
-	}
-};
-
-// }
-
 namespace asyncply {
 
-template <typename YIELD_TYPE>
-using coro = boost::coroutines::coroutine<YIELD_TYPE()>;
+template <typename T>
+using coro = boost::coroutines::coroutine<T()>;
 
-template <typename YIELD_TYPE>
-using yield_type = typename coro<YIELD_TYPE>::caller_type;
+template <typename T>
+using yield_type = typename coro<T>::caller_type;
 
-template <typename YIELD_TYPE, typename Function>
-std::shared_ptr< coro<YIELD_TYPE> > corun(Function&& f)
+template <typename T>
+using link = boost::function<void(asyncply::coro<T>&, asyncply::yield_type<T>&)>;
+
+template <typename T, typename Function>
+std::shared_ptr< coro<T> > corun(Function&& f)
 {
-	return std::make_shared<coro<YIELD_TYPE> >(std::forward<Function>(f));
+	return std::make_shared<coro<T> >(std::forward<Function>(f));
 }
 
 // template <typename Function>
@@ -158,6 +111,76 @@ std::shared_ptr< coro<YIELD_TYPE> > corun(Function&& f)
 // 	for(auto& v : vf)
 // 		v->get();
 // }
+
+template <typename T>
+class pipeline
+{
+private:
+	using coro = asyncply::coro<T>;
+	using coroptr = std::shared_ptr<coro>;
+
+public:
+	using in = asyncply::coro<T>;
+	using out = asyncply::yield_type<T>;
+	using link = asyncply::link<T>;
+
+	template <typename Function>
+	pipeline(Function&& f)
+	{
+		std::vector<coroptr> coros;
+		coros.emplace_back(
+				asyncply::corun<T>(
+					[](asyncply::yield_type<T>&) { ; }
+				)
+		);
+		coros.emplace_back(
+				asyncply::corun<T>(
+					boost::bind(f, boost::ref(*coros.back().get()), _1)
+				)
+		);
+	}
+
+	template <typename Function, typename ... Functions>
+	pipeline(Function&& f, Functions&& ... fs)
+	{
+		std::vector<coroptr> coros;
+		coros.emplace_back(
+				asyncply::corun<T>(
+					[](asyncply::yield_type<T>&) { ; }
+				)
+		);
+		coros.emplace_back(
+				asyncply::corun<T>(
+					boost::bind(f, boost::ref(*coros.back().get()), _1)
+				)
+		);
+		// recursion
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+
+protected:
+	template <typename Function>
+	void _add(std::vector<coroptr>& coros, Function&& f)
+	{
+		coros.emplace_back(
+				asyncply::corun<T>(
+					boost::bind(f, boost::ref(*coros.back().get()), _1)
+				)
+		);
+	}
+
+	template <typename Function, typename ... Functions>
+	void _add(std::vector<coroptr>& coros, Function&& f, Functions&& ... fs)
+	{
+		coros.emplace_back(
+				asyncply::corun<T>(
+					boost::bind(f, boost::ref(*coros.back().get()), _1)
+				)
+		);
+		// recursion
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+};
 
 }
 

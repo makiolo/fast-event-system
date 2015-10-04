@@ -18,11 +18,4 @@ RUN apt-get install -qq git
 RUN apt-get install -qq kbtin
 RUN apt-get install -qq libtool
 
-RUN mkdir -p toolchain
-RUN cd /tmp && wget https://github.com/gperftools/gperftools/releases/download/gperftools-2.4/gperftools-2.4.tar.gz
-RUN cd /tmp && wget http://download.savannah.gnu.org/releases/libunwind/libunwind-0.99-beta.tar.gz
-RUN cd /tmp && tar zxvf gperftools-2.4.tar.gz
-RUN cd /tmp && tar zxvf libunwind-0.99-beta.tar.gz
-RUN cd /tmp/libunwind-0.99-beta && ./configure --prefix=$(pwd)/../../toolchain && make && make install
-RUN cd /tmp/gperftools-2.4 && ./configure --prefix=$(pwd)/../../toolchain --with-libunwind=$(pwd)/../../toolchain --enable-frame-pointers && make && make install
 

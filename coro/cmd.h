@@ -19,32 +19,13 @@
 
 #include <coro/pipeline.h>
 
-// namespace asyncply {
+namespace asyncply {
 
-using cmd = basic_pipeline<std::string>;
+using pipe_string = asyncply::pipeline<std::string>;
 
-// cmd::link operator,(const cmd::link& a, const cmd::link& b)
-// {
-// 	return [&a, &b](cmd::in& source, cmd::out&)
-// 	{
-// 		cmd::in prev(
-// 			[&source, &a](cmd::out& yield)
-// 			{
-// 				a(source, yield);
-// 			}
-// 		);
-// 		cmd::in f(
-// 			[&prev, &b](cmd::out& yield)
-// 			{
-// 				b(prev, yield);
-// 			}
-// 		);
-// 	};
-// }
-
-cmd::link cat(const std::string& filename)
+pipe_string::link cat(const std::string& filename)
 {
-	return [filename](cmd::in&, cmd::out& yield)
+	return [filename](pipe_string::in&, pipe_string::out& yield)
 	{
 		std::string line;
 		std::ifstream input(filename);
@@ -55,9 +36,9 @@ cmd::link cat(const std::string& filename)
 	};
 }
 
-cmd::link cat()
+pipe_string::link cat()
 {
-	return [](cmd::in& source, cmd::out& yield)
+	return [](pipe_string::in& source, pipe_string::out& yield)
 	{
 		std::string line;
 		for (; source; source())
@@ -94,9 +75,9 @@ void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files
 	}
 }
 
-cmd::link find(const std::string& dir)
+pipe_string::link find(const std::string& dir)
 {
-	return [dir](cmd::in&, cmd::out& yield)
+	return [dir](pipe_string::in&, pipe_string::out& yield)
 	{
 		boost::filesystem::path p(dir);
 		if (boost::filesystem::exists(p))
@@ -111,10 +92,10 @@ cmd::link find(const std::string& dir)
 	};
 }
 
-cmd::link ls(const std::string& dir)
+pipe_string::link ls(const std::string& dir)
 {
 	namespace fs = boost::filesystem;
-	return [dir](cmd::in&, cmd::out& yield)
+	return [dir](pipe_string::in&, pipe_string::out& yield)
 	{
 		fs::path p(dir);
 		if (fs::exists(p) && fs::is_directory(p))
@@ -130,9 +111,9 @@ cmd::link ls(const std::string& dir)
 	};
 }
 
-cmd::link grep(const std::string& pattern, bool exclusion = false)
+pipe_string::link grep(const std::string& pattern, bool exclusion = false)
 {
-	return [pattern, exclusion](cmd::in& source, cmd::out& yield)
+	return [pattern, exclusion](pipe_string::in& source, pipe_string::out& yield)
 	{
 		const boost::regex re(pattern);
 		for (; source; source())
@@ -147,17 +128,17 @@ cmd::link grep(const std::string& pattern, bool exclusion = false)
 	};
 }
 
-cmd::link grep_v(const std::string& pattern)
+pipe_string::link grep_v(const std::string& pattern)
 {
-	return [pattern](cmd::in& source, cmd::out& yield)
+	return [pattern](pipe_string::in& source, pipe_string::out& yield)
 	{
 		grep(pattern, true)(source, yield);
 	};
 }
 
-cmd::link contain(const std::string& in)
+pipe_string::link contain(const std::string& in)
 {
-	return [in](cmd::in& source, cmd::out& yield)
+	return [in](pipe_string::in& source, pipe_string::out& yield)
 	{
 		for (; source; source())
 		{
@@ -170,9 +151,9 @@ cmd::link contain(const std::string& in)
 	};
 }
 
-cmd::link uniq()
+pipe_string::link uniq()
 {
-	return [](cmd::in& source, cmd::out& yield)
+	return [](pipe_string::in& source, pipe_string::out& yield)
 	{
 		std::set<std::string> unique;
 		for (; source; source())
@@ -186,9 +167,9 @@ cmd::link uniq()
 	};
 }
 
-cmd::link ltrim()
+pipe_string::link ltrim()
 {
-	return [](cmd::in& source, cmd::out& yield)
+	return [](pipe_string::in& source, pipe_string::out& yield)
 	{
 		for (; source; source())
 		{
@@ -199,9 +180,9 @@ cmd::link ltrim()
 	};
 }
 
-cmd::link rtrim()
+pipe_string::link rtrim()
 {
-	return [](cmd::in& source, cmd::out& yield)
+	return [](pipe_string::in& source, pipe_string::out& yield)
 	{
 		for (; source; source())
 		{
@@ -212,18 +193,18 @@ cmd::link rtrim()
 	};
 }
 
-cmd::link trim()
+pipe_string::link trim()
 {
-	return [](cmd::in& source, cmd::out& yield)
+	return [](pipe_string::in& source, pipe_string::out& yield)
 	{
 		ltrim()(source, yield);
 		rtrim()(source, yield);
 	};
 }
 
-cmd::link cut(const char* delim, int field)
+pipe_string::link cut(const char* delim, int field)
 {
-	return [delim, field](cmd::in& source, cmd::out& yield)
+	return [delim, field](pipe_string::in& source, pipe_string::out& yield)
 	{
 		typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 		for (; source; source())
@@ -241,9 +222,9 @@ cmd::link cut(const char* delim, int field)
 	};
 }
 
-cmd::link in(const std::vector<std::string>& strs)
+pipe_string::link in(const std::vector<std::string>& strs)
 {
-	return [&strs](cmd::in&, cmd::out& yield)
+	return [&strs](pipe_string::in&, pipe_string::out& yield)
 	{
 		for(auto& str : strs)
 		{
@@ -252,17 +233,17 @@ cmd::link in(const std::vector<std::string>& strs)
 	};
 }
 
-cmd::link in(const std::string& str)
+pipe_string::link in(const std::string& str)
 {
-	return [&str](cmd::in&, cmd::out& yield)
+	return [&str](pipe_string::in&, pipe_string::out& yield)
 	{
 		yield(str);
 	};
 }
 
-cmd::link out(std::vector<std::string>& strs)
+pipe_string::link out(std::vector<std::string>& strs)
 {
-	return [&strs](cmd::in& source, cmd::out&)
+	return [&strs](pipe_string::in& source, pipe_string::out&)
 	{
 		for (; source; source())
 		{
@@ -271,9 +252,9 @@ cmd::link out(std::vector<std::string>& strs)
 	};
 }
 
-cmd::link out(std::string& str)
+pipe_string::link out(std::string& str)
 {
-	return [&str](cmd::in& source, cmd::out&)
+	return [&str](pipe_string::in& source, pipe_string::out&)
 	{
 		if(source)
 		{
@@ -282,9 +263,9 @@ cmd::link out(std::string& str)
 	};
 }
 
-cmd::link out()
+pipe_string::link out()
 {
-	return [](cmd::in& source, cmd::out&)
+	return [](pipe_string::in& source, pipe_string::out&)
 	{
 		for (; source; source())
 		{
@@ -293,9 +274,9 @@ cmd::link out()
 	};
 }
 
-cmd::link quote(const char* delim = "\"")
+pipe_string::link quote(const char* delim = "\"")
 {
-	return [delim](cmd::in& source, cmd::out& yield)
+	return [delim](pipe_string::in& source, pipe_string::out& yield)
 	{
 		for (; source; source())
 		{
@@ -306,9 +287,9 @@ cmd::link quote(const char* delim = "\"")
 	};
 }
 
-cmd::link join(const char* delim = " ")
+pipe_string::link join(const char* delim = " ")
 {
-	return [delim](cmd::in& source, cmd::out& yield)
+	return [delim](pipe_string::in& source, pipe_string::out& yield)
 	{
 		std::stringstream ss;
 		for (int i=0; source; source(), ++i)
@@ -322,9 +303,9 @@ cmd::link join(const char* delim = " ")
 	};
 }
 
-cmd::link split(const char* delim = " ", bool keep_empty=true)
+pipe_string::link split(const char* delim = " ", bool keep_empty=true)
 {
-	return [delim, keep_empty](cmd::in& source, cmd::out& yield)
+	return [delim, keep_empty](pipe_string::in& source, pipe_string::out& yield)
 	{
 		for (int i=0; source; source(), ++i)
 		{
@@ -341,16 +322,16 @@ cmd::link split(const char* delim = " ", bool keep_empty=true)
 	};
 }
 
-cmd::link run(const std::string& cmd)
+pipe_string::link run(const std::string& pipe_string)
 {
 	char buff[BUFSIZ];
-	return [cmd, &buff](cmd::in&, cmd::out& yield)
+	return [pipe_string, &buff](pipe_string::in&, pipe_string::out& yield)
 	{
 		FILE *in;
-		if(!(in = popen(cmd.c_str(), "r")))
+		if(!(in = popen(pipe_string.c_str(), "r")))
 		{
 			std::stringstream ss;
-			ss << "Error executing command: " << cmd;
+			ss << "Error executing command: " << pipe_string;
 			throw std::runtime_error(ss.str());
 		}
 		while(fgets(buff, sizeof(buff), in) != 0)
@@ -363,7 +344,7 @@ cmd::link run(const std::string& cmd)
 	};
 }
 
-// }
+}
 
 #endif
 
