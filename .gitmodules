@@ -1,3 +1,6 @@
 [submodule "cmaki"]
 	path = cmaki
 	url = https://github.com/makiolo/cmaki.git
+[submodule "verypoco"]
+	path = verypoco
+	url = https://github.com/makiolo/verypoco.git
