@@ -3,9 +3,9 @@
 #include <boost/filesystem.hpp>
 #include <coro/pipeline.h>
 #include <coro/cmd.h>
-#include <asyncply/h/parallel.h>
-#include <fes/h/async_fast.h>
+#include <asyncply/parallel.h>
 #include <libssh/libssh.h>
+#include "../async_fast.h"
 
 int show_remote_processes(ssh_session session)
 {
