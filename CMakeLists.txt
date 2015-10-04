@@ -8,13 +8,8 @@ ENDIF()
 
 include(utils)
 ENABLE_MODERN_CPP()
+GENERATE_LIB(fes DEPENDENCIES multithread)
 
-IF(NOT WIN32)
-	set(LIBS_EXTRA stdc++)
-ENDIF()
-GENERATE_LIB(fes DEPENDENCIES ${LIBS_EXTRA} multithread)
-
-add_subdirectory(animator)
 add_subdirectory(multithread)
 add_subdirectory(tests)
 # add_subdirectory(tests2)
