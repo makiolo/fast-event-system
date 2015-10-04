@@ -1,8 +1,0 @@
-<map id="verypoco/include/Poco/NotificationCenter.h" name="verypoco/include/Poco/NotificationCenter.h">
-<area shape="rect" id="node2" href="$_task_manager_8h.html" title="verypoco/include/Poco\l/TaskManager.h" alt="" coords="107,97,260,138"/>
-<area shape="rect" id="node5" href="$_notification_center_8cpp.html" title="verypoco/src/Notification\lCenter.cpp" alt="" coords="286,97,452,138"/>
-<area shape="rect" id="node6" href="$_notification_queue_8cpp.html" title="verypoco/src/Notification\lQueue.cpp" alt="" coords="477,97,643,138"/>
-<area shape="rect" id="node7" href="$_priority_notification_queue_8cpp.html" title="verypoco/src/PriorityNotification\lQueue.cpp" alt="" coords="668,97,876,138"/>
-<area shape="rect" id="node3" href="$_task_8cpp.html" title="verypoco/src/Task.cpp" alt="" coords="5,187,159,213"/>
-<area shape="rect" id="node4" href="$_task_manager_8cpp.html" title="verypoco/src/TaskManager.cpp" alt="" coords="184,187,389,213"/>
-</map>

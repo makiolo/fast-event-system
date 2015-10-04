@@ -1,5 +1,0 @@
-<map id="animator::AnimSequencer" name="animator::AnimSequencer">
-<area shape="rect" id="node2" href="$classanimator_1_1_anim_sequencer_atomic.html" title="animator::AnimSequencerAtomic" alt="" coords="239,5,452,32"/>
-<area shape="rect" id="node3" href="$classanimator_1_1_anim_sequencer_parallel.html" title="animator::AnimSequencerParallel" alt="" coords="238,56,453,83"/>
-<area shape="rect" id="node4" href="$classanimator_1_1_anim_sequencer_sequencial.html" title="animator::AnimSequencerSequencial" alt="" coords="227,107,463,133"/>
-</map>

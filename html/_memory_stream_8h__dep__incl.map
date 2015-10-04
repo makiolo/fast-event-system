@@ -1,8 +1,0 @@
-<map id="verypoco/include/Poco/MemoryStream.h" name="verypoco/include/Poco/MemoryStream.h">
-<area shape="rect" id="node2" href="$_binary_reader_8h.html" title="verypoco/include/Poco\l/BinaryReader.h" alt="" coords="43,97,196,138"/>
-<area shape="rect" id="node4" href="$_binary_writer_8h.html" title="verypoco/include/Poco\l/BinaryWriter.h" alt="" coords="245,97,399,138"/>
-<area shape="rect" id="node6" href="$_memory_stream_8cpp.html" title="verypoco/src/MemoryStream.cpp" alt="" coords="425,104,639,131"/>
-<area shape="rect" id="node7" href="$_number_formatter_8cpp.html" title="verypoco/src/NumberFormatter.cpp" alt="" coords="663,104,891,131"/>
-<area shape="rect" id="node3" href="$_binary_reader_8cpp.html" title="verypoco/src/BinaryReader.cpp" alt="" coords="5,187,211,213"/>
-<area shape="rect" id="node5" href="$_binary_writer_8cpp.html" title="verypoco/src/BinaryWriter.cpp" alt="" coords="235,187,433,213"/>
-</map>

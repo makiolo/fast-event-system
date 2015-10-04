@@ -1,7 +1,0 @@
-<map id="pool_thread" name="pool_thread">
-<area shape="rect" id="node4" href="$classasyncply_1_1worker.html" title="{worker\n|# _interrupted\l|+ worker()\l+ ~worker()\l+ execute()\l+ get_owner()\l+ set_interrupted()\l}" alt="" coords="273,861,423,1016"/>
-<area shape="rect" id="node2" href="$classasyncply_1_1thread.html" title="{thread\n||+ thread()\l+ ~thread()\l+ execute()\l+ join()\l+ Run()\l+ HandleGlobalMyThread()\l}" alt="" coords="5,238,221,410"/>
-<area shape="rect" id="node3" href="$classasyncply_1_1circular__queue.html" title="{circular_queue\&lt; asyncply\l::job \&gt;\n||+ circular_queue()\l+ ~circular_queue()\l+ get_mutex()\l+ pop()\l+ push()\l+ size()\l}" alt="" coords="246,229,449,419"/>
-<area shape="rect" id="node5" href="$classasyncply_1_1synchronizer.html" title="{synchronizer\n||+ synchronizer()\l+ ~synchronizer()\l+ signal()\l+ wait()\l}" alt="" coords="474,255,619,393"/>
-<area shape="rect" id="node6" href="$classasyncply_1_1semaphore.html" title="{semaphore\n|# _concurrency\l# _semaphore\l|+ semaphore()\l+ ~semaphore()\l+ get_value()\l+ lock()\l+ unlock()\l}" alt="" coords="479,6,613,178"/>
-</map>

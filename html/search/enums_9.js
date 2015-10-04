@@ -1,5 +1,0 @@
-var searchData=
-[
-  ['policy',['Policy',['../class_poco_1_1_thread.html#a894d20130e4f0c54a7f6310acb2df181',1,'Poco::Thread::Policy()'],['../class_poco_1_1_thread_impl.html#a4f9e71cee5debb853a7100bbd5131c5f',1,'Poco::ThreadImpl::Policy()'],['../class_poco_1_1_thread_impl.html#a4f9e71cee5debb853a7100bbd5131c5f',1,'Poco::ThreadImpl::Policy()'],['../class_poco_1_1_thread_impl.html#a4f9e71cee5debb853a7100bbd5131c5f',1,'Poco::ThreadImpl::Policy()'],['../class_poco_1_1_thread_impl.html#a4f9e71cee5debb853a7100bbd5131c5f',1,'Poco::ThreadImpl::Policy()']]],
-  ['priority',['Priority',['../class_poco_1_1_thread.html#a4c86ded71a250e740cb3a448f112f1e3',1,'Poco::Thread::Priority()'],['../class_poco_1_1_thread_impl.html#a76f27af6aff88b074479f3e0569bfbf4',1,'Poco::ThreadImpl::Priority()'],['../class_poco_1_1_thread_impl.html#a76f27af6aff88b074479f3e0569bfbf4',1,'Poco::ThreadImpl::Priority()'],['../class_poco_1_1_thread_impl.html#a76f27af6aff88b074479f3e0569bfbf4',1,'Poco::ThreadImpl::Priority()'],['../class_poco_1_1_thread_impl.html#a76f27af6aff88b074479f3e0569bfbf4',1,'Poco::ThreadImpl::Priority()']]]
-];

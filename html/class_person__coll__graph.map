@@ -1,7 +1,0 @@
-<map id="Person" name="Person">
-<area shape="rect" id="node2" href="$classasyncply_1_1talker.html" title="asyncply::talker\&lt; Person,\l Person \&gt;" alt="" coords="21,307,192,349"/>
-<area shape="rect" id="node3" href="$classasyncply_1_1commands__queue.html" title="asyncply::commands\l_queue\&lt; Person \&gt;" alt="" coords="33,187,180,229"/>
-<area shape="rect" id="node4" href="$classfes_1_1async__delay.html" title="fes::async_delay\&lt; command \&gt;" alt="" coords="5,96,208,123"/>
-<area shape="rect" id="node5" href="$classfes_1_1sync.html" title="fes::sync\&lt; Args... \&gt;" alt="" coords="37,5,176,32"/>
-<area shape="rect" id="node6" href="$class_context.html" title="Context" alt="" coords="217,315,284,341"/>
-</map>

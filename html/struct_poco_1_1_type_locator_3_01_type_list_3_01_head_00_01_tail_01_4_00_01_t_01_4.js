@@ -1,4 +1,0 @@
-var struct_poco_1_1_type_locator_3_01_type_list_3_01_head_00_01_tail_01_4_00_01_t_01_4 =
-[
-    [ "value", "struct_poco_1_1_type_locator_3_01_type_list_3_01_head_00_01_tail_01_4_00_01_t_01_4.html#a1e2a139d89b1576e5ac7d2be1b7e6382a0d78fdac18cc7641162ea20671025080", null ]
-];

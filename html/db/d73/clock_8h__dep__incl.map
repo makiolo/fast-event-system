@@ -1,7 +1,0 @@
-<map id="fes/h/clock.h" name="fes/h/clock.h">
-<area shape="rect" id="node2" href="$da/d8a/clock_8cpp.html" title="fes/c/clock.cpp" alt="" coords="5,83,131,112"/>
-<area shape="rect" id="node3" href="$d2/d0d/message_8h.html" title="fes/h/message.h" alt="" coords="156,83,295,112"/>
-<area shape="rect" id="node5" href="$de/d6b/sync_8h.html" title="fes/h/sync.h" alt="" coords="319,83,425,112"/>
-<area shape="rect" id="node4" href="$df/d62/async__delay_8h.html" title="fes/h/async_delay.h" alt="" coords="144,160,307,189"/>
-<area shape="rect" id="node6" href="$d2/d8b/async__fast_8h.html" title="fes/h/async_fast.h" alt="" coords="331,160,479,189"/>
-</map>
