@@ -6,7 +6,7 @@
 #define _CLOCK_H_
 
 #include <chrono>
-#include <fes/h/api.h>
+#include <api.h>
 
 namespace fes {
 

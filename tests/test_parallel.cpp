@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <asyncply/h/parallel.h>
-#include <asyncply/h/task.h>
+#include <asyncply/parallel.h>
+#include <asyncply/task.h>
 
 int main(int, const char **)
 {
@@ -9,9 +9,6 @@ int main(int, const char **)
 	{
 		for(int i=0; i<100;++i)
 		{
-
-
-
 			std::vector<std::shared_ptr<asyncply::task<double> > > vjobs;
 			asyncply::_parallel(vjobs,
 			   []()

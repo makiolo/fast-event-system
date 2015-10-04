@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-find_package(verypoco REQUIRED)
 CREATE_TEST("test_fes" fes)
 CREATE_TEST("test_sync" fes)
 CREATE_TEST("test_async_fast" fes)
@@ -12,5 +11,5 @@ CREATE_TEST("test_sequence" fes)
 CREATE_TEST("test_parallel" fes)
 CREATE_TEST("test_parallel_sequence" fes)
 CREATE_TEST("test_consumer_producer" fes)
-CREATE_TEST("test_leader_follower" fes verypoco)
+CREATE_TEST("test_annotations" fes)
 

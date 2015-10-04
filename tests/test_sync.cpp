@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fes/h/sync.h>
+#include "../sync.h"
 
 int main(int, const char**)
 {

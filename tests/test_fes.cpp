@@ -11,9 +11,9 @@
 #include <assert.h>
 #include <cstdlib>
 //
-#include <fes/h/sync.h>
-#include <fes/h/async_delay.h>
-#include <fes/h/async_fast.h>
+#include "../sync.h"
+#include "../async_delay.h"
+#include "../async_fast.h"
 #include <animator/h/interpolation.h>
 
 template <typename TYPE = fes::sync<std::string>>

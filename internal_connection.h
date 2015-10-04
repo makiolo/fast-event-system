@@ -7,7 +7,7 @@
 
 #include <atomic>
 #include <functional>
-#include <fes/h/method.h>
+#include <method.h>
 
 namespace fes {
 

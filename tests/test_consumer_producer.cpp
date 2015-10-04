@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <atomic>
-#include <asyncply/h/parallel.h>
-#include <asyncply/h/task.h>
+#include <asyncply/parallel.h>
+#include <asyncply/task.h>
 
 int main(int, const char**)
 {

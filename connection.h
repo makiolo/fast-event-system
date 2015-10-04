@@ -6,7 +6,7 @@
 #define _CONNECTION_H_
 
 #include <memory>
-#include <fes/h/internal_connection.h>
+#include <internal_connection.h>
 
 namespace fes {
 

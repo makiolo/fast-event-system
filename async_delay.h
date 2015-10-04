@@ -2,65 +2,67 @@
 // Reconocimiento 4.0 Internacional License.
 // http://creativecommons.org/licenses/by/4.0/
 //
-#ifndef _ASYNC_FAST_H_
-#define _ASYNC_FAST_H_
+#ifndef _ASYNC_DELAY_H_
+#define _ASYNC_DELAY_H_
 
-#include <tuple>
-#include <atomic>
-#include <concurrentqueue/concurrentqueue.h>
-#include <fes/h/connection.h>
-#include <fes/h/sync.h>
-#include <fes/h/method.h>
+#include <vector>
+#include <algorithm>
+#include <message.h>
+#include <connection.h>
+#include <sync.h>
 
 namespace fes {
 
 template <typename... Args>
-class async_delay;
+class async_fast;
 
-/*!
- * # Canal seguro de comunicacion entre threads
- * Esta clase permite crear un canal de datos asincrono.
- * Mediante el *operator()* puede publicar datos.
- * Los clientes se conectan usando el metodo *connect()*
- */
 template <typename... Args>
-class async_fast
+class async_delay
 {
 public:
-	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...>>;
+	using container_type = std::vector<message<Args...>>;
 
-	async_fast()
+	async_delay()
         : _output()
         , _queue()
-		, _size_exact(0)
-	{ ; }
+    {
 
-	async_fast(size_t initial_allocation)
-        : _output()
-		, _queue(initial_allocation)
-		, _size_exact(0)
-	{ ; }
+    }
 
-	~async_fast()
+	~async_delay()
 	{
 		;
 	}
 
-	async_fast(const async_fast&) = delete;
-	async_fast& operator=(const async_fast&) = delete;
+	async_delay(const async_delay&) = delete;
+	async_delay& operator=(const async_delay&) = delete;
 
-	void operator()(const Args&... data)
+	void operator()(int priority, deltatime delay, const Args&... data)
 	{
-		++_size_exact;
-		_queue.enqueue(std::make_tuple(data...));
+		marktime delay_point = high_resolution_clock() + delay;
+		_queue.emplace_back(priority, delay_point, data...);
+		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 	}
+
+	void operator()(deltatime delay, const Args&... data)
+	{
+		operator()(0, delay, data...);
+	}
+
+	void operator()(int priority, const Args&... data)
+	{
+		operator()(priority, fes::deltatime(0), data...);
+	}
+
+	inline void operator()(const Args&... data) { operator()(0, fes::deltatime(0), data...); }
 
 	void update(deltatime tmax = fes::deltatime(16))
 	{
 		marktime timeout = high_resolution_clock() + tmax;
-		while (!empty() && (high_resolution_clock() <= timeout))
+		bool has_next = true;
+		while (!empty() && has_next && (high_resolution_clock() <= timeout))
 		{
-			_dispatch_one();
+			has_next = _dispatch_one();
 		}
 	}
 
@@ -69,7 +71,7 @@ public:
 		auto mark = fes::high_resolution_clock() + time;
 		while (fes::high_resolution_clock() <= mark)
 		{
-			_dispatch_one();
+			dispatch_one();
 		}
 	}
 
@@ -77,15 +79,14 @@ public:
 	{
 		if (!empty())
 		{
-			_dispatch_one();
-			return true;
+			return _dispatch_one();
 		}
 		return false;
 	}
 
-	inline bool empty() const { return (_size_exact <= 0); }
+	inline bool empty() const { return _queue.empty(); }
 
-	inline size_t size() const { return _size_exact; }
+	inline size_t size() const { return _queue.size(); }
 
 	template <typename T>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
@@ -130,23 +131,24 @@ protected:
 		_output(std::get<S>(top)...);
 	}
 
-	void _dispatch_one()
+	bool _dispatch_one()
 	{
-		std::tuple<Args...> t;
-		if (_queue.try_dequeue(t))
+		auto& t = _queue.back();
+		if (high_resolution_clock() >= t._timestamp)
 		{
-			--_size_exact;
-			dispatch_one(t, gens<sizeof...(Args)>{});
+			dispatch_one(t._data, gens<sizeof...(Args)>{});
+			_queue.pop_back();
+			return true;
 		}
+		return false;
 	}
 
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	std::atomic<int> _size_exact;
 };
 
-}  // end namespace
+}
 
 #endif
 

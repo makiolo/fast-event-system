@@ -1,4 +1,4 @@
-#include <fes/h/clock.h>
+#include <clock.h>
 
 namespace fes
 {

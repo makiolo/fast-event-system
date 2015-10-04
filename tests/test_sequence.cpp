@@ -1,6 +1,6 @@
 #include <iostream>
 #include <complex>
-#include <asyncply/h/sequence.h>
+#include <asyncply/sequence.h>
 
 int main(int, const char **)
 {

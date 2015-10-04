@@ -4,3 +4,6 @@
 [submodule "asyncply"]
 	path = asyncply
 	url = https://github.com/makiolo/async-ply.git
+[submodule "verypoco"]
+	path = verypoco
+	url = https://github.com/makiolo/verypoco.git

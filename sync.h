@@ -6,9 +6,9 @@
 #define _SYNC_H_
 
 #include <vector>
-#include <fes/h/method.h>
-#include <fes/h/connection.h>
-#include <fes/h/clock.h>
+#include <method.h>
+#include <connection.h>
+#include <clock.h>
 
 namespace fes {
 

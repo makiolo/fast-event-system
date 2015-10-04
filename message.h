@@ -6,7 +6,7 @@
 #define _MESSAGE_H_
 
 #include <tuple>
-#include <fes/h/clock.h>
+#include <clock.h>
 
 namespace fes {
 
