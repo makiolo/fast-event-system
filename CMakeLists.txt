@@ -8,9 +8,8 @@ ENDIF()
 
 include(utils)
 ENABLE_MODERN_CPP()
-GENERATE_LIB(fes DEPENDENCIES multithread)
+GENERATE_LIB(fes)
 
-add_subdirectory(multithread)
 add_subdirectory(tests)
 # add_subdirectory(tests2)
 
