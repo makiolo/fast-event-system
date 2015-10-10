@@ -58,7 +58,7 @@ leaf content(const decltype(leaf()())& a)
 
 }
 
-int main(int argc, const char *argv[])
+int main(int, const char **)
 {
 	using namespace xml;
     // replegation tree (down to top)
