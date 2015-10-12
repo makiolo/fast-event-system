@@ -27,9 +27,16 @@
 *.out
 *.app
 *.~
+.*~
 **/*.~
 **/*cpp~
 **/*h~
 **/*txt~
 **/*cmake~
 **/*yml~
+build/
+debug/
+html/
+release/
+.clang_complete
+
