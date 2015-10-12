@@ -11,5 +11,4 @@ ENABLE_MODERN_CPP()
 GENERATE_LIB(fes)
 
 add_subdirectory(tests)
-# add_subdirectory(tests2)
 
