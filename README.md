@@ -4,9 +4,10 @@
 ```bash
 $ git clone --recursive https://github.com/makiolo/fast-event-system.git fes
 $ cd fes
-$ mkdir build
-$ cd build
+$ mkdir release
+$ cd release
 $ cmake ..
-$ make -j
-$ make test ARGS=-V
+$ cmake --build . --config release
+$ ctest . -C release
 ```
+
