@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
+enable_testing()
 CREATE_TEST(test_fes "fes")
 CREATE_TEST(test_sync "fes")
 CREATE_TEST(test_async_fast "fes")
