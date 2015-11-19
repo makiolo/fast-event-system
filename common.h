@@ -1,7 +1,3 @@
-// design-patterns-cpp14 by Ricardo Marmolejo Garc�a is licensed under a Creative Commons
-// Reconocimiento 4.0 Internacional License.
-// http://creativecommons.org/licenses/by/4.0/
-//
 #ifndef _PATTERNS_COMMON_
 #define _PATTERNS_COMMON_
 

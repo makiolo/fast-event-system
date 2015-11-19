@@ -1,8 +1,5 @@
 # Fast Event System [![Build Status](https://img.shields.io/shippable/55f433501895ca447414d612/master.svg)](https://app.shippable.com/projects/55f433501895ca447414d612) [![Coverity Scan Build Status](https://scan.coverity.com/projects/6353/badge.svg)](https://scan.coverity.com/projects/makiolo-fast-event-system) 
 
-# :construction: I am under construction
-Don't use it
-
 # quick-start
 ```bash
 $ git clone --recursive https://github.com/makiolo/fast-event-system.git fes
@@ -13,4 +10,64 @@ $ cmake ..
 $ cmake --build . --config release
 $ ctest . -C release
 ```
+
+# Very simple to use
+Fast event system is a library for resolve observer pattern in a functional way. Is a library very easy to use, only have 3 objects: *sync*, *async_fast* and *async_delay*.
+## sync
+I will explain sync object with minimal examples:
+```cpp
+// instanciate
+fes::sync<bool> key_A;
+```
+Now, you can connect functors, lambdas ...:
+```cpp
+key_A.connect([](bool press)
+	{
+		if(press)
+			std::cout << "pressed key A" << std::endl;
+		else
+			std::cout << "released key A" << std::endl;
+	});
+```
+And finally, something notify using operator() and all functors connected will receive this.
+```cpp
+key_A(true);  // notify to subscribers
+```
+All objetcs in fes, use variadic templates, new interfaces can be created in compile time:
+```cpp
+fes::sync<std::string, int, std::string> civiian;
+civiian.connect([](const std::string& name, int age, const std::string& country)
+	{
+		// process input ...
+		std::cout << "new civiian registered" << std::endl;
+	});
+```
+## async_fast
+Works equal than sync but data is saved in buffer.
+```cpp
+key_A(true);  // saved in queue
+key_A(true);  // saved in queue
+key_A(true);  // saved in queue
+```
+Now, we have three messages waiting in queue. For dispatching, type:
+```cpp
+key_A.update();  // notify to subscribers
+```
+## async_delay
+Works equal than async_fast but data can send delayed.
+The time delayed is specified in first parameter of operator() with help of fes::deltatime():
+```cpp
+key_A(fes::deltatime(2000), true);  // saved in queue (with your delayed time)
+```
+We can use .update() for dispatching, now have a parameter for config timeout:
+```cpp
+// 2000 ms after, message is notify to subscribers
+key_A.update(fes::deltatime(5000));
+```
+Previous line, wait 5000 ms or finish when one message is dispatched. For default, timeout is 16ms.
+For dispatching a fixed time(dispathing multiples messages), you can use .update_while():
+```cpp
+key_A.update_while(fes::deltatime(5000));
+```
+### Documentation under construction
 

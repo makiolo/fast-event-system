@@ -1,9 +1,5 @@
-// design-patterns-cpp14 by Ricardo Marmolejo Garc�a is licensed under a Creative Commons
-// Reconocimiento 4.0 Internacional License.
-// http://creativecommons.org/licenses/by/4.0/
-//
-#ifndef _API_H_
-#define _API_H_
+#ifndef _FES_API_H_
+#define _FES_API_H_
 
 #define FES_VERSION_MAJOR 1
 #define FES_VERSION_MINOR 0
