@@ -1,22 +1,25 @@
+// design-patterns-cpp14 by Ricardo Marmolejo García is licensed under a Creative Commons
+// Reconocimiento 4.0 Internacional License.
+// http://creativecommons.org/licenses/by/4.0/
+//
 #ifndef _PATTERNS_COMMON_
 #define _PATTERNS_COMMON_
 
 #include <functional>
 #include <string>
 #include <memory>
-#include <map>
+#include <unordered_map>
 #include <exception>
 
-#define DEFINE_KEY(__CLASS__)                                                                      \
-	static const std::string& KEY()                                                                \
-	{                                                                                              \
-		static std::string key = #__CLASS__;                                                       \
-		return key;                                                                                \
-	}                                                                                              \
-	virtual const std::string& getKEY() const                                                      \
-	{                                                                                              \
-		static std::string key = #__CLASS__;                                                       \
-		return key;                                                                                \
+#define DEFINE_HASH(__CLASS__)  \
+	namespace std               \
+	{                           \
+	template <>                 \
+	struct hash<__CLASS__>      \
+	{                           \
+	public:                     \
+		size_t operator()() const { return std::hash<std::string>()(#__CLASS__); }                          \
+	};                          \
 	}
 
 template <int...>
@@ -41,7 +44,6 @@ struct placeholder_template
 
 namespace std
 {
-
 template <int N>
 struct is_placeholder<placeholder_template<N>> : integral_constant<int, N + 1>
 {
@@ -51,37 +53,53 @@ struct is_placeholder<placeholder_template<N>> : integral_constant<int, N + 1>
 template <int... Is>
 struct seq
 {
-    virtual ~seq() { }
 };
 
 template <int N, int... Is>
 struct gens : gens<N - 1, N - 1, Is...>
 {
-    virtual ~gens() { }
 };
 
 template <int... Is>
 struct gens<0, Is...> : seq<Is...>
 {
-    virtual ~gens() { }
 };
 
-template <class T1, class... T>
-struct first
+namespace dp14
 {
-	typedef T1 type;
-};
 
-template <class T1, class... T>
-struct last
+template <typename T>
+class hash
 {
-	typedef typename last<T...>::type type;
-};
+public:
+	template <typename... Args>
+	size_t operator()(Args&&... args) const
+	{
+		size_t h = 0;
+		_hash_forwarding(h, std::forward<Args>(args)...);
+		return h;
+	}
 
-template <class T1>
-struct last<T1>
-{
-	typedef T1 type;
+protected:
+	template <typename U>
+	void _combine_hash(size_t& seed, U&& x) const
+	{
+		seed ^= std::hash<U>()(std::forward<U>(x)) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
+
+	template <typename U, typename... Args>
+	void _hash_forwarding(size_t& h, U&& parm, Args&&... args) const
+	{
+		_combine_hash<U>(h, std::forward<U>(parm));
+		_hash_forwarding(h, std::forward<Args>(args)...);
+	}
+
+	template <typename U>
+	void _hash_forwarding(size_t& h, U&& parm) const
+	{
+		_combine_hash<U>(h, std::forward<U>(parm));
+	}
 };
+}
 
 #endif
