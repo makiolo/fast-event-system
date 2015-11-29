@@ -4,3 +4,6 @@
 [submodule "concurrentqueue"]
 	path = concurrentqueue
 	url = https://github.com/cameron314/concurrentqueue.git
+[submodule "metacommon"]
+	path = metacommon
+	url = https://github.com/makiolo/metacommon.git
