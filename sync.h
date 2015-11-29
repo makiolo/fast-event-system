@@ -22,9 +22,9 @@ public:
 	sync()
         : _registered()
         , _conns()
-    {
+	{
 		;
-    }
+	}
 	~sync() { ; }
 
 	sync(const sync& other) = delete;
