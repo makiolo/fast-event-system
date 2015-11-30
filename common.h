@@ -36,6 +36,28 @@ public:
 	enum{value = bool(sizeof(test<T>(0)) == sizeof(yes&))};
 };
 
+template<typename T>
+class has_factory
+{
+	using no = char;
+	using yes = char[2];
+	template<class C> static yes& test(char (*)[sizeof(&C::factory)]);
+	template<class C> static no& test(...);
+public:
+	enum{value = bool(sizeof(test<T>(0)) == sizeof(yes&))};
+};
+
+template<typename T>
+class has_memoize
+{
+	using no = char;
+	using yes = char[2];
+	template<class C> static yes& test(char (*)[sizeof(&C::memoize)]);
+	template<class C> static no& test(...);
+public:
+	enum{value = bool(sizeof(test<T>(0)) == sizeof(yes&))};
+};
+
 template <int...>
 struct int_sequence
 {
