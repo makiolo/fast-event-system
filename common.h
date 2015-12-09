@@ -19,32 +19,36 @@
 	struct hash<__CLASS__>      \
 	{ size_t operator()() const { static size_t h = std::hash<std::string>()(#__CLASS__); return h; }	}; }			\
 
-#define DEFINE_HASH_API(__API__, __CLASS__)  \
-	namespace std {             \
-	template <>                 \
-	struct __API__ hash<__CLASS__>      \
-	{ size_t operator()() const { static size_t h = std::hash<std::string>()(#__CLASS__); return h; }	}; }			\
-
 template<typename T>
 class has_key
 {
-	using no = char;
-	using yes = char[2];
-	template<class C> static yes& test(char (*)[sizeof(&C::KEY)]);
-	template<class C> static no& test(...);
+	typedef char(&yes)[2];
+
+	template<typename> struct Exists;
+
+	template<typename V>
+	static yes CheckMember(Exists<decltype(&V::KEY)>*);
+	template<typename>
+	static char CheckMember(...);
+
 public:
-	enum{value = bool(sizeof(test<T>(0)) == sizeof(yes&))};
+	static const bool value = (sizeof(CheckMember<T>(0)) == sizeof(yes));
 };
 
 template<typename T>
 class has_instance
 {
-	using no = char;
-	using yes = char[2];
-	template<class C> static yes& test(char (*)[sizeof(&C::instance)]);
-	template<class C> static no& test(...);
+	typedef char(&yes)[2];
+
+	template<typename> struct Exists;
+
+	template<typename V>
+	static yes CheckMember(Exists<decltype(&V::instance)>*);
+	template<typename>
+	static char CheckMember(...);
+
 public:
-	enum{value = bool(sizeof(test<T>(0)) == sizeof(yes&))};
+	static const bool value = (sizeof(CheckMember<T>(0)) == sizeof(yes));
 };
 
 template <int...>
