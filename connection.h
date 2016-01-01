@@ -15,16 +15,26 @@ template <typename... Args>
 class connection
 {
 public:
-	connection() {}
+	connection()
+	{ ; }
 
 	connection(const weak_connection<Args...>& other)
 		: _connection(other)
-	{
-	}
+	{ ; }
 
 	connection& operator=(const weak_connection<Args...>& other)
 	{
 		_connection = other;
+		return *this;
+	}
+
+	connection(connection<Args...>&& other)
+		: _connection(std::move(other._connection))
+	{ ; }
+
+	connection& operator=(connection&& other)
+	{
+		_connection = std::move(other._connection);
 		return *this;
 	}
 
@@ -37,9 +47,7 @@ public:
 	}
 
 	connection(const connection&) = delete;
-	connection(connection<Args...>&&) = delete;
 	connection& operator=(const connection&) = delete;
-	connection& operator=(connection&&) = delete;
 
 protected:
 	weak_connection<Args...> _connection;
