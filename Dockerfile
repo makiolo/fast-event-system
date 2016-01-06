@@ -17,5 +17,5 @@ RUN apt-get install -qq llvm-3.6-tools
 RUN apt-get install -qq git
 RUN apt-get install -qq kbtin
 RUN apt-get install -qq libtool
-
+RUN apt-get install -qq autoconf
 
