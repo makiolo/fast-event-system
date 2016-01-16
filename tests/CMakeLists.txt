@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
-enable_testing()
-CREATE_TEST(test_fes "fes")
-CREATE_TEST(test_sync "fes")
-CREATE_TEST(test_async_fast "fes")
-CREATE_TEST(test_async_fast_autoconnect "fes")
-CREATE_TEST(test_async_delay "fes")
-IF(NOT WIN32)
-	CREATE_TEST(test_annotations "fes")
-ENDIF()
-
+cmaki_test(fes test_fes.cpp DEPENDS fes)
+cmaki_test(sync test_sync.cpp DEPENDS fes)
+cmaki_test(async_fast test_async_fast.cpp DEPENDS fes)
+cmaki_test(async_fast_autoconnect test_async_fast_autoconnect.cpp DEPENDS fes)
+cmaki_test(async_delay test_async_delay.cpp DEPENDS fes)
+if(NOT WIN32)
+	cmaki_test(annotations test_annotations.cpp DEPENDS fes)
+endif()
 
