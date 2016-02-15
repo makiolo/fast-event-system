@@ -1,8 +1,8 @@
 #ifndef _CLOCK_H_
 #define _CLOCK_H_
 
+#include "api.h"
 #include <chrono>
-#include <api.h>
 
 namespace fes {
 
