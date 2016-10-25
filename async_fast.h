@@ -7,6 +7,8 @@
 #include <connection.h>
 #include <sync.h>
 #include <method.h>
+#include <condition_variable>
+#include <mutex>
 
 namespace fes {
 
@@ -47,36 +49,14 @@ public:
 
 	void operator()(const Args&... data)
 	{
-		++_size_exact;
 		_queue.enqueue(std::make_tuple(data...));
+		++_size_exact;
+		_cond_var.notify_one();
 	}
 
-	void update(deltatime tmax = fes::deltatime(16))
+	std::tuple<Args...> get()
 	{
-		marktime timeout = high_resolution_clock() + tmax;
-		while (!empty() && (high_resolution_clock() <= timeout))
-		{
-			_dispatch_one();
-		}
-	}
-
-	void update_while(deltatime time)
-	{
-		auto mark = fes::high_resolution_clock() + time;
-		while (fes::high_resolution_clock() <= mark)
-		{
-			_dispatch_one();
-		}
-	}
-
-	bool dispatch_one()
-	{
-		if (!empty())
-		{
-			_dispatch_one();
-			return true;
-		}
-		return false;
+		return _get();
 	}
 
 	inline bool empty() const { return (_size_exact <= 0); }
@@ -121,25 +101,39 @@ public:
 
 protected:
 	template <int... S>
-	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
+	inline void get(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
 	}
 
-	void _dispatch_one()
+	std::tuple<Args...> _get()
 	{
-		std::tuple<Args...> t;
-		if (_queue.try_dequeue(t))
-		{
-			--_size_exact;
-			dispatch_one(t, gens<sizeof...(Args)>{});
+		std::unique_lock<std::mutex> lock(_m);
+		while (empty()) {
+			_cond_var.wait(lock);
 		}
+
+		std::tuple<Args...> t;
+		bool ok;
+		do
+		{
+			ok = _queue.try_dequeue(t);
+			if(ok)
+			{
+				get(t, gens<sizeof...(Args)>{});
+				--_size_exact;
+			}
+		}
+		while(!ok);
+		return t;
 	}
 
 protected:
 	sync<Args...> _output;
 	container_type _queue;
 	std::atomic<int> _size_exact;
+	std::mutex _m;
+	std::condition_variable _cond_var;
 };
 
 }  // end namespace
