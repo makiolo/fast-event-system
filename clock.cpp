@@ -4,7 +4,7 @@
 namespace fes
 {
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 
 static double _freq;
 static __int64 _counter_start;

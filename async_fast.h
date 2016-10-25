@@ -54,6 +54,14 @@ public:
 		_cond_var.notify_one();
 	}
 
+	void update()
+	{
+		if(!empty())
+		{
+			get();
+		}
+	}
+
 	std::tuple<Args...> get()
 	{
 		return _get();

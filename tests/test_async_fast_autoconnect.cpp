@@ -19,7 +19,7 @@ int main(int, const char**)
 	sync("autoreference");
 	for (int i = 0; i < N; ++i)
 	{
-		sync.dispatch_one();
+		sync.get();
 	}
 
 	return (counter == N ? 0 : 1);

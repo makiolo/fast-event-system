@@ -5,7 +5,7 @@
 #define fes_VERSION_MINOR 0
 #define fes_VERSION ((fes_VERSION_MAJOR << 16) | fes_VERSION_MINOR)
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     #ifdef fes_EXPORTS
         #define fes_API __declspec(dllexport)
     #else
@@ -19,7 +19,7 @@
     #endif
 #endif
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 using int64 = __int64;
 using uint64 = unsigned __int64;
 #else
