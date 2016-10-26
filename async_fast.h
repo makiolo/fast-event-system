@@ -30,13 +30,13 @@ public:
 	async_fast()
 		: _output()
 		, _queue()
-		, _size_exact(0)
+		, _len(0)
 	{ ; }
 
 	async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
-		, _size_exact(0)
+		, _len(0)
 	{ ; }
 
 	~async_fast()
@@ -50,26 +50,33 @@ public:
 	void operator()(const Args&... data)
 	{
 		_queue.enqueue(std::make_tuple(data...));
-		++_size_exact;
-		_cond_var.notify_one();
+		{
+			std::unique_lock<std::mutex> lock(_dispatch_mutex);
+			++_len;
+			_cond_var.notify_one();
+		}
 	}
 
 	void update()
 	{
 		if(!empty())
-		{
 			get();
-		}
 	}
 
-	std::tuple<Args...> get()
+	inline std::tuple<Args...> get()
 	{
 		return _get();
 	}
 
-	inline bool empty() const { return (_size_exact <= 0); }
+	inline bool empty() const
+	{
+		return (_len <= 0);
+	}
 
-	inline size_t size() const { return _size_exact; }
+	inline size_t size() const
+	{
+		return _len;
+	}
 
 	template <typename T>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
@@ -116,22 +123,22 @@ protected:
 	std::tuple<Args...> _get()
 	{
 		{
-			std::unique_lock<std::mutex> lock(_m);
-			_cond_var.wait(lock);
+			std::unique_lock<std::mutex> lock(_dispatch_mutex);
+			_cond_var.wait(lock, [this](){return !this->empty();});
+			--_len;
 		}
 
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
 		get(t, gens<sizeof...(Args)>{});
-		--_size_exact;
 		return t;
 	}
 
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	std::atomic<int> _size_exact;
-	std::mutex _m;
+	int _len;
+	std::mutex _dispatch_mutex;
 	std::condition_variable _cond_var;
 };
 
