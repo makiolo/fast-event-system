@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include <atomic>
-#include <concurrentqueue/concurrentqueue.h>
+#include <concurrentqueue/blockingconcurrentqueue.h>
 #include <connection.h>
 #include <sync.h>
 #include <method.h>
@@ -25,16 +25,16 @@ template <typename... Args>
 class async_fast
 {
 public:
-	using container_type = moodycamel::ConcurrentQueue<std::tuple<Args...>>;
+	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...>>;
 
 	async_fast()
-        : _output()
-        , _queue()
+		: _output()
+		, _queue()
 		, _size_exact(0)
 	{ ; }
 
 	async_fast(size_t initial_allocation)
-        : _output()
+		: _output()
 		, _queue(initial_allocation)
 		, _size_exact(0)
 	{ ; }
@@ -98,8 +98,7 @@ public:
 			});
 	}
 
-	inline weak_connection<Args...> connect(
-		int priority, deltatime delay, async_delay<Args...>& queue)
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return _output.connect([&queue, priority, delay](const Args&... data)
 			{
@@ -116,23 +115,15 @@ protected:
 
 	std::tuple<Args...> _get()
 	{
-		std::unique_lock<std::mutex> lock(_m);
-		while (empty()) {
+		{
+			std::unique_lock<std::mutex> lock(_m);
 			_cond_var.wait(lock);
 		}
 
 		std::tuple<Args...> t;
-		bool ok;
-		do
-		{
-			ok = _queue.try_dequeue(t);
-			if(ok)
-			{
-				get(t, gens<sizeof...(Args)>{});
-				--_size_exact;
-			}
-		}
-		while(!ok);
+		_queue.wait_dequeue(t);
+		get(t, gens<sizeof...(Args)>{});
+		--_size_exact;
 		return t;
 	}
 
