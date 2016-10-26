@@ -5,7 +5,9 @@
 #include <algorithm>
 #include <message.h>
 #include <connection.h>
+#include <semaphore.h>
 #include <sync.h>
+#include <unistd.h>
 
 namespace fes {
 
@@ -38,6 +40,7 @@ public:
 		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
+		_sem.notify();
 	}
 
 	void operator()(deltatime delay, const Args&... data)
@@ -50,39 +53,40 @@ public:
 		operator()(priority, fes::deltatime(0), data...);
 	}
 
-	inline void operator()(const Args&... data) { operator()(0, fes::deltatime(0), data...); }
-
-	void update(deltatime tmax = fes::deltatime(16))
+	inline void operator()(const Args&... data)
 	{
-		marktime timeout = high_resolution_clock() + tmax;
-		bool has_next = true;
-		while (!empty() && has_next && (high_resolution_clock() <= timeout))
-		{
-			has_next = _dispatch_one();
-		}
+		operator()(0, fes::deltatime(0), data...);
 	}
 
-	void update_while(deltatime time)
+	void update()
+	{
+		if(!empty())
+			get();
+	}
+
+	void fortime(deltatime time = fes::deltatime(16))
 	{
 		auto mark = fes::high_resolution_clock() + time;
 		while (fes::high_resolution_clock() <= mark)
 		{
-			dispatch_one();
+			update();
 		}
 	}
 
-	bool dispatch_one()
+	inline std::tuple<Args...> get()
 	{
-		if (!empty())
-		{
-			return _dispatch_one();
-		}
-		return false;
+		return _get();
 	}
 
-	inline bool empty() const { return _queue.empty(); }
+	inline bool empty() const
+	{
+		return (_sem.size() <= 0);
+	}
 
-	inline size_t size() const { return _queue.size(); }
+	inline size_t size() const
+	{
+		return _sem.size();
+	}
 
 	template <typename T>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
@@ -122,26 +126,29 @@ public:
 
 protected:
 	template <int... S>
-	inline void dispatch_one(const std::tuple<Args...>& top, seq<S...>) const
+	inline void get(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
 	}
 
-	bool _dispatch_one()
+	std::tuple<Args...> _get()
 	{
 		auto& t = _queue.back();
-		if (high_resolution_clock() >= t._timestamp)
+		_sem.wait();
+		while(high_resolution_clock() < t._timestamp)
 		{
-			dispatch_one(t._data, gens<sizeof...(Args)>{});
-			_queue.pop_back();
-			return true;
+			// each 100 ms
+			usleep(100);
 		}
-		return false;
+		get(t._data, gens<sizeof...(Args)>{});
+		_queue.pop_back();
+		return t._data;
 	}
 
 protected:
 	sync<Args...> _output;
 	container_type _queue;
+	semaphore _sem;
 };
 
 }

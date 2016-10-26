@@ -5,10 +5,9 @@
 #include <atomic>
 #include <concurrentqueue/blockingconcurrentqueue.h>
 #include <connection.h>
+#include <semaphore.h>
 #include <sync.h>
 #include <method.h>
-#include <condition_variable>
-#include <mutex>
 
 namespace fes {
 
@@ -30,13 +29,11 @@ public:
 	async_fast()
 		: _output()
 		, _queue()
-		, _len(0)
 	{ ; }
 
 	async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
-		, _len(0)
 	{ ; }
 
 	~async_fast()
@@ -50,17 +47,22 @@ public:
 	void operator()(const Args&... data)
 	{
 		_queue.enqueue(std::make_tuple(data...));
-		{
-			std::lock_guard<std::mutex> lock(_dispatch_mutex);
-			++_len;
-			_cond_var.notify_one();
-		}
+		_sem.notify();
 	}
 
 	void update()
 	{
 		if(!empty())
 			get();
+	}
+
+	void fortime(deltatime time = fes::deltatime(16))
+	{
+		auto mark = fes::high_resolution_clock() + time;
+		while (fes::high_resolution_clock() <= mark)
+		{
+			update();
+		}
 	}
 
 	inline std::tuple<Args...> get()
@@ -70,12 +72,12 @@ public:
 
 	inline bool empty() const
 	{
-		return (_len <= 0);
+		return (_sem.size() <= 0);
 	}
 
 	inline size_t size() const
 	{
-		return _len;
+		return _sem.size();
 	}
 
 	template <typename T>
@@ -122,12 +124,7 @@ protected:
 
 	std::tuple<Args...> _get()
 	{
-		{
-			std::lock_guard<std::mutex> lock(_dispatch_mutex);
-			_cond_var.wait(lock, [this](){return !this->empty();});
-			--_len;
-		}
-
+		_sem.wait();
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
 		get(t, gens<sizeof...(Args)>{});
@@ -137,43 +134,10 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	std::mutex _dispatch_mutex;
-	std::condition_variable _cond_var;
-	unsigned long _len;
+	semaphore _sem;
 };
 
 }  // end namespace
-
-/*
-TODO: need semaphore class ?
-class semaphore
-{
-private:
-    std::mutex mutex_;
-    std::condition_variable condition_;
-    unsigned long count_;
-
-public:
-    semaphore()
-        : count_()
-    {}
-
-    void notify()
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        ++count_;
-        condition_.notify_one();
-    }
-
-    void wait()
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        while(!count_)
-            condition_.wait(lock);
-        --count_;
-    }
-};
-*/
 
 #endif
 

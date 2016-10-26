@@ -26,13 +26,13 @@ int main(int, const char**)
 				}));
 		// lambda must received this
 		sync(fes::deltatime(2000), 5, "hello world", 11.0);
-		sync.update_while(fes::deltatime(2001));
+		sync.fortime(fes::deltatime(2500));
 
 		// autodisconnection
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
-	sync.update_while(fes::deltatime(1));
+	sync.update();
 
 	return is_dispatched ? 0 : 1;
 }
