@@ -51,7 +51,7 @@ public:
 	{
 		_queue.enqueue(std::make_tuple(data...));
 		{
-			std::unique_lock<std::mutex> lock(_dispatch_mutex);
+			std::lock_guard<std::mutex> lock(_dispatch_mutex);
 			++_len;
 			_cond_var.notify_one();
 		}
@@ -123,7 +123,7 @@ protected:
 	std::tuple<Args...> _get()
 	{
 		{
-			std::unique_lock<std::mutex> lock(_dispatch_mutex);
+			std::lock_guard<std::mutex> lock(_dispatch_mutex);
 			_cond_var.wait(lock, [this](){return !this->empty();});
 			--_len;
 		}
@@ -137,12 +137,43 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	int _len;
 	std::mutex _dispatch_mutex;
 	std::condition_variable _cond_var;
+	unsigned long _len;
 };
 
 }  // end namespace
+
+/*
+TODO: need semaphore class ?
+class semaphore
+{
+private:
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    unsigned long count_;
+
+public:
+    semaphore()
+        : count_()
+    {}
+
+    void notify()
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        ++count_;
+        condition_.notify_one();
+    }
+
+    void wait()
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        while(!count_)
+            condition_.wait(lock);
+        --count_;
+    }
+};
+*/
 
 #endif
 
