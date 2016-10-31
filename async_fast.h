@@ -3,9 +3,9 @@
 
 #include <tuple>
 #include <atomic>
+#include <sem.h>
 #include <concurrentqueue/blockingconcurrentqueue.h>
 #include <connection.h>
-#include <semaphore.h>
 #include <sync.h>
 #include <method.h>
 
@@ -134,7 +134,7 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	semaphore _sem;
+	fes::semaphore _sem;
 };
 
 }  // end namespace

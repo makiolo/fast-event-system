@@ -27,14 +27,6 @@ public:
         --_len;
     }
 
-	// template <typename Predicate>
-    // void wait(Predicate&& pred)
-    // {
-    //     std::unique_lock<std::mutex> lock(_mutex);
-	// 	_cond.wait(lock, [this, pred_ = std::move(pred)](){return (this->size() > 0) && !pred_();});
-    //     --_len;
-    // }
-
 	inline unsigned long size() const
 	{
 		return _len;

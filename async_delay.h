@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <message.h>
 #include <connection.h>
-#include <semaphore.h>
+#include <sem.h>
 #include <sync.h>
 #include <unistd.h>
 
@@ -148,7 +148,7 @@ protected:
 protected:
 	sync<Args...> _output;
 	container_type _queue;
-	semaphore _sem;
+	fes::semaphore _sem;
 };
 
 }
