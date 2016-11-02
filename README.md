@@ -1,4 +1,10 @@
-# Fast Event System [![Build Status](https://travis-ci.org/makiolo/fast-event-system.svg?branch=master)](https://travis-ci.org/makiolo/fast-event-system) [![Coverity Scan Build Status](https://scan.coverity.com/projects/6353/badge.svg)](https://scan.coverity.com/projects/makiolo-fast-event-system)
+# Fast Event System
+
+gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/fast-event-system.svg?branch=master)](https://travis-ci.org/makiolo/fast-event-system)
+
+MSVC 2015: [![Build status](https://ci.appveyor.com/api/projects/status/oatw9c59rlbwa98t?svg=true)](https://ci.appveyor.com/project/makiolo/fast-event-system)
+
+Coverity Scan: [![Coverity Scan Build Status](https://scan.coverity.com/projects/6353/badge.svg)](https://scan.coverity.com/projects/makiolo-fast-event-system)
 
 # quick-start
 ```bash
