@@ -29,11 +29,13 @@ public:
 	async_fast()
 		: _output()
 		, _queue()
+		, _closed(false)
 	{ ; }
 
 	async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
+		, _closed(false)
 	{ ; }
 
 	~async_fast()
@@ -135,6 +137,7 @@ protected:
 	sync<Args...> _output;
 	container_type _queue;
 	fes::semaphore _sem;
+	bool _closed;
 };
 
 }  // end namespace
