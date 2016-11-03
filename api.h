@@ -19,7 +19,7 @@
     #endif
 #endif
 
-#ifdef _MSC_VER
+#ifdef 0
 using int64 = __int64;
 using uint64 = unsigned __int64;
 #else
