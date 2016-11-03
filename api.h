@@ -19,7 +19,7 @@
     #endif
 #endif
 
-#ifdef 0
+#if 0
 using int64 = __int64;
 using uint64 = unsigned __int64;
 #else
