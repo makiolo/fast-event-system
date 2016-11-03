@@ -7,6 +7,9 @@
 #include <connection.h>
 #include <sem.h>
 #include <sync.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 namespace fes {
 
@@ -136,8 +139,10 @@ protected:
 		_sem.wait();
 		while(high_resolution_clock() < t._timestamp)
 		{
+#ifndef _WIN32
 			// each 100 ms
 			usleep(100);
+#endif
 		}
 		get(t._data, gens<sizeof...(Args)>{});
 		_queue.pop_back();
