@@ -5,6 +5,8 @@ platform:
 
 install:
   - cmd: git submodule update --init --recursive
+  - cmd: pip install pyyaml
+  - cmd: pip install poster
 
 build_script:
   - cmd: mkdir release
@@ -14,4 +16,3 @@ build_script:
 
 test_script:
   - cmd: ctest . --no-compress-output --output-on-failure -T Test -C Release -V
-
