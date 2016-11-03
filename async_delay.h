@@ -7,7 +7,6 @@
 #include <connection.h>
 #include <sem.h>
 #include <sync.h>
-#include <unistd.h>
 
 namespace fes {
 
