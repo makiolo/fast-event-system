@@ -25,8 +25,8 @@ TEST(AsyncDelayTest, Test1)
 					}
 				}));
 		// lambda must received this
-		sync(fes::deltatime(2000), 5, "hello world", 11.0);
-		sync.fortime(fes::deltatime(2500));
+		sync(5, "hello world", 11.0);
+		sync.update();
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
