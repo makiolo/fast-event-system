@@ -1,7 +1,10 @@
 #include <iostream>
 #include "../async_delay.h"
+#include <gtest/gtest.h>
 
-int main(int, const char**)
+class AsyncDelayTest : testing::Test { };
+
+TEST(AsyncDelayTest, Test1)
 {
 	fes::async_delay<int, std::string, double> sync;
 	bool is_dispatched = false;
@@ -15,25 +18,19 @@ int main(int, const char**)
 					std::cout << "n = " << n << std::endl;
 					std::cout << "str = " << str << std::endl;
 					std::cout << "r = " << r << std::endl;
+					ASSERT_STRNE(str.c_str(), "kill");
 					if (str == "hello world")
 					{
 						is_dispatched = true;
-					}
-					else if (str == "kill")
-					{
-						exit(1);
 					}
 				}));
 		// lambda must received this
 		sync(fes::deltatime(2000), 5, "hello world", 11.0);
 		sync.fortime(fes::deltatime(2500));
-
-		// autodisconnection
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
 	sync.update();
 
-	return is_dispatched ? 0 : 1;
+	ASSERT_TRUE(is_dispatched);
 }
-
