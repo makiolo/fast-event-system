@@ -29,5 +29,4 @@ TEST(SyncTest, Test1)
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
-	return 0;
 }
