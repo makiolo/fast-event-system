@@ -2,9 +2,9 @@
 #include "../async_delay.h"
 #include <gtest/gtest.h>
 
-class AsyncDelayTest : testing::Test { };
+class DISABLED_AsyncDelayTest : testing::Test { };
 
-TEST(AsyncDelayTest, Test1)
+TEST(DISABLED_AsyncDelayTest, Test1)
 {
 	fes::async_delay<int, std::string, double> sync;
 	bool is_dispatched = false;
@@ -29,11 +29,9 @@ TEST(AsyncDelayTest, Test1)
 		sync.update();
 	}
 	// kill only if autodisconnection failed
-	/*
 	// TODO: exception here
 	sync(6, "kill", 12.0);
 	sync.update();
-	*/
 
 	ASSERT_TRUE(is_dispatched);
 }
