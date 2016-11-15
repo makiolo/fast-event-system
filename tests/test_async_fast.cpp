@@ -17,7 +17,7 @@ TEST(AsyncFastTest, Test1)
 					std::cout << "n = " << n << std::endl;
 					std::cout << "str = " << str << std::endl;
 					std::cout << "r = " << r << std::endl;
-					ASSERT_STRNE(str, "kill");
+					ASSERT_STRNE(str.c_str(), "kill");
 				}));
 		// lambda must received this
 		sync(5, "hello world", 11.0);
