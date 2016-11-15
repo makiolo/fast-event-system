@@ -70,8 +70,8 @@ TEST(FesTest, Test1)
 		c1.connect(p);
 		c2.connect(p);
 		p("data");
-		ASSERT_STRE(c1.get_data().c_str(), "data");
-		ASSERT_STRE(c2.get_data().c_str(), "data");
+		ASSERT_STREQ(c1.get_data().c_str(), "data");
+		ASSERT_STREQ(c2.get_data().c_str(), "data");
 	}
 }
 
@@ -85,8 +85,8 @@ TEST(FesTest, Test2)
 		c2.connect(p);
 		p("data");
 		p.update();
-		ASSERT_STRE(c1.get_data().c_str(), "data");
-		ASSERT_STRE(c2.get_data().c_str(), "data");
+		ASSERT_STREQ(c1.get_data().c_str(), "data");
+		ASSERT_STREQ(c2.get_data().c_str(), "data");
 	}
 }
 
@@ -100,8 +100,8 @@ TEST(FesTest, Test3)
 		c2.connect(p);
 		p(0, fes::deltatime(0), "data");
 		p.update();
-		ASSERT_STRE(c1.get_data().c_str(), "data");
-		ASSERT_STRE(c2.get_data().c_str(), "data");
+		ASSERT_STREQ(c1.get_data().c_str(), "data");
+		ASSERT_STREQ(c2.get_data().c_str(), "data");
 	}
 }
 
