@@ -1,7 +1,10 @@
 #include <iostream>
 #include "../async_fast.h"
+#include <gtest/gtest.h>
 
-int main(int, const char**)
+class AsyncFastTest : testing::Test { };
+
+TEST(AsyncFastTest, Test1)
 {
 	fes::async_fast<int, std::string, double> sync;
 
@@ -14,20 +17,13 @@ int main(int, const char**)
 					std::cout << "n = " << n << std::endl;
 					std::cout << "str = " << str << std::endl;
 					std::cout << "r = " << r << std::endl;
-					if (str == "kill")
-					{
-						exit(1);
-					}
+					ASSERT_STRNE(str, "kill");
 				}));
 		// lambda must received this
 		sync(5, "hello world", 11.0);
 		sync.update();
-
-		// autodisconnection
 	}
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
 	sync.update();
-
-	return 0;
 }
