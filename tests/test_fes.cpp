@@ -1,6 +1,3 @@
-// Ricardo Marmolejo Garcia
-// 15-04-2015
-// testing fes
 #include <iostream>
 #include <tuple>
 #include <functional>
@@ -14,6 +11,9 @@
 #include "../sync.h"
 #include "../async_delay.h"
 #include "../async_fast.h"
+#include <gtest/gtest.h>
+
+class FesTest : testing::Test { };
 
 template <typename TYPE = fes::sync<std::string>>
 class Producer
@@ -41,8 +41,7 @@ template <typename TYPE = fes::sync<std::string>>
 class Consumer
 {
 public:
-	Consumer()
-		: _data("waiting")
+	Consumer() : _data("waiting")
 	{
 	}
 
@@ -62,47 +61,52 @@ protected:
 	fes::connection<std::string> _conn;
 };
 
-int main()
+TEST(FesTest, Test1)
 {
+	Producer<fes::sync<std::string>> p;
+	Consumer<fes::sync<std::string>> c1;
+	Consumer<fes::sync<std::string>> c2;
 	{
-		Producer<fes::sync<std::string>> p;
-		Consumer<fes::sync<std::string>> c1;
-		Consumer<fes::sync<std::string>> c2;
-		{
-			c1.connect(p);
-			c2.connect(p);
-			p("data");
-			assert(c1.get_data() == "data");
-			assert(c2.get_data() == "data");
-		}
+		c1.connect(p);
+		c2.connect(p);
+		p("data");
+		ASSERT_STRE(c1.get_data().c_str(), "data");
+		ASSERT_STRE(c2.get_data().c_str(), "data");
 	}
-	{
-		Producer<fes::async_fast<std::string>> p;
-		Consumer<fes::async_fast<std::string>> c1;
-		Consumer<fes::async_fast<std::string>> c2;
-		{
-			c1.connect(p);
-			c2.connect(p);
-			p("data");
-			p.update();
-			assert(c1.get_data() == "data");
-			assert(c2.get_data() == "data");
-		}
-	}
-	{
-		Producer<fes::async_delay<std::string>> p;
-		Consumer<fes::async_delay<std::string>> c1;
-		Consumer<fes::async_delay<std::string>> c2;
-		{
-			c1.connect(p);
-			c2.connect(p);
-			p(0, fes::deltatime(0), "data");
-			p.update();
-			assert(c1.get_data() == "data");
-			assert(c2.get_data() == "data");
-		}
-	}
+}
 
+TEST(FesTest, Test2)
+{
+	Producer<fes::async_fast<std::string>> p;
+	Consumer<fes::async_fast<std::string>> c1;
+	Consumer<fes::async_fast<std::string>> c2;
+	{
+		c1.connect(p);
+		c2.connect(p);
+		p("data");
+		p.update();
+		ASSERT_STRE(c1.get_data().c_str(), "data");
+		ASSERT_STRE(c2.get_data().c_str(), "data");
+	}
+}
+
+TEST(FesTest, Test3)
+{
+	Producer<fes::async_delay<std::string>> p;
+	Consumer<fes::async_delay<std::string>> c1;
+	Consumer<fes::async_delay<std::string>> c2;
+	{
+		c1.connect(p);
+		c2.connect(p);
+		p(0, fes::deltatime(0), "data");
+		p.update();
+		ASSERT_STRE(c1.get_data().c_str(), "data");
+		ASSERT_STRE(c2.get_data().c_str(), "data");
+	}
+}
+
+TEST(FesTest, Test4)
+{
 	fes::async_delay<int> root;
 	fes::async_delay<int> node_a;
 	fes::async_delay<int> node_b;
@@ -115,7 +119,7 @@ int main()
 		{
 			std::cout << "A: data = " << data << std::endl;
 			called1 = true;
-			assert(data == 111);
+			ASSERT_EQ(data, 111);
 		});
 
 	static bool called2 = false;
@@ -123,7 +127,7 @@ int main()
 		{
 			std::cout << "B: data = " << data << std::endl;
 			called2 = true;
-			assert(data == 111);
+			ASSERT_EQ(data, 111);
 		});
 
 	root(0, fes::deltatime(10), 111);
@@ -135,7 +139,6 @@ int main()
 		node_a.update();
 		node_b.update();
 	}
-
-	exit(called1 && called2 ? 0 : 1);
+	ASSERT_TRUE(called1);
+	ASSERT_TRUE(called2);
 }
-
