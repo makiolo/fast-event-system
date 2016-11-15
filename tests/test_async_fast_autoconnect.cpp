@@ -1,27 +1,23 @@
 #include <iostream>
 #include "../async_fast.h"
+#include <gtest/gtest.h>
 
-int main(int, const char**)
+class AsyncFastAutoConnectTest : testing::Test { };
+
+TEST(AsyncFastAutoConnectTest, Test1)
 {
 	const int N = 9;
 	int counter = 0;
 
-	fes::async_fast<std::string> sync;
-
-	// testing autoconnect
+	fes::async_fast<void> sync;
 	sync.connect(sync);
-	sync.connect([&counter](const std::string& str)
-	{
-		std::cout << str << std::endl;
-		++counter;
-	});
+	sync.connect([&counter]() { ++counter; });
 
-	sync("autoreference");
+	sync();
 	for (int i = 0; i < N; ++i)
 	{
 		sync.get();
 	}
 
-	return (counter == N ? 0 : 1);
+	ASSERT_EQ(counter, N);
 }
-
