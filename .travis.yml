@@ -53,5 +53,6 @@ install:
   - pip install --user poster
 
 script:
+  - (cd cmaki && git pull)
+  - (cd cmaki_generator && git pull)
   - ./cmaki/run.sh
-
