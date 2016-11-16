@@ -9,6 +9,8 @@ install:
   - cmd: pip install poster
 
 build_script:
+  - cmd: cd cmaki && git pull origin master && cd ..
+  - cmd: cd cmaki_generator && git pull origin master && cd
   - cmd: mkdir release
   - cmd: cd release
   - cmd: cmake .. -DCMAKE_BUILD_TYPE=Release -DFIRST_ERROR=1 -G "Visual Studio 14 2015 Win64"
