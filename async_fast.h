@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include <atomic>
-#include <concurrentqueue/blockingconcurrentqueue.h>
+#include <fast-event-system/concurrentqueue/blockingconcurrentqueue.h>
 #include <fast-event-system/sem.h>
 #include <fast-event-system/connection.h>
 #include <fast-event-system/sync.h>
