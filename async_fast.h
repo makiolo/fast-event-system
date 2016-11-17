@@ -112,7 +112,19 @@ public:
 
 	inline std::tuple<Args...> get()
 	{
-		return _coro();
+		/*
+		if(*_coro)
+		{
+		*/
+			return (*_coro)();
+		/*
+		}
+		else
+		{
+			// exception
+			return std::tuple<Args...>();
+		}
+		*/
 	}
 
 	inline bool empty() const
