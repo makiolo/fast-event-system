@@ -54,33 +54,22 @@ class async_fast
 public:
 	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...>>;
 
-	explicit async_fast()
-		: _output()
-		, _queue()
-		, _closed(false)
-		, _coro_yield(make_coroutine_yield<std::tuple<Args...> >([](auto& yield) {
-				// yield(yield.get());
-			}))
-		, _coro_iter(make_coroutine_iter<std::tuple<Args...> >([](auto& iter) {
-				// if(*iter)
-				// {
-				// 	auto t = (*iter)();
-				// }
-			}))
-	{ ; }
-
-	explicit async_fast(size_t initial_allocation)
+	explicit async_fast(size_t initial_allocation = 6 * moodycamel::ConcurrentQueue::BLOCK_SIZE)
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
-		, _coro_yield(make_coroutine_yield<std::tuple<Args...> >([](auto& yield) {
-				// yield(yield.get());
-			}))
-		, _coro_iter(make_coroutine_iter<std::tuple<Args...> >([](auto& iter) {
-				// if(*iter)
-				// {
-				// 	auto t = (*iter)();
-				// }
+		, _coro(make_coroutine_yield<std::tuple<Args...> >([this, &_queue, &_sem, &_closed](auto& yield) {
+				while(!_closed)
+				{
+					_sem.wait();
+				
+					// read from queue
+					std::tuple<Args...> t;
+					_queue.wait_dequeue(t);
+					this->get(t, gens<sizeof...(Args)>{});
+					
+					yield(t);
+				}
 			}))
 	{ ; }
 
@@ -91,10 +80,15 @@ public:
 
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
+	
+	void close()
+	{
+		// how close a channel
+	}
 
 	void operator()(const Args&... data)
 	{
-		_queue.enqueue(std::make_tuple(data...));	
+		_queue.enqueue(std::make_tuple(data...));
 		_sem.notify();
 	}
 
@@ -113,9 +107,19 @@ public:
 		}
 	}
 
+	auto begin()
+	{
+		return begin(_coro);
+	}
+
+	auto end()
+	{
+		return end(_coro);
+	}
+
 	inline std::tuple<Args...> get()
 	{
-		return _get();
+		return _coro();
 	}
 
 	inline bool empty() const
@@ -163,25 +167,10 @@ public:
 			});
 	}
 
-protected:
 	template <int... S>
 	inline void get(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
-	}
-
-	std::tuple<Args...> _get()
-	{
-		_sem.wait();
-	
-		// read from queue
-		std::tuple<Args...> t;
-		_queue.wait_dequeue(t);
-		get(t, gens<sizeof...(Args)>{});
-		
-		// read from coroutine
-		
-		return t;
 	}
 
 protected:
@@ -189,8 +178,7 @@ protected:
 	container_type _queue;
 	fes::semaphore _sem;
 	bool _closed;
-	coroutine_yield<std::tuple<Args...> > _coro_yield;
-	coroutine_iter<std::tuple<Args...> > _coro_iter;
+	coroutine_yield<std::tuple<Args...> > _coro;
 };
 
 }  // end namespace
