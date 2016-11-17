@@ -58,8 +58,8 @@ public:
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
-		, _coro(make_coroutine_yield<std::tuple<Args...> >([this, &_closed](auto& yield) {
-				while(!_closed)
+		, _coro(make_coroutine_yield<std::tuple<Args...> >([this](auto& yield) {
+				while(true)
 				{					
 					yield(this->_get());
 				}
