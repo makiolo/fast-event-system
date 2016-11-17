@@ -7,8 +7,6 @@ cmaki_setup()
 
 cmaki_find_package(boost-headers)
 cmaki_find_package(boost-coroutine2)
-
-include_directories(metacommon)
 cmaki2_library(fes clock.cpp PTHREADS)
 
 add_subdirectory(tests)
