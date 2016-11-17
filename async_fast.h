@@ -8,8 +8,27 @@
 #include <fast-event-system/connection.h>
 #include <fast-event-system/sync.h>
 #include <fast-event-system/method.h>
+#include <boost/coroutine2/coroutine.hpp>
 
 namespace fes {
+
+template <typename T>
+using asymm_coro = boost::coroutines2::asymmetric_coroutine<T>;
+
+template <typename T>
+using pull_type = typename asymm_coro<T>::pull_type;
+
+template <typename T>
+using yield_type = typename asymm_coro<T>::push_type;
+
+template <typename T>
+using coroutine = std::shared_ptr< pull_type<T> >;
+
+template <typename T, typename Function>
+coroutine<T> make_coroutine(Function&& f)
+{
+	return std::make_shared< pull_type<T> >(std::forward<Function>(f));
+}
 
 template <typename... Args>
 class async_delay;
@@ -30,12 +49,18 @@ public:
 		: _output()
 		, _queue()
 		, _closed(false)
+		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
+				// yield(get());
+			}))
 	{ ; }
 
 	explicit async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
+		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
+				// yield(get());
+			}))
 	{ ; }
 
 	~async_fast()
@@ -138,9 +163,9 @@ protected:
 	container_type _queue;
 	fes::semaphore _sem;
 	bool _closed;
+	coroutine<std::tuple<Args...> > _coro;
 };
 
 }  // end namespace
 
 #endif
-
