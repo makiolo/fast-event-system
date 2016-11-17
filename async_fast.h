@@ -161,17 +161,17 @@ public:
 	}
 
 	template <int... S>
-	inline void get(const std::tuple<Args...>& top, seq<S...>) const
+	inline void __get(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
 	}
 	
-	std::tuple<Args...> _get() const
+	std::tuple<Args...> _get()
 	{
 		_sem.wait();
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
-		get(t, gens<sizeof...(Args)>{});
+		__get(t, gens<sizeof...(Args)>{});
 		return t;
 	}
 
