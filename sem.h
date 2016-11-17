@@ -9,9 +9,7 @@ namespace fes {
 class semaphore
 {
 public:
-    semaphore()
-        : _len(0)
-    {}
+    explicit semaphore(unsigned long len = 0) : _len(len) { ; }
 
     void notify()
     {

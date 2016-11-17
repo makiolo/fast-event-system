@@ -2,7 +2,7 @@
 #define _CONNECTION_H_
 
 #include <memory>
-#include <internal_connection.h>
+#include <fast-event-system/internal_connection.h>
 
 namespace fes {
 

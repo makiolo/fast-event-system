@@ -1,7 +1,7 @@
 #ifndef _CLOCK_H_
 #define _CLOCK_H_
 
-#include "api.h"
+#include <fast-event-system/api.h>
 #include <chrono>
 
 namespace fes {
@@ -19,9 +19,9 @@ using deltatime = double;
 
 #else  // gcc, clang ...
 
-// using clock_t = std::chrono::high_resolution_clock;
+using clock_t = std::chrono::high_resolution_clock;
 // using clock_t = std::chrono::steady_clock;
-using clock_t = std::chrono::system_clock;
+// using clock_t = std::chrono::system_clock;
 //
 using marktime = clock_t::time_point;
 using deltatime = std::chrono::milliseconds;

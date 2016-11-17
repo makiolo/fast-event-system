@@ -3,7 +3,7 @@
 
 #include <atomic>
 #include <functional>
-#include <method.h>
+#include <fast-event-system/method.h>
 
 namespace fes {
 

@@ -3,13 +3,13 @@
 
 #include <vector>
 #include <algorithm>
-#include <message.h>
-#include <connection.h>
-#include <sem.h>
-#include <sync.h>
 #ifndef _WIN32
 #include <unistd.h>
 #endif
+#include <fast-event-system/message.h>
+#include <fast-event-system/connection.h>
+#include <fast-event-system/sem.h>
+#include <fast-event-system/sync.h>
 
 namespace fes {
 
@@ -22,11 +22,11 @@ class async_delay
 public:
 	using container_type = std::vector<message<Args...>>;
 
-	async_delay()
+	explicit async_delay()
         : _output()
         , _queue()
     {
-
+		;
     }
 
 	~async_delay()

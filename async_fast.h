@@ -3,11 +3,11 @@
 
 #include <tuple>
 #include <atomic>
-#include <sem.h>
 #include <concurrentqueue/blockingconcurrentqueue.h>
-#include <connection.h>
-#include <sync.h>
-#include <method.h>
+#include <fast-event-system/sem.h>
+#include <fast-event-system/connection.h>
+#include <fast-event-system/sync.h>
+#include <fast-event-system/method.h>
 
 namespace fes {
 
@@ -26,13 +26,13 @@ class async_fast
 public:
 	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...>>;
 
-	async_fast()
+	explicit async_fast()
 		: _output()
 		, _queue()
 		, _closed(false)
 	{ ; }
 
-	async_fast(size_t initial_allocation)
+	explicit async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
