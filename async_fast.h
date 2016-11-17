@@ -58,17 +58,10 @@ public:
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
-		, _coro(make_coroutine_yield<std::tuple<Args...> >([this, &_queue, &_sem, &_closed](auto& yield) {
+		, _coro(make_coroutine_yield<std::tuple<Args...> >([this, &_closed](auto& yield) {
 				while(!_closed)
-				{
-					_sem.wait();
-				
-					// read from queue
-					std::tuple<Args...> t;
-					_queue.wait_dequeue(t);
-					this->get(t, gens<sizeof...(Args)>{});
-					
-					yield(t);
+				{					
+					yield(this->_get());
 				}
 			}))
 	{ ; }
@@ -171,6 +164,15 @@ public:
 	inline void get(const std::tuple<Args...>& top, seq<S...>) const
 	{
 		_output(std::get<S>(top)...);
+	}
+	
+	std::tuple<Args...> _get() const
+	{
+		_sem.wait();
+		std::tuple<Args...> t;
+		_queue.wait_dequeue(t);
+		get(t, gens<sizeof...(Args)>{});
+		return t;
 	}
 
 protected:
