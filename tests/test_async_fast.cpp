@@ -27,3 +27,11 @@ TEST(AsyncFastTest, Test1)
 	sync(6, "kill", 12.0);
 	sync.update();
 }
+
+TEST(AsyncFastTest, Test2)
+{
+	fes::async_fast<int> ch;
+	ch(1);
+	ch(2);
+	ch(3);
+}
