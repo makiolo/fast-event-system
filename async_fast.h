@@ -50,8 +50,7 @@ public:
 		, _queue()
 		, _closed(false)
 		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				std::tuple<Args...> t = yield.get();
-				yield(t);
+				yield(yield.get());
 			}))
 	{ ; }
 
@@ -60,8 +59,7 @@ public:
 		, _queue(initial_allocation)
 		, _closed(false)
 		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				std::tuple<Args...> t = yield.get();
-				yield(t);
+				yield(yield.get());
 			}))
 	{ ; }
 
@@ -78,7 +76,7 @@ public:
 		_queue.enqueue(std::make_tuple(data...));
 		
 		// send to coroutine
-		_coro(std::make_tuple(data...));
+		(*_coro)(std::make_tuple(data...));
 		
 		_sem.notify();
 	}
