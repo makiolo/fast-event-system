@@ -13,21 +13,30 @@
 namespace fes {
 
 template <typename T>
-using asymm_coro = boost::coroutines2::asymmetric_coroutine<T>;
+using asymm_coroutine = boost::coroutines2::asymmetric_coroutine<T>;
 
 template <typename T>
-using pull_type = typename asymm_coro<T>::pull_type;
+using iter_type = typename asymm_coroutine<T>::pull_type;
 
 template <typename T>
-using yield_type = typename asymm_coro<T>::push_type;
+using yield_type = typename asymm_coroutine<T>::push_type;
 
 template <typename T>
-using coroutine = std::shared_ptr< pull_type<T> >;
+using coroutine_yield = std::shared_ptr< iter_type<T> >;
+
+template <typename T>
+using coroutine_iter = std::shared_ptr< yield_type<T> >;
 
 template <typename T, typename Function>
-coroutine<T> make_coroutine(Function&& f)
+coroutine_yield<T> make_coroutine_yield(Function&& f)
 {
-	return std::make_shared< pull_type<T> >(std::forward<Function>(f));
+	return std::make_shared< iter_type<T> >(std::forward<Function>(f));
+}
+
+template <typename T, typename Function>
+coroutine_iter<T> make_coroutine_iter(Function&& f)
+{
+	return std::make_shared< yield_type<T> >(std::forward<Function>(f));
 }
 
 template <typename... Args>
@@ -49,8 +58,14 @@ public:
 		: _output()
 		, _queue()
 		, _closed(false)
-		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				yield(yield.get());
+		, _coro_yield(make_coroutine_yield<std::tuple<Args...> >([](auto& yield) {
+				// yield(yield.get());
+			}))
+		, _coro_iter(make_coroutine_iter<std::tuple<Args...> >([](auto& iter) {
+				// if(*iter)
+				// {
+				// 	auto t = (*iter)();
+				// }
 			}))
 	{ ; }
 
@@ -58,8 +73,14 @@ public:
 		: _output()
 		, _queue(initial_allocation)
 		, _closed(false)
-		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				yield(yield.get());
+		, _coro_yield(make_coroutine_yield<std::tuple<Args...> >([](auto& yield) {
+				// yield(yield.get());
+			}))
+		, _coro_iter(make_coroutine_iter<std::tuple<Args...> >([](auto& iter) {
+				// if(*iter)
+				// {
+				// 	auto t = (*iter)();
+				// }
 			}))
 	{ ; }
 
@@ -73,11 +94,7 @@ public:
 
 	void operator()(const Args&... data)
 	{
-		_queue.enqueue(std::make_tuple(data...));
-		
-		// send to coroutine
-		(*_coro)(std::make_tuple(data...));
-		
+		_queue.enqueue(std::make_tuple(data...));	
 		_sem.notify();
 	}
 
@@ -156,7 +173,7 @@ protected:
 	std::tuple<Args...> _get()
 	{
 		_sem.wait();
-		
+	
 		// read from queue
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
@@ -172,7 +189,8 @@ protected:
 	container_type _queue;
 	fes::semaphore _sem;
 	bool _closed;
-	coroutine<std::tuple<Args...> > _coro;
+	coroutine_yield<std::tuple<Args...> > _coro_yield;
+	coroutine_iter<std::tuple<Args...> > _coro_iter;
 };
 
 }  // end namespace
