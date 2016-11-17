@@ -116,7 +116,8 @@ public:
 		if(*_coro)
 		{
 		*/
-			return (*_coro)();
+			//return (*_coro)();
+			return _get();
 		/*
 		}
 		else
