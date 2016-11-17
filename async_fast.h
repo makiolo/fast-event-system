@@ -78,7 +78,7 @@ public:
 		_queue.enqueue(std::make_tuple(data...));
 		
 		// send to coroutine
-		_coros(std::make_tuple(data...));
+		_coro(std::make_tuple(data...));
 		
 		_sem.notify();
 	}
