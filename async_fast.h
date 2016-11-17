@@ -50,7 +50,8 @@ public:
 		, _queue()
 		, _closed(false)
 		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				// yield(get());
+				std::tuple<Args...> t = yield.get();
+				yield(t);
 			}))
 	{ ; }
 
@@ -59,7 +60,8 @@ public:
 		, _queue(initial_allocation)
 		, _closed(false)
 		, _coro(make_coroutine<std::tuple<Args...> >([](auto& yield) {
-				// yield(get());
+				std::tuple<Args...> t = yield.get();
+				yield(t);
 			}))
 	{ ; }
 
@@ -74,6 +76,10 @@ public:
 	void operator()(const Args&... data)
 	{
 		_queue.enqueue(std::make_tuple(data...));
+		
+		// send to coroutine
+		_coros(std::make_tuple(data...));
+		
 		_sem.notify();
 	}
 
@@ -152,9 +158,14 @@ protected:
 	std::tuple<Args...> _get()
 	{
 		_sem.wait();
+		
+		// read from queue
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
 		get(t, gens<sizeof...(Args)>{});
+		
+		// read from coroutine
+		
 		return t;
 	}
 
