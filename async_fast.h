@@ -9,6 +9,7 @@
 #include <fast-event-system/sync.h>
 #include <fast-event-system/method.h>
 #include <boost/coroutine2/coroutine.hpp>
+#include <boost/filesystem.hpp>
 
 namespace fes {
 
@@ -29,6 +30,9 @@ template <typename T>
 //using iterator = std::shared_ptr< yield_type<T> >;
 using iterator = yield_type<T>;
 
+template <typename T>
+using link = boost::function<void(fes::iter_type<T>&, fes::yield_type<T>&)>;
+
 template <typename T, typename Function>
 generator<T> make_generator(Function&& f)
 {
@@ -41,6 +45,104 @@ iterator<T> make_iterator(Function&& f)
 {
 	//return std::make_shared< yield_type<T> >(std::forward<Function>(f));
 	return yield_type<T>(std::forward<Function>(f));
+}
+
+template <typename T>
+class pipeline
+{
+public:
+	using in = fes::iter_type<T>;
+	using out = fes::yield_type<T>;
+	using link = fes::link<T>;
+
+	template <typename Function>
+	pipeline(Function&& f)
+	{
+		std::vector<generator<T> > coros;
+		coros.emplace_back(fes::make_generator<T>( [](auto&) { ; } ));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(coros.back().get()), _1)));
+	}
+
+	template <typename Function, typename ... Functions>
+	pipeline(Function&& f, Functions&& ... fs)
+	{
+		std::vector<generator<T> > coros;
+		coros.emplace_back(fes::make_generator<T>([](auto&) { ; }));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(coros.back().get()), _1)));
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+
+protected:
+	template <typename Function>
+	void _add(std::vector<generator<T> >& coros, Function&& f)
+	{
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(coros.back().get()), _1)));
+	}
+
+	template <typename Function, typename ... Functions>
+	void _add(std::vector<generator<T> >& coros, Function&& f, Functions&& ... fs)
+	{
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(coros.back().get()), _1)));
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+};
+
+using cmd = fes::pipeline<std::string>;
+
+cmd::link cat()
+{
+	return [](cmd::in& source, cmd::out& yield)
+	{
+		std::string line;
+		for (auto s : source)
+		{
+			std::ifstream input(s);
+			while (std::getline(input, line))
+			{
+				yield(line);
+			}
+		}
+	};
+}
+
+void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files)
+{
+	namespace fs = boost::filesystem;
+	if(fs::is_directory(p))
+	{
+		for (auto f = fs::directory_iterator(p); f != fs::directory_iterator(); ++f)
+		{
+			if(fs::is_directory(f->path()))
+			{
+				find_tree(f->path(), files);
+			}
+			else
+			{
+				files.emplace_back(f->path().string());
+			}
+		}
+	}
+	else
+	{
+		files.emplace_back(p.string());
+	}
+}
+
+cmd::link find(const std::string& dir)
+{
+	return [dir](cmd::in&, cmd::out& yield)
+	{
+		boost::filesystem::path p(dir);
+		if (boost::filesystem::exists(p))
+		{
+			std::vector<std::string> files;
+			find_tree(p, files);
+			for(auto& f : files)
+			{
+				yield(f);
+			}
+		}
+	};
 }
 
 template <typename... Args>
@@ -74,7 +176,9 @@ public:
 				}
 				*/
 			}))
-	{ ; }
+	{
+		cmd(find("../.."), cat());
+	}
 
 	~async_fast()
 	{
