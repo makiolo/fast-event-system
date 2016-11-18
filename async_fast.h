@@ -19,7 +19,7 @@ template <typename T>
 using asymm_coroutine = boost::coroutines2::asymmetric_coroutine<T>;
 
 template <typename T>
-using iter_type = const typename asymm_coroutine<T>::pull_type;
+using iter_type = typename asymm_coroutine<T>::pull_type;
 
 template <typename T>
 using yield_type = typename asymm_coroutine<T>::push_type;
@@ -62,7 +62,7 @@ public:
 	{
 		std::vector<generator<T> > coros;
 		coros.emplace_back(fes::make_generator<T>( [](auto&) { ; } ));
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
@@ -70,7 +70,7 @@ public:
 	{
 		std::vector<generator<T> > coros;
 		coros.emplace_back(fes::make_generator<T>([](auto&) { ; }));
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
 	}
 
@@ -78,13 +78,13 @@ protected:
 	template <typename Function>
 	void _add(std::vector<generator<T> >& coros, Function&& f)
 	{
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
 	void _add(std::vector<generator<T> >& coros, Function&& f, Functions&& ... fs)
 	{
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
 	}
 };
