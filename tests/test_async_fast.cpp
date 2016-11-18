@@ -28,10 +28,39 @@ TEST(AsyncFastTest, Test1)
 	sync.update();
 }
 
-TEST(AsyncFastTest, Test2)
+TEST(AsyncFastTest, Test_fibonacci_n4134)
 {
-	fes::async_fast<int> ch;
-	ch(1);
-	ch(2);
-	ch(3);
+	/*
+	// n4134: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4134.pdf
+	generator<int> fib(int n)
+	{
+		int a = 0;
+		int b = 1;
+		while (n-- > 0)
+		{
+			yield a;
+			auto next = a + b;
+			a = b;
+			b = next;
+		}
+	}
+	*/
+	
+	fes::generator<int> fib = [](int n) { return fes::make_generator<int>([n](auto& yield) {
+		int a = 0;
+		int b = 1;
+		while (n-- > 0)
+		{
+			yield (a);
+			auto next = a + b;
+			a = b;
+			b = next;
+		}
+	})};
+	
+	for (auto v : fib(35)) {
+		std::cout << v << std::endl;
+		if (v > 10)
+			break;
+	}
 }
