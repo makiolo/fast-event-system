@@ -9,6 +9,8 @@
 #include <fast-event-system/sync.h>
 #include <fast-event-system/method.h>
 #include <boost/coroutine2/coroutine.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <boost/filesystem.hpp>
 
 namespace fes {
