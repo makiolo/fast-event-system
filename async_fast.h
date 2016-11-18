@@ -19,34 +19,34 @@ template <typename T>
 using asymm_coroutine = boost::coroutines2::asymmetric_coroutine<T>;
 
 template <typename T>
-using iter_type = typename asymm_coroutine<T>::pull_type;
+using iter_type = const typename asymm_coroutine<T>::pull_type;
 
 template <typename T>
 using yield_type = typename asymm_coroutine<T>::push_type;
 
 template <typename T>
-//using generator = std::shared_ptr< iter_type<T> >;
-using generator = iter_type<T>;
+using generator = std::shared_ptr< iter_type<T> >;
+//using generator = iter_type<T>;
 
 template <typename T>
-//using iterator = std::shared_ptr< yield_type<T> >;
-using iterator = yield_type<T>;
+using iterator = std::shared_ptr< yield_type<T> >;
+//using iterator = yield_type<T>;
 
 template <typename T>
-using link = boost::function<void(const fes::iter_type<T>&, fes::yield_type<T>&)>;
+using link = boost::function<void(fes::iter_type<T>&, fes::yield_type<T>&)>;
 
 template <typename T, typename Function>
 generator<T> make_generator(Function&& f)
 {
-	//return std::make_shared< iter_type<T> >(std::forward<Function>(f));
-	return iter_type<T>(std::forward<Function>(f));
+	return std::make_shared< iter_type<T> >(std::forward<Function>(f));
+	//return iter_type<T>(std::forward<Function>(f));
 }
 
 template <typename T, typename Function>
 iterator<T> make_iterator(Function&& f)
 {
-	//return std::make_shared< yield_type<T> >(std::forward<Function>(f));
-	return yield_type<T>(std::forward<Function>(f));
+	return std::make_shared< yield_type<T> >(std::forward<Function>(f));
+	//return yield_type<T>(std::forward<Function>(f));
 }
 
 template <typename T>
@@ -62,7 +62,7 @@ public:
 	{
 		std::vector<generator<T> > coros;
 		coros.emplace_back(fes::make_generator<T>( [](auto&) { ; } ));
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
@@ -70,7 +70,7 @@ public:
 	{
 		std::vector<generator<T> > coros;
 		coros.emplace_back(fes::make_generator<T>([](auto&) { ; }));
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
 	}
 
@@ -78,13 +78,13 @@ protected:
 	template <typename Function>
 	void _add(std::vector<generator<T> >& coros, Function&& f)
 	{
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
 	void _add(std::vector<generator<T> >& coros, Function&& f, Functions&& ... fs)
 	{
-		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::cref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
 	}
 };
@@ -93,7 +93,7 @@ using cmd = fes::pipeline<std::string>;
 
 cmd::link cat()
 {
-	return [](const cmd::in& source, cmd::out& yield)
+	return [](cmd::in& source, cmd::out& yield)
 	{
 		std::string line;
 		for (const auto s : source)
@@ -132,7 +132,7 @@ void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files
 
 cmd::link find(const std::string& dir)
 {
-	return [dir](const cmd::in&, cmd::out& yield)
+	return [dir](cmd::in&, cmd::out& yield)
 	{
 		boost::filesystem::path p(dir);
 		if (boost::filesystem::exists(p))
