@@ -46,10 +46,8 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 	}
 	*/
 	
-	auto fib = [](int n_) {
-		return fes::make_generator<int>([n_](auto& yield) {
-			int n = n_;
-			//
+	auto fib = [](int n) {
+		return fes::make_generator<int>([n](auto& yield) mutable {
 			int a = 0;
 			int b = 1;
 			while (n-- > 0)
@@ -59,7 +57,6 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 				a = b;
 				b = next;
 			}
-			//
 		});
 	};
 	
