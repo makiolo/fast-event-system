@@ -22,21 +22,25 @@ template <typename T>
 using yield_type = typename asymm_coroutine<T>::push_type;
 
 template <typename T>
-using generator = std::shared_ptr< iter_type<T> >;
+//using generator = std::shared_ptr< iter_type<T> >;
+using generator = iter_type<T>;
 
 template <typename T>
-using iterator = std::shared_ptr< yield_type<T> >;
+//using iterator = std::shared_ptr< yield_type<T> >;
+using iterator = yield_type<T>;
 
 template <typename T, typename Function>
 generator<T> make_generator(Function&& f)
 {
-	return std::make_shared< iter_type<T> >(std::forward<Function>(f));
+	//return std::make_shared< iter_type<T> >(std::forward<Function>(f));
+	return iter_type<T>(std::forward<Function>(f));
 }
 
 template <typename T, typename Function>
 iterator<T> make_iterator(Function&& f)
 {
-	return std::make_shared< yield_type<T> >(std::forward<Function>(f));
+	//return std::make_shared< yield_type<T> >(std::forward<Function>(f));
+	return yield_type<T>(std::forward<Function>(f));
 }
 
 template <typename... Args>
