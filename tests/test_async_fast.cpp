@@ -60,7 +60,7 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 		});
 	};
 	
-	for (auto& v : fib(35))
+	for (auto& v : *fib(35).get())
 	{
 		std::cout << v << std::endl;
 		if (v > 10)
