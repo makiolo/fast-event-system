@@ -19,42 +19,42 @@ template <typename T>
 using asymm_coroutine = boost::coroutines2::asymmetric_coroutine<T>;
 
 template <typename T>
-using iter_type = typename asymm_coroutine<T>::pull_type;
+using pull_type = typename asymm_coroutine<T>::pull_type;
 
 template <typename T>
-using yield_type = typename asymm_coroutine<T>::push_type;
+using push_type = typename asymm_coroutine<T>::push_type;
 
 template <typename T>
-using generator = std::shared_ptr< iter_type<T> >;
-//using generator = iter_type<T>;
+using generator = std::shared_ptr< pull_type<T> >;
+//using generator = pull_type<T>;
 
 template <typename T>
-using iterator = std::shared_ptr< yield_type<T> >;
-//using iterator = yield_type<T>;
+using iterator = std::shared_ptr< push_type<T> >;
+//using iterator = push_type<T>;
 
 template <typename T>
-using link = boost::function<void(fes::iter_type<T>&, fes::yield_type<T>&)>;
+using link = boost::function<void(fes::pull_type<T>&, fes::push_type<T>&)>;
 
 template <typename T, typename Function>
 generator<T> make_generator(Function&& f)
 {
-	return std::make_shared< iter_type<T> >(std::forward<Function>(f));
-	//return iter_type<T>(std::forward<Function>(f));
+	return std::make_shared< pull_type<T> >(std::forward<Function>(f));
+	//return pull_type<T>(std::forward<Function>(f));
 }
 
 template <typename T, typename Function>
 iterator<T> make_iterator(Function&& f)
 {
-	return std::make_shared< yield_type<T> >(std::forward<Function>(f));
-	//return yield_type<T>(std::forward<Function>(f));
+	return std::make_shared< push_type<T> >(std::forward<Function>(f));
+	//return push_type<T>(std::forward<Function>(f));
 }
 
 template <typename T>
 class pipeline
 {
 public:
-	using in = fes::iter_type<T>;
-	using out = fes::yield_type<T>;
+	using in = fes::pull_type<T>;
+	using out = fes::push_type<T>;
 	using link = fes::link<T>;
 
 	template <typename Function>

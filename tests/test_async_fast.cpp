@@ -45,25 +45,24 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 		}
 	}
 	*/
-	
-	auto fib = [](int n) {
-		return fes::make_generator<int>([n](auto& yield) mutable {
+
+	fes::pull_type<int> fib([&](fes::push_type<int>& yield) {
+			int n = 35;
 			int a = 0;
 			int b = 1;
 			while (n-- > 0)
 			{
-				yield(a);
+				yield (a);
 				auto next = a + b;
 				a = b;
 				b = next;
 			}
-		});
-	};
-	
-	for (auto& v : *(fib(35)))
-	{
+	});
+
+	for (auto v : fib) {
 		std::cout << v << std::endl;
 		if (v > 10)
 			break;
 	}
 }
+
