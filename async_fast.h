@@ -96,7 +96,7 @@ cmd::link cat()
 	return [](const cmd::in& source, cmd::out& yield)
 	{
 		std::string line;
-		for (auto s : source)
+		for (const auto s : source)
 		{
 			std::ifstream input(s);
 			while (std::getline(input, line))
