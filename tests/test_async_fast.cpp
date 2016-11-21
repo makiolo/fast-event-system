@@ -60,7 +60,7 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 						b = next;
 					}
 				}
-			);
+			)
 		);
 	};
 	auto&& fib35 = fib(35);
