@@ -46,20 +46,19 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 	}
 	*/
 
-	fes::pull_type<int> fib([&](fes::push_type<int>& yield) {
-			int n = 35;
-			int a = 0;
-			int b = 1;
-			while (n-- > 0)
-			{
-				yield (a);
-				auto next = a + b;
-				a = b;
-				b = next;
-			}
-	});
+	auto fib = [](int n) mutable { return [&](auto& yield) {
+		int a = 0;
+		int b = 1;
+		while (n-- > 0)
+		{
+			yield (a);
+			auto next = a + b;
+			a = b;
+			b = next;
+		}
+	}};
 
-	for (auto v : fib) {
+	for (auto v : fib(35)) {
 		std::cout << v << std::endl;
 		if (v > 10)
 			break;
