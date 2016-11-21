@@ -56,7 +56,7 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 			a = b;
 			b = next;
 		}
-	}};
+	};};
 
 	for (auto v : fib(35)) {
 		std::cout << v << std::endl;
