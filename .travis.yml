@@ -55,4 +55,4 @@ install:
 script:
   - (cd cmaki && git pull origin master)
   - (cd cmaki_generator && git pull origin master)
-  - ./cmaki/run.sh
+  - ./cmaki/run.sh $MODE
