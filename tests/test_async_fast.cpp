@@ -159,7 +159,9 @@ go::link link2()
 TEST(AsyncFastTest, goroutines_or_something_like_that)
 {
 	go(link1(), link2());
+	/*
 	go(1);
 	go(3);
 	go(7);
+	*/
 }
