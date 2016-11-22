@@ -72,8 +72,7 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 
 TEST(AsyncFastTest, Test_recursive_n4134)
 {
-	std::function<fes::pull_type<int>(int,int)> range;
-	range = [](int a_, int b_) -> fes::pull_type<int> {
+	std::function<fes::pull_type<int>(int,int)> range = [&range](int a_, int b_) -> fes::pull_type<int> {
 		return fes::pull_type<int>(
 			[&](fes::push_type<int>& yield) {
 				int a = a_;
