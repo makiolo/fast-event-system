@@ -87,3 +87,9 @@ TEST(AsyncFastTest, Test3)
 	fib20(3);
 	fib20(7);
 }
+
+TEST(AsyncFastTest, Test4)
+{
+	using namespace fes;
+	cmd(find("../.."), cat());
+}
