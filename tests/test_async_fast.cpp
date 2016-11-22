@@ -159,7 +159,10 @@ go::link link2()
 
 TEST(AsyncFastTest, goroutines_or_something_like_that)
 {
-	go(link1(), link2());
+	go g(link1(), link2());
+	g(100);
+	g(200);
+	g(300);
 }
 */
 
@@ -167,9 +170,9 @@ using go = fes::pipeline<int>;
 
 go::link link1()
 {
-	return [](go::in& source, go::out& yield)
+	return [](go::in&, go::out& yield)
 	{
-		for (auto s : source)
+		for (auto s : {100,200,300})
 		{
 			std::cout << "I am link1 and push " << s << std::endl;
 			yield(s);
