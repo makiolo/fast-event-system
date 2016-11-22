@@ -89,6 +89,46 @@ protected:
 	}
 };
 
+template <typename T>
+class pipeline_iter
+{
+public:
+	using in = fes::pull_type<T>;
+	using out = fes::push_type<T>;
+	using link = fes::link<T>;
+
+	template <typename Function>
+	pipeline_iter(Function&& f)
+	{
+		std::vector<iterator<T> > coros;
+		coros.emplace_back(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		coros.emplace_back(fes::make_iterator<T>( [](auto&) { ; } ));
+	}
+
+	template <typename Function, typename ... Functions>
+	pipeline_iter(Function&& f, Functions&& ... fs)
+	{
+		std::vector<iterator<T> > coros;
+		coros.emplace_back(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		coros.emplace_back(fes::make_iterator<T>([](auto&) { ; }));
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+
+protected:
+	template <typename Function>
+	void _add(std::vector<iterator<T> >& coros, Function&& f)
+	{
+		coros.emplace_back(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+	}
+
+	template <typename Function, typename ... Functions>
+	void _add(std::vector<iterator<T> >& coros, Function&& f, Functions&& ... fs)
+	{
+		coros.emplace_back(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		_add(coros, std::forward<Functions>(fs)...);
+	}
+};
+	
 using cmd = fes::pipeline<std::string>;
 
 cmd::link cat()
