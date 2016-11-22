@@ -89,9 +89,13 @@ TEST(AsyncFastTest, Test_recursive_n4134)
 
 				auto mid = a + n / 2;
 
+				// original proposal is:
+				//     yield range(a, mid)
+				//     yield range(mid, b)
+
 				for (auto i : range(a, mid))
 					yield (i);
-				for (auto i : range(mid, b))			
+				for (auto i : range(mid, b))
 					yield (i);
 				///////////////////////
 			}
