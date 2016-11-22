@@ -179,7 +179,7 @@ public:
 				*/
 			}))
 	{
-		cmd(find("../.."), cat());
+		;
 	}
 
 	~async_fast()
