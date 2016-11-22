@@ -91,5 +91,5 @@ TEST(AsyncFastTest, Test3)
 TEST(AsyncFastTest, Test4)
 {
 	using namespace fes;
-	cmd(find("../.."), cat());
+	cmd(find("../../.."), cat());
 }
