@@ -104,6 +104,10 @@ public:
 		std::deque<iterator<T> > coros;
 		coros.emplace_front(fes::make_iterator<T>( [](auto&) { ; } ));
 		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		
+		*coros.front()(60);
+		*coros.front()(666);
+		*coros.front()(7);
 	}
 
 	template <typename Function, typename ... Functions>
@@ -113,8 +117,12 @@ public:
 		coros.emplace_front(fes::make_iterator<T>([](auto&) { ; }));
 		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
 		_add(coros, std::forward<Functions>(fs)...);
+		
+		*coros.front()(60);
+		*coros.front()(666);
+		*coros.front()(7);
 	}
-
+	
 protected:
 	template <typename Function>
 	void _add(std::deque<iterator<T> >& coros, Function&& f)
