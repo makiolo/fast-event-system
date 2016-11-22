@@ -69,3 +69,21 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 			break;
 	}
 }
+
+TEST(AsyncFastTest, Test3)
+{
+	auto fib = [](int n) {
+		return fes::push_type<int>(
+			[&](fes::pull_type<int>& source) {
+				for (auto& s : source)
+				{
+					std::cout << "<fib(" << n << ")> received: " << s << std::endl;
+				}
+			}
+		);
+	};
+	auto fib20 = fib(20);
+	fib20(1);
+	fib20(3);
+	fib20(7);
+}
