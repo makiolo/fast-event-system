@@ -102,25 +102,17 @@ public:
 	pipeline_iter(Function&& f)
 	{
 		std::deque<iterator<T> > coros;
-		coros.emplace_front(fes::make_iterator<T>( [](auto&) { ; } ));
+		coros.emplace_front(fes::make_iterator<T>([](auto& source) { for(auto& v: source) { ; }; }));
 		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
-		
-		*coros.front()(60);
-		*coros.front()(666);
-		*coros.front()(7);
 	}
 
 	template <typename Function, typename ... Functions>
 	pipeline_iter(Function&& f, Functions&& ... fs)
 	{
 		std::deque<iterator<T> > coros;
-		coros.emplace_front(fes::make_iterator<T>([](auto&) { ; }));
+		coros.emplace_front(fes::make_iterator<T>([](auto& source) { for(auto& v: source) { ; }; }));
 		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
 		_add(coros, std::forward<Functions>(fs)...);
-		
-		*coros.front()(60);
-		*coros.front()(666);
-		*coros.front()(7);
 	}
 	
 protected:
