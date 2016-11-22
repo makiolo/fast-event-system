@@ -70,6 +70,38 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 	}
 }
 
+TEST(AsyncFastTest, Test_recursive_n4134)
+{
+	auto range = [](int a_, int b_) {
+		return fes::pull_type<int>(
+			[&](fes::push_type<int>& yield) {
+				int a = a_;
+				int b = b_;
+				/////////////////////
+				auto n = b - a;
+				if (n <= 0)
+					return;
+				if (n == 1)
+				{
+					yield (a);
+					return;
+				}
+
+				auto mid = a + n / 2;
+
+				for (auto i : range(a, mid))
+					yield (i);
+				for (auto i : range(mid, b))			
+					yield (i);
+				///////////////////////
+			}
+		);
+	};
+
+	for (auto v : range(1, 100))
+		std::cout << v << std::endl;
+}
+
 TEST(AsyncFastTest, Test3)
 {
 	auto fib = [](int n) {
@@ -91,5 +123,5 @@ TEST(AsyncFastTest, Test3)
 TEST(AsyncFastTest, Test4)
 {
 	using namespace fes;
-	cmd(find("../../.."), cat());
+	cmd(find("../../../.."), cat());
 }
