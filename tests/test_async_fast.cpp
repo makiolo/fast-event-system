@@ -130,7 +130,40 @@ TEST(AsyncFastTest, Test4)
 	cmd(find("../../../.."), cat());
 }
 
+/*
 using go = fes::pipeline_iter<int>;
+
+go::link link1()
+{
+	return [](go::in& source, go::out& yield)
+	{
+		for (auto s : source)
+		{
+			std::cout << "I am link1 and push " << s << std::endl;
+			yield(s);
+		}
+	};
+}
+
+go::link link2()
+{
+	return [](go::in& source, go::out& yield)
+	{
+		for (auto s : source)
+		{
+			std::cout << "I am link2 and push " << s << std::endl;
+			yield(s);
+		}
+	};
+}
+
+TEST(AsyncFastTest, goroutines_or_something_like_that)
+{
+	go(link1(), link2());
+}
+*/
+
+using go = fes::pipeline<int>;
 
 go::link link1()
 {
