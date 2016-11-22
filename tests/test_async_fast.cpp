@@ -46,10 +46,10 @@ TEST(AsyncFastTest, Test_fibonacci_n4134)
 	}
 	*/
 
-	auto fib = [](int _n) {
+	auto fib = [](int n) {
 		return fes::pull_type<int>(
-			[&](fes::push_type<int>& yield) {
-				int n = _n;
+			[n](fes::push_type<int>& yield) {
+				// int n = _n;
 				int a = 0;
 				int b = 1;
 				while (n-- > 0)
