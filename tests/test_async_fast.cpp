@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../async_fast.h"
+#include <fast-event-system/async_fast.h>
 #include <gtest/gtest.h>
 
 class AsyncFastTest : testing::Test { };
@@ -124,12 +124,6 @@ TEST(AsyncFastTest, Test3)
 	fib20(7);
 }
 
-TEST(AsyncFastTest, Test4)
-{
-	using namespace fes;
-	cmd(find("../../../.."), cat());
-}
-
 /*
 using go = fes::pipeline_iter<int>;
 
@@ -172,7 +166,7 @@ go::link link1()
 {
 	return [](go::in&, go::out& yield)
 	{
-		for (auto s : {100,200,300})
+		for (auto& s : {100,200,300})
 		{
 			std::cout << "I am link1 and push " << s << std::endl;
 			yield(s);
@@ -184,7 +178,7 @@ go::link link2()
 {
 	return [](go::in& source, go::out& yield)
 	{
-		for (auto s : source)
+		for (auto& s : source)
 		{
 			std::cout << "I am link2 and push " << s << std::endl;
 			yield(s);
@@ -192,7 +186,16 @@ go::link link2()
 	};
 }
 
+
+go::link link3()
+{
+	return [](go::in& source, go::out&)
+	{
+		for (auto& s : source) { ; }
+	};
+}
+
 TEST(AsyncFastTest, goroutines_or_something_like_that)
 {
-	go(link1(), link2());
+	go(link1(), link2(), link3());
 }
