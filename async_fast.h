@@ -26,28 +26,24 @@ template <typename T>
 using push_type = typename asymm_coroutine<T>::push_type;
 
 template <typename T>
-using generator = std::shared_ptr< pull_type<T> >;
-//using generator = pull_type<T>;
+using pull_type_ptr = std::shared_ptr< pull_type<T> >;
 
 template <typename T>
-using iterator = std::shared_ptr< push_type<T> >;
-//using iterator = push_type<T>;
+using push_type_ptr = std::shared_ptr< push_type<T> >;
 
 template <typename T>
 using link = boost::function<void(fes::pull_type<T>&, fes::push_type<T>&)>;
 
 template <typename T, typename Function>
-generator<T> make_generator(Function&& f)
+pull_type_ptr<T> make_generator(Function&& f)
 {
 	return std::make_shared< pull_type<T> >(std::forward<Function>(f));
-	//return pull_type<T>(std::forward<Function>(f));
 }
 
 template <typename T, typename Function>
-iterator<T> make_iterator(Function&& f)
+push_type_ptr<T> make_iterator(Function&& f)
 {
 	return std::make_shared< push_type<T> >(std::forward<Function>(f));
-	//return push_type<T>(std::forward<Function>(f));
 }
 
 template <typename T>
@@ -58,7 +54,7 @@ link<T> end_link()
 		for (auto& s : source) { ; }
 	};
 }
-	
+
 template <typename T>
 class pipeline
 {
@@ -70,7 +66,7 @@ public:
 	template <typename Function>
 	pipeline(Function&& f)
 	{
-		std::vector<generator<T> > coros;
+		std::vector<pull_type_ptr<T> > coros;
 		coros.emplace_back(fes::make_generator<T>( [](auto& yield) { ; } ));
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		coros.emplace_back(fes::make_generator<T>(boost::bind(end_link<T>(), boost::ref(*coros.back().get()), _1)));
@@ -79,7 +75,7 @@ public:
 	template <typename Function, typename ... Functions>
 	pipeline(Function&& f, Functions&& ... fs)
 	{
-		std::vector<generator<T> > coros;
+		std::vector<pull_type_ptr<T> > coros;
 		coros.emplace_back(fes::make_generator<T>([](auto& yield) { ; }));
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
@@ -88,13 +84,13 @@ public:
 
 protected:
 	template <typename Function>
-	void _add(std::vector<generator<T> >& coros, Function&& f)
+	void _add(std::vector<pull_type_ptr<T> >& coros, Function&& f)
 	{
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
-	void _add(std::vector<generator<T> >& coros, Function&& f, Functions&& ... fs)
+	void _add(std::vector<pull_type_ptr<T> >& coros, Function&& f, Functions&& ... fs)
 	{
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
@@ -102,97 +98,64 @@ protected:
 };
 
 template <typename T>
-class pipeline_iter
+class channel
 {
 public:
 	using in = fes::pull_type<T>;
 	using out = fes::push_type<T>;
 	using link = fes::link<T>;
 
-	template <typename Function>
-	pipeline_iter(Function&& f)
+	channel()
 	{
-		std::deque<iterator<T> > coros;
-		coros.emplace_front(fes::make_iterator<T>([](auto& source) { for(auto& v: source) { ; }; }));
-		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		_set_tail();
+	}
+
+	template <typename Function>
+	channel(Function&& f)
+	{
+		_set_tail();
+		_add(std::forward<Function>(f));
 	}
 
 	template <typename Function, typename ... Functions>
-	pipeline_iter(Function&& f, Functions&& ... fs)
+	channel(Function&& f, Functions&& ... fs)
 	{
-		std::deque<iterator<T> > coros;
-		coros.emplace_front(fes::make_iterator<T>([](auto& source) { for(auto& v: source) { ; }; }));
-		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
-		_add(coros, std::forward<Functions>(fs)...);
+		_set_tail();
+		_add(std::forward<Function>(f), std::forward<Functions>(fs)...);
 	}
-	
+
+	template <typename Function>
+	void connect(Function&& f)
+	{
+		_add(std::forward<Function>(f));
+	}
+
+	void operator()(const T& data)
+	{
+		(*_coros.front())(data);
+	}
+
 protected:
-	template <typename Function>
-	void _add(std::deque<iterator<T> >& coros, Function&& f)
+	void _set_tail()
 	{
-		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
+		_coros.emplace_front(fes::make_iterator<T>([](auto& source) { for(auto& v: source) { ; }; }));
+	}
+
+	template <typename Function>
+	void _add(Function&& f)
+	{
+		_coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*_coros.front().get()))));
 	}
 
 	template <typename Function, typename ... Functions>
-	void _add(std::deque<iterator<T> >& coros, Function&& f, Functions&& ... fs)
+	void _add(Function&& f, Functions&& ... fs)
 	{
-		coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*coros.front().get()))));
-		_add(coros, std::forward<Functions>(fs)...);
+		_add(std::forward<Functions>(fs)...);
+		_coros.emplace_front(fes::make_iterator<T>(boost::bind(f, _1, boost::ref(*_coros.front().get()))));
 	}
+protected:
+	std::deque<push_type_ptr<T> > _coros;
 };
-	
-using cmd = fes::pipeline<std::string>;
-
-cmd::link cat()
-{
-	return [](cmd::in& source, cmd::out& yield)
-	{
-		std::string line;
-		for (const auto s : source)
-		{
-			std::ifstream input(s);
-			while (std::getline(input, line))
-			{
-				yield(line);
-			}
-		}
-	};
-}
-
-void find_tree_async(const boost::filesystem::path& p, cmd::out& yield)
-{
-	namespace fs = boost::filesystem;
-	if(fs::is_directory(p))
-	{
-		for (auto f = fs::directory_iterator(p); f != fs::directory_iterator(); ++f)
-		{
-			if(fs::is_directory(f->path()))
-			{
-				find_tree(f->path(), yield);
-			}
-			else
-			{
-				yield(f->path().string());
-			}
-		}
-	}
-	else
-	{
-		yield(p.string());
-	}
-}
-
-cmd::link find(const std::string& dir)
-{
-	return [dir](cmd::in&, cmd::out& yield)
-	{
-		boost::filesystem::path p(dir);
-		if (boost::filesystem::exists(p))
-		{
-			find_tree_async(p, yield);
-		}
-	};
-}
 
 template <typename... Args>
 class async_delay;
@@ -236,7 +199,7 @@ public:
 
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
-	
+
 	void close()
 	{
 		// how close a channel
@@ -341,7 +304,7 @@ public:
 	{
 		_output(std::get<S>(top)...);
 	}
-	
+
 	std::tuple<Args...> _get()
 	{
 		_sem.wait();
@@ -356,9 +319,10 @@ protected:
 	container_type _queue;
 	fes::semaphore _sem;
 	bool _closed;
-	generator<std::tuple<Args...> > _g;
+	pull_type_ptr<std::tuple<Args...> > _g;
 };
 
 }  // end namespace
 
 #endif
+

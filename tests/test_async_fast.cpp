@@ -102,7 +102,7 @@ TEST(AsyncFastTest, Test_recursive_n4134)
 		);
 	};
 
-	for (auto v : range(1, 100))
+	for (auto v : range(1, 10))
 		std::cout << v << std::endl;
 }
 
@@ -124,14 +124,25 @@ TEST(AsyncFastTest, Test3)
 	fib20(7);
 }
 
-/*
-using go = fes::pipeline_iter<int>;
+using cmd = fes::pipeline<int>;
 
-go::link link1()
+cmd::link generator()
 {
-	return [](go::in& source, go::out& yield)
+	return [](cmd::in&, cmd::out& yield)
 	{
-		for (auto s : source)
+		for (auto& s : {100, 200, 300})
+		{
+			std::cout << "I am generator and push " << s << std::endl;
+			yield(s);
+		}
+	};
+}
+
+cmd::link link1()
+{
+	return [](cmd::in& source, cmd::out& yield)
+	{
+		for (auto& s : source)
 		{
 			std::cout << "I am link1 and push " << s << std::endl;
 			yield(s);
@@ -139,44 +150,9 @@ go::link link1()
 	};
 }
 
-go::link link2()
+cmd::link link2()
 {
-	return [](go::in& source, go::out& yield)
-	{
-		for (auto s : source)
-		{
-			std::cout << "I am link2 and push " << s << std::endl;
-			yield(s);
-		}
-	};
-}
-
-TEST(AsyncFastTest, goroutines_or_something_like_that)
-{
-	go g(link1(), link2());
-	g(100);
-	g(200);
-	g(300);
-}
-*/
-
-using go = fes::pipeline<int>;
-
-go::link link1()
-{
-	return [](go::in&, go::out& yield)
-	{
-		for (auto& s : {100,200,300})
-		{
-			std::cout << "I am link1 and push " << s << std::endl;
-			yield(s);
-		}
-	};
-}
-
-go::link link2()
-{
-	return [](go::in& source, go::out& yield)
+	return [](cmd::in& source, cmd::out& yield)
 	{
 		for (auto& s : source)
 		{
@@ -186,7 +162,60 @@ go::link link2()
 	};
 }
 
+cmd::link link3()
+{
+	return [](cmd::in& source, cmd::out& yield)
+	{
+		for (auto& s : source)
+		{
+			std::cout << "I am link3 and push " << s << std::endl;
+			yield(s);
+		}
+	};
+}
+
+cmd::link receiver(fes::push_type<int>& r)
+{
+	return [&](cmd::in& source, cmd::out& yield)
+	{
+		for (auto& s : source)
+		{
+			// send to receiver
+			r(s);
+			// continue chaining
+			yield(s);
+		}
+	};
+}
+
 TEST(AsyncFastTest, goroutines_or_something_like_that)
 {
-	go(link1(), link2());
+	// pipeline
+	cmd(generator(), link1(), link2(), link3());
+
+	// lambda to register
+	auto l1 = [](int s) {
+		std::cout << "<fib> received: " << s << std::endl;
+	};
+	auto r = fes::push_type<int>(
+		[&](fes::pull_type<int>& source) {
+			for (auto& s : source)
+			{
+				l1(s);
+			}
+		}
+	);
+
+	// channel
+	fes::channel<int> go;
+	go.connect(link1());
+	go.connect(link2());
+	go.connect(link3());
+	go.connect(receiver(r));
+	go(1);
+	go(3);
+	go(5);
+	go(7);
+	go(9);
 }
+
