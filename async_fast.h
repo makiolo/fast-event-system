@@ -159,7 +159,7 @@ cmd::link cat()
 	};
 }
 
-void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files)
+void find_tree_async(const boost::filesystem::path& p, cmd::out& yield)
 {
 	namespace fs = boost::filesystem;
 	if(fs::is_directory(p))
@@ -168,17 +168,17 @@ void find_tree(const boost::filesystem::path& p, std::vector<std::string>& files
 		{
 			if(fs::is_directory(f->path()))
 			{
-				find_tree(f->path(), files);
+				find_tree(f->path(), yield);
 			}
 			else
 			{
-				files.emplace_back(f->path().string());
+				yield(f->path().string());
 			}
 		}
 	}
 	else
 	{
-		files.emplace_back(p.string());
+		yield(p.string());
 	}
 }
 
@@ -189,12 +189,7 @@ cmd::link find(const std::string& dir)
 		boost::filesystem::path p(dir);
 		if (boost::filesystem::exists(p))
 		{
-			std::vector<std::string> files;
-			find_tree(p, files);
-			for(auto& f : files)
-			{
-				yield(f);
-			}
+			find_tree_async(p, yield);
 		}
 	};
 }
