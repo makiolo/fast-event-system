@@ -51,6 +51,15 @@ iterator<T> make_iterator(Function&& f)
 }
 
 template <typename T>
+link<T> end_link()
+{
+	return [](fes::pull_type<T>& source, fes::push_type<T>&)
+	{
+		for (auto& s : source) { ; }
+	};
+}
+	
+template <typename T>
 class pipeline
 {
 public:
@@ -62,17 +71,19 @@ public:
 	pipeline(Function&& f)
 	{
 		std::vector<generator<T> > coros;
-		coros.emplace_back(fes::make_generator<T>( [](auto&) { ; } ));
+		coros.emplace_back(fes::make_generator<T>( [](auto& yield) { ; } ));
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
+		coros.emplace_back(fes::make_generator<T>(boost::bind(end_link, boost::ref(*coros.back().get()), _1)));
 	}
 
 	template <typename Function, typename ... Functions>
 	pipeline(Function&& f, Functions&& ... fs)
 	{
 		std::vector<generator<T> > coros;
-		coros.emplace_back(fes::make_generator<T>([](auto&) { ; }));
+		coros.emplace_back(fes::make_generator<T>([](auto& yield) { ; }));
 		coros.emplace_back(fes::make_generator<T>(boost::bind(f, boost::ref(*coros.back().get()), _1)));
 		_add(coros, std::forward<Functions>(fs)...);
+		coros.emplace_back(fes::make_generator<T>(boost::bind(end_link, boost::ref(*coros.back().get()), _1)));
 	}
 
 protected:
