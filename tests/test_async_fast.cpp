@@ -186,16 +186,7 @@ go::link link2()
 	};
 }
 
-
-go::link link3()
-{
-	return [](go::in& source, go::out&)
-	{
-		for (auto& s : source) { ; }
-	};
-}
-
 TEST(AsyncFastTest, goroutines_or_something_like_that)
 {
-	go(link1(), link2(), link3());
+	go(link1(), link2());
 }
