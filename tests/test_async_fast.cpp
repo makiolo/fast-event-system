@@ -219,3 +219,52 @@ TEST(AsyncFastTest, goroutines_or_something_like_that)
 	go(9);
 }
 
+class manager
+{
+public:
+	manager() 	
+		: _coro(boost::bind(*this, &manager::dummy, _1))
+		, _yielded(false)
+	{
+		std::cout << "constructor" << std::endl;
+	}
+	
+	~manager()
+	{
+		std::cout << "destructor" << std::endl;
+	}
+	
+	void dummy(fes::pull_type<int>& source)
+	{
+		for (auto& s : source)
+		{
+			;
+		}
+	}
+	
+	void operator()()
+	{
+		if(!_yielded)
+		{
+			_coro();
+			_yielded = true;
+		}
+	}
+	
+protected:
+	fes::push_type<int> _coro;
+	bool _yielded;
+};
+
+TEST(AsyncFastTest, decorator_python)
+{
+	{
+		std::cout << "1111111" << std::endl;
+		manager m;
+		std::cout << "2222222" << std::endl;
+		m();
+		std::cout << "3333333" << std::endl;
+	}
+	std::cout << "444444" << std::endl;
+}
+
