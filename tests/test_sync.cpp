@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../sync.h"
 #include <gtest/gtest.h>
+#include "../sync.h"
 
 class SyncTest : testing::Test { };
 

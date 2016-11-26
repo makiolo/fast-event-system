@@ -2,9 +2,9 @@
 #define _SYNC_H_
 
 #include <vector>
-#include <fast-event-system/method.h>
-#include <fast-event-system/connection.h>
-#include <fast-event-system/clock.h>
+#include "method.h"
+#include "connection.h"
+#include "clock.h"
 
 namespace fes {
 

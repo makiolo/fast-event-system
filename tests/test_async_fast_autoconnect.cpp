@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../async_fast.h"
 #include <gtest/gtest.h>
+#include "../async_fast.h"
 
 class AsyncFastAutoConnectTest : testing::Test { };
 

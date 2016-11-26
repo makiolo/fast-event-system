@@ -2,7 +2,7 @@
 #define _MESSAGE_H_
 
 #include <tuple>
-#include <fast-event-system/clock.h>
+#include "clock.h"
 
 namespace fes {
 

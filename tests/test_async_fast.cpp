@@ -1,6 +1,6 @@
 #include <iostream>
-#include <fast-event-system/async_fast.h>
 #include <gtest/gtest.h>
+#include "../async_fast.h"
 
 class AsyncFastTest : testing::Test { };
 

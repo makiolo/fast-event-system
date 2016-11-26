@@ -7,11 +7,10 @@
 #include <queue>
 #include <assert.h>
 #include <cstdlib>
-//
+#include <gtest/gtest.h>
 #include "../sync.h"
 #include "../async_delay.h"
 #include "../async_fast.h"
-#include <gtest/gtest.h>
 
 class FesTest : testing::Test { };
 

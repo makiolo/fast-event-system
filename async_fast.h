@@ -4,15 +4,15 @@
 #include <tuple>
 #include <atomic>
 #include <deque>
-#include <fast-event-system/concurrentqueue/blockingconcurrentqueue.h>
-#include <fast-event-system/sem.h>
-#include <fast-event-system/connection.h>
-#include <fast-event-system/sync.h>
-#include <fast-event-system/method.h>
 #include <boost/coroutine2/coroutine.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/filesystem.hpp>
+#include "concurrentqueue/blockingconcurrentqueue.h"
+#include "sem.h"
+#include "connection.h"
+#include "sync.h"
+#include "method.h"
 
 namespace fes {
 

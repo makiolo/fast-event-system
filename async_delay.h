@@ -6,10 +6,10 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-#include <fast-event-system/message.h>
-#include <fast-event-system/connection.h>
-#include <fast-event-system/sem.h>
-#include <fast-event-system/sync.h>
+#include "message.h"
+#include "connection.h"
+#include "sem.h"
+#include "sync.h"
 
 namespace fes {
 

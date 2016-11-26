@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../async_delay.h"
 #include <gtest/gtest.h>
+#include "../async_delay.h"
 
 class DISABLED_AsyncDelayTest : testing::Test { };
 
