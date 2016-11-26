@@ -13,8 +13,6 @@ template <class T> T slow_acceleration_squared_interp( T A, T B, float d );
 template <class T> T slow_decelleration_squared_interp( T A, T B, float d );
 template <class T> T slow_acceleration_cubed_interp( T A, T B, float d );
 template <class T> T slow_decelleration_cubed_interp( T A, T B, float d );
-//template <class T> T weighted_average_interp( T A, T B, T current );
-//template <class T> T sin_interp( T A, T B, float d );
 template <class T> T catmull_rom_interp( T A, T B, float d, T q, T t );
 
 template <typename T>

@@ -1,7 +1,7 @@
 #ifndef _CLOCK_H_
 #define _CLOCK_H_
 
-#include <fast-event-system/api.h>
+#include "api.h"
 #include <chrono>
 
 namespace fes {
