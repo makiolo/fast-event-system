@@ -218,4 +218,3 @@ TEST(AsyncFastTest, goroutines_or_something_like_that)
 	go(7);
 	go(9);
 }
-
