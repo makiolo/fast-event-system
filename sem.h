@@ -3,11 +3,8 @@
 
 #include <mutex>
 #include <condition_variable>
-// #include <fast-event-system/concurrentqueue/blockingconcurrentqueue.h>
 
 namespace fes {
-
-#if 1
 
 class semaphore
 {
@@ -24,7 +21,7 @@ public:
 	void wait()
 	{
 		std::unique_lock<std::mutex> lock(_mutex);
-			_cond.wait(lock, [this](){return (this->size() > 0);});
+		_cond.wait(lock, [this](){return (this->size() > 0);});
 		--_len;
 	}
 
@@ -38,12 +35,6 @@ protected:
 	std::condition_variable _cond;
 	unsigned long _len;
 };
-
-#else
-
-using semaphore = moodycamel::details::mpmc_sema::Semaphore;
-
-#endif
 
 }
 
