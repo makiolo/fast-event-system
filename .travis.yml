@@ -56,6 +56,4 @@ script:
   - (cd cmaki && git pull origin master)
   - (cd cmaki_generator && git pull origin master)
   - ./cmaki/run.sh $MODE
-
-after_script:
   - (cd cmaki_generator && ./build fast-event-system --server=http://artifacts.myftp.biz:8080)
