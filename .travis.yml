@@ -3,6 +3,8 @@ dist: trusty
 
 language: generic
 
+cache: packages
+
 matrix:
   include:
     - compiler: gcc
