@@ -1,18 +1,33 @@
 sudo: none
 dist: trusty
 
-language: cpp
+language: generic
 cache:
   - ccache
   - pip
-
-compiler:
-  - clang
-  - gcc
-
-env:
-  - MODE=Debug
-  - MODE=Release
+os: osx
+matrix:
+  include:
+    - os: linux
+      env:
+        - COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5 MODE=Debug
+        - COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5 MODE=Release
+      addons:
+        apt:
+          packages:
+            - g++-5
+          sources: &sources
+            - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
+    - os: linux
+      env:
+        - COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8 MODE=Debug
+        - COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8 MODE=Release
+      addons:
+        apt:
+          packages:
+            - clang-3.8
+          sources: *sources
 
 install:
   - pip install --user pyyaml
