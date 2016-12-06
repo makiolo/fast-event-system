@@ -60,3 +60,4 @@ script:
     if [[ $CXX == "g++-4.9" && $MODE == "Release" ]]; then
         (cd cmaki_generator && ./build fast-event-system --server=http://artifacts.myftp.biz:8080)
     fi
+
