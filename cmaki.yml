@@ -1,0 +1,19 @@
+- fast-event-system:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    cmake_target: null
+    depends:
+        - boost-coroutine2
+        - boost-filesystem
+    post_install:
+        - ./*.h include/fast-event-system/
+        - ./concurrentqueue/*.h include/fast-event-system/concurrentqueue/
+        - ./metacommon/*.h include/fast-event-system/metacommon/
+    mode: dr
+    source: https://github.com/makiolo/fast-event-system.git
+    targets:
+        - fes:
+            info:
+                <<: *library_dynamic_exact
+

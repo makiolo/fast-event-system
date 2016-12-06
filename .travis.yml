@@ -54,8 +54,6 @@ install:
   - pip install --user poster
 
 script:
-  - (cd cmaki && git pull origin master)
-  - (cd cmaki_generator && git pull origin master)
   - ./cmaki/run.sh $MODE
   - echo TRAVIS_REPO_SLUG=github://$TRAVIS_REPO_SLUG
   - |
