@@ -23,11 +23,11 @@ public:
 	using container_type = std::vector<message<Args...>>;
 
 	explicit async_delay()
-        : _output()
-        , _queue()
-    {
+        	: _output()
+        	, _queue()
+	{
 		;
-    }
+	}
 
 	~async_delay()
 	{
@@ -158,4 +158,3 @@ protected:
 }
 
 #endif
-
