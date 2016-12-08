@@ -15,6 +15,7 @@ build_script:
   - cmd: cd release
   - cmd: cmake .. -DCMAKE_BUILD_TYPE=Release -DFIRST_ERROR=1 -G "Visual Studio 14 2015 Win64"
   - cmd: cmake --build . --config Release --target install
+  - cmd: cd ..
 
 test_script:
   - cmd: ctest . --no-compress-output --output-on-failure -T Test -C Release -V
