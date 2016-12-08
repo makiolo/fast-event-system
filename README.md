@@ -10,11 +10,7 @@ Coverity Scan: [![Coverity Scan Build Status](https://scan.coverity.com/projects
 ```bash
 $ git clone --recursive https://github.com/makiolo/fast-event-system.git fes
 $ cd fes
-$ mkdir release
-$ cd release
-$ cmake ..
-$ cmake --build . --config release
-$ ctest . -C release
+$ ./cmaki/run.sh
 ```
 
 # Very simple to use
