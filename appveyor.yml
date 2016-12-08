@@ -18,4 +18,5 @@ test_script:
   - cmd: ctest . --no-compress-output --output-on-failure -T Test -C Release -V
 
 on_success:
-    - cmd: cd cmaki_generator && build github://$(appveyor_repo_name) -o --server=http://artifacts.myftp.biz:8080 && cd ..
+    - cmd: echo APPVEYOR_REPO_NAME=$(APPVEYOR_REPO_NAME)
+    - cmd: cd cmaki_generator && build github://makiolo/fast-event-system -o --server=http://artifacts.myftp.biz:8080 && cd ..
