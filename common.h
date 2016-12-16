@@ -82,7 +82,6 @@ struct rec_hash < t_c >
 template < char... tt_c >
 struct str_typed_string
 {
-
     static void print()
     {
         rec_print < tt_c... > :: print();
@@ -125,7 +124,6 @@ using str_type = typename str_type_impl < T_StrProvider, c_strlen(T_StrProvider:
 
 // method macros
 #define DEFINE_KEY(__CLASS__) \
-	using key = ctti::str_type<__CLASS__>; \
 	constexpr static char const* KEY() { return #__CLASS__; } \
 	virtual const std::string& getKEY() const { static std::string key = #__CLASS__; return key; } \
 
