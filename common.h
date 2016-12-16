@@ -6,10 +6,102 @@
 #include <memory>
 #include <unordered_map>
 #include <exception>
+#include <iostream>
+#include <sstream>
+
+namespace ctti {
+
+// http://stackoverflow.com/a/15863804
+	
+// helper function
+constexpr unsigned c_strlen( char const* str, unsigned count = 0 )
+{
+    return ('\0' == str[0]) ? count : c_strlen(str+1, count+1);
+}
+
+// helper "function" struct
+template < char t_c, char... tt_c >
+struct rec_print
+{
+    static void print()
+    {
+        std::cout << t_c;
+        rec_print < tt_c... > :: print ();
+    }
+};
+
+template < char t_c >
+struct rec_print < t_c >
+{
+    static void print()
+    {   
+        std::cout << t_c;
+    }
+};
+
+// helper "function" struct
+template < char t_c, char... tt_c >
+struct rec_get
+{
+    static void get(std::stringstream& ss)
+    {
+        ss << t_c;
+        rec_get < tt_c... > :: get (ss);
+    }
+};
+
+template < char t_c >
+struct rec_get < t_c >
+{
+    static void get(std::stringstream& ss)
+    {   
+        ss << t_c;
+    }
+};
+
+
+// destination "template string" type
+template < char... tt_c >
+struct str_typed_string
+{
+    static void print()
+    {
+        rec_print < tt_c... > :: print();
+        std::cout << std::endl;
+    }
+    
+    static std::string get()
+    {
+        std::stringstream ss;
+        rec_get <tt_c...> :: get(ss);
+        return ss.str();
+    }
+};
+
+// struct to str_type a `char const*` to an `str_typed_string` type
+template < typename T_StrProvider, unsigned t_len, char... tt_c >
+struct str_type_impl
+{
+    using result = typename str_type_impl < T_StrProvider, t_len-1,
+                                T_StrProvider::str()[t_len-1],
+                                tt_c... > :: result;
+};
+
+template < typename T_StrProvider, char... tt_c >
+struct str_type_impl < T_StrProvider, 0, tt_c... >
+{
+     using result = str_typed_string < tt_c... >;
+};
+
+// syntactical sugar
+template < typename T_StrProvider >
+using str_type = typename str_type_impl < T_StrProvider, c_strlen(T_StrProvider::KEY()) > :: result;
+
+}
 
 // method macros
 #define DEFINE_KEY(__CLASS__) \
-	static const std::string& KEY() { static std::string key = #__CLASS__; return key; } \
+	constexpr static char const* KEY() { return #__CLASS__; } \
 	virtual const std::string& getKEY() const { static std::string key = #__CLASS__; return key; } \
 
 // method non-macros (yes, exists optional macro :D)
