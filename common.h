@@ -8,11 +8,12 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 namespace ctti {
-
-// http://stackoverflow.com/a/15863804
 	
+// http://stackoverflow.com/a/15863804
+
 // helper function
 constexpr unsigned c_strlen( char const* str, unsigned count = 0 )
 {
@@ -59,11 +60,29 @@ struct rec_get < t_c >
     }
 };
 
+template < char t_c, char... tt_c >
+struct rec_hash
+{
+    static constexpr size_t hash(size_t seed)
+    {
+        return rec_hash <tt_c...>::hash(seed * 33 ^ static_cast<unsigned>(t_c));
+    }
+};
+
+template < char t_c >
+struct rec_hash < t_c >
+{
+    static constexpr size_t hash(size_t seed)
+    {
+        return seed * 33 ^ static_cast<unsigned>(t_c);
+    }
+};
 
 // destination "template string" type
 template < char... tt_c >
 struct str_typed_string
 {
+
     static void print()
     {
         rec_print < tt_c... > :: print();
@@ -76,6 +95,11 @@ struct str_typed_string
         rec_get <tt_c...> :: get(ss);
         return ss.str();
     }
+    
+    static constexpr size_t hash()
+    {
+        return rec_hash <tt_c...>::hash(5381);
+    }
 };
 
 // struct to str_type a `char const*` to an `str_typed_string` type
@@ -83,7 +107,7 @@ template < typename T_StrProvider, unsigned t_len, char... tt_c >
 struct str_type_impl
 {
     using result = typename str_type_impl < T_StrProvider, t_len-1,
-                                T_StrProvider::str()[t_len-1],
+                                T_StrProvider::KEY()[t_len-1],
                                 tt_c... > :: result;
 };
 
@@ -96,8 +120,8 @@ struct str_type_impl < T_StrProvider, 0, tt_c... >
 // syntactical sugar
 template < typename T_StrProvider >
 using str_type = typename str_type_impl < T_StrProvider, c_strlen(T_StrProvider::KEY()) > :: result;
-
-}
+    
+} // end namespace
 
 // method macros
 #define DEFINE_KEY(__CLASS__) \
