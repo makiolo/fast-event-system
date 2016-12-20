@@ -9,6 +9,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <vector>
+#include <tuple>
 
 namespace ctti {
 	
@@ -121,6 +123,70 @@ template < typename T_StrProvider >
 using str_type = typename str_type_impl < T_StrProvider, c_strlen(T_StrProvider::KEY()) > :: result;
     
 } // end namespace
+
+namespace mc {
+
+template<typename ... Args>
+class get_type
+{
+    template <std::size_t N>
+    using type = typename std::tuple_element<N, std::tuple<Args...> >::type;
+};
+
+template <typename Function, typename T>
+void __foreach_tuple(Function&& func, T&& elem)
+{
+    func(elem);
+}
+
+template <typename Function, typename T, typename ... Args>
+void __foreach_tuple(Function&& func, T&& elem, Args&& ... args)
+{
+    // static_assert(std::is_same<T, get_type<Args>::type<0> >::value, "");
+    // get_type<const int&, const int&>::type<0> eeee = 7;
+    // get_type<Args...>::type<0> eeee = 7;
+    
+    func(elem);
+    __foreach_tuple(std::forward<Function>(func), std::forward<Args>(args)...);
+}
+
+template <typename ... Args, typename Function, std::size_t... N>
+void _foreach_tuple(const std::tuple<Args...>& t, Function&& func, std::index_sequence<N...>)
+{
+    __foreach_tuple(std::forward<Function>(func), std::get<N>(t)...);
+}
+
+template <typename ... Args, typename Function>
+void foreach_tuple(const std::tuple<Args...>& t, Function&& func)
+{
+    _foreach_tuple(t, std::forward<Function>(func), std::make_index_sequence  < 
+                                                                std::tuple_size< std::tuple<Args...> >::value 
+                                                                            >());
+}
+
+template <typename T, std::size_t... N>
+auto _vector_to_tuple(const std::vector<T>& v, std::index_sequence<N...>)
+{
+	return std::make_tuple(v[N]...);
+}
+
+template <std::size_t N, typename T>
+auto vector_to_tuple(const std::vector<T>& v) {
+	assert(v.size() >= N);
+	return _vector_to_tuple(v, std::make_index_sequence<N>());
+}
+
+template <typename T, typename ... Args>
+std::vector<T> tuple_to_vector(const std::tuple<T, Args...>& t)
+{
+    std::vector<T> v;
+    foreach_tuple(t, [&v](const auto& d) {
+        v.emplace_back(d);
+    });
+    return v;
+}
+
+} // end namespace mc
 
 // method macros
 #define DEFINE_KEY(__CLASS__) \
