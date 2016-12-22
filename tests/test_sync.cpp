@@ -30,3 +30,29 @@ TEST(SyncTest, Test1)
 	// kill only if autodisconnection failed
 	sync(6, "kill", 12.0);
 }
+
+void hello(int n1, int n2)
+{
+    std::cout << "hi: " << n1 << ", " << n2 << std::endl;
+}
+
+TEST(SyncTest, Test2)
+{
+    fes::method<int, int> m(hello);
+    m(1, 2);
+}
+
+struct foo
+{
+	void hello(int n1, int n2)
+	{
+	    std::cout << "hi, from foo: " << n1 << ", " << n2 << std::endl;
+	}
+};
+
+TEST(SyncTest, Test3)
+{
+	foo f;
+	fes::method<int, int> m(&f, &foo::hello);
+	m(1, 2);
+}
