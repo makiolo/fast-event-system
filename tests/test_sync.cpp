@@ -44,7 +44,7 @@ TEST(SyncTest, Test2)
 
 struct foo
 {
-	void hello(int n1, int n2)
+	void hello(const int& n1, const int& n2)
 	{
 	    std::cout << "hi, from foo: " << n1 << ", " << n2 << std::endl;
 	}
