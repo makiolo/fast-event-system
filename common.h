@@ -13,7 +13,7 @@
 #include <tuple>
 
 namespace ctti {
-	
+
 // http://stackoverflow.com/a/15863804
 
 // helper function
@@ -37,7 +37,7 @@ template < char t_c >
 struct rec_print < t_c >
 {
     static void print()
-    {   
+    {
         std::cout << t_c;
     }
 };
@@ -57,7 +57,7 @@ template < char t_c >
 struct rec_get < t_c >
 {
     static void get(std::stringstream& ss)
-    {   
+    {
         ss << t_c;
     }
 };
@@ -89,14 +89,14 @@ struct str_typed_string
         rec_print < tt_c... > :: print();
         std::cout << std::endl;
     }
-    
+
     static std::string get()
     {
         std::stringstream ss;
         rec_get <tt_c...> :: get(ss);
         return ss.str();
     }
-    
+
     static constexpr size_t hash()
     {
         return rec_hash <tt_c...>::hash(5381);
@@ -121,7 +121,7 @@ struct str_type_impl < T_StrProvider, 0, tt_c... >
 // syntactical sugar
 template < typename T_StrProvider >
 using str_type = typename str_type_impl < T_StrProvider, c_strlen(T_StrProvider::KEY()) > :: result;
-    
+
 } // end namespace
 
 namespace mc {
@@ -143,9 +143,6 @@ template <typename Function, typename T, typename ... Args>
 void __foreach_tuple(Function&& func, T&& elem, Args&& ... args)
 {
     // static_assert(std::is_same<T, get_type<Args>::type<0> >::value, "");
-    // get_type<const int&, const int&>::type<0> eeee = 7;
-    // get_type<Args...>::type<0> eeee = 7;
-    
     func(elem);
     __foreach_tuple(std::forward<Function>(func), std::forward<Args>(args)...);
 }
@@ -159,9 +156,15 @@ void _foreach_tuple(const std::tuple<Args...>& t, Function&& func, std::index_se
 template <typename ... Args, typename Function>
 void foreach_tuple(const std::tuple<Args...>& t, Function&& func)
 {
-    _foreach_tuple(t, std::forward<Function>(func), std::make_index_sequence  < 
-                                                                std::tuple_size< std::tuple<Args...> >::value 
+    _foreach_tuple(t, std::forward<Function>(func), std::make_index_sequence  <
+                                                                std::tuple_size< std::tuple<Args...> >::value
                                                                             >());
+}
+
+template <typename Function, typename ... Args>
+void foreach_args(Function&& func, Args&& ... args)
+{
+    foreach_tuple(std::make_tuple(std::forward<Args>(args)...), std::forward<Function>(func));
 }
 
 template <typename T, std::size_t... N>
@@ -171,7 +174,8 @@ auto _vector_to_tuple(const std::vector<T>& v, std::index_sequence<N...>)
 }
 
 template <std::size_t N, typename T>
-auto vector_to_tuple(const std::vector<T>& v) {
+auto vector_to_tuple(const std::vector<T>& v)
+{
 	assert(v.size() >= N);
 	return _vector_to_tuple(v, std::make_index_sequence<N>());
 }
@@ -216,7 +220,7 @@ auto tail(const std::tuple<Ts...>& t)
 	namespace std {             \
 	template <>                 \
 	struct hash<__CLASS__>      \
-	{ size_t operator()() const { static size_t h = std::hash<std::string>()(#__CLASS__); return h; }	}; }			\
+	{ size_t operator()() const { static size_t h = std::hash<std::string>()(#__CLASS__); return h; }	}; } \
 
 template<typename T>
 class has_key
@@ -253,29 +257,36 @@ public:
 template <int...>
 struct int_sequence
 {
+
 };
 
 template <int N, int... Is>
 struct make_int_sequence : make_int_sequence<N - 1, N - 1, Is...>
 {
+
 };
 
 template <int... Is>
 struct make_int_sequence<0, Is...> : int_sequence<Is...>
 {
+
 };
 
 template <int>
 struct placeholder_template
 {
+
 };
 
 namespace std
 {
+
 template <int N>
 struct is_placeholder<placeholder_template<N>> : integral_constant<int, N + 1>
 {
+
 };
+
 }
 
 template <int... Is>
@@ -328,6 +339,8 @@ protected:
 		_combine_hash<U>(h, std::forward<U>(parm));
 	}
 };
+
 }
 
 #endif
+
