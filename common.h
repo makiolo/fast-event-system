@@ -190,22 +190,38 @@ std::vector<T> tuple_to_vector(const std::tuple<T, Args...>& t)
     return v;
 }
 
-template <typename T , typename... Ts>
-auto head(const std::tuple<T,Ts...>& t)
-{
-   return std::get<0>(t);
+// http://aherrmann.github.io/programming/2016/02/28/unpacking-tuples-in-cpp14/
+template <class F, size_t... Is>
+constexpr auto index_apply_impl(F&& f, std::index_sequence<Is...>) {
+    return f(std::integral_constant<size_t, Is> {}...);
 }
 
-template <std::size_t... Ns, typename... Ts>
-auto tail_impl(std::index_sequence<Ns...>, const std::tuple<Ts...>& t)
-{
-   return std::make_tuple(std::get<Ns+1u>(t)...);
+template <size_t N, class F>
+constexpr auto index_apply(F&& f) {
+    return index_apply_impl(std::forward<F>(f), std::make_index_sequence<N>{});
 }
 
-template <typename... Ts>
-auto tail(const std::tuple<Ts...>& t)
-{
-   return tail_impl(std::make_index_sequence<sizeof...(Ts) - 1u>(), t);
+template <class Tuple>
+constexpr auto head(Tuple t) {
+    return index_apply<1>([&](auto... Is) {
+        return std::make_tuple(std::get<Is>(t)...);
+    });
+}
+
+template <class Tuple>
+constexpr auto tail(Tuple t) {
+    return index_apply<std::tuple_size<Tuple>{}-1u>([&](auto... Is) {
+        return std::make_tuple(std::get<Is+1u>(t)...);
+    });
+}
+
+template <class Tuple>
+constexpr auto reverse(Tuple t) {
+    return index_apply<tuple_size<Tuple>{}>(
+        [&](auto... Is) {
+            return make_tuple(
+                get<tuple_size<Tuple>{} - 1 - Is>(t)...);
+        });
 }
 
 } // end namespace mc
