@@ -56,3 +56,53 @@ TEST(SyncTest, Test3)
 	fes::method<int, int> m(&f, &foo::hello);
 	m(1, 2);
 }
+
+struct foo
+{	
+	foo()
+		: _str("bar")
+	{
+	}
+	
+	foo(const foo& other)
+		: _str(other._str)
+	{
+	}
+
+	foo(foo&& other) noexcept
+		: _str(std::move(other._str))
+	{
+	}
+
+	~foo() {}
+	
+	void swap(foo& other) noexcept
+	{
+		using std::swap;
+		std::swap(_str, other._str);
+	}
+
+	foo& operator=(const foo& other)
+	{
+		foo(other).swap(*this);
+		return *this;
+	}
+
+	foo& operator=(foo&& other) noexcept
+	{
+		foo(std::move(other)).swap(*this);
+		return *this;
+	}
+public:
+	std::string _str;
+};
+
+TEST(SyncTest, Test4)
+{
+	fes::sync<foo> sync;
+	sync.connect([](const foo& f)
+		{
+			std::cout << "received f" << std::endl;
+		}));
+	sync( foo() );
+}
