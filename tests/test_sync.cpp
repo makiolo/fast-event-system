@@ -103,6 +103,6 @@ TEST(SyncTest, Test4)
 	sync.connect([](const foo& f)
 		{
 			std::cout << "received f" << std::endl;
-		}));
+		});
 	sync( foo() );
 }
