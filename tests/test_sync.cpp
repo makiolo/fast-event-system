@@ -42,18 +42,18 @@ TEST(SyncTest, Test2)
     m(1, 2);
 }
 
-struct foo
+struct foofoo
 {
 	void hello(const int& n1, const int& n2)
 	{
-	    std::cout << "hi, from foo: " << n1 << ", " << n2 << std::endl;
+	    std::cout << "hi, from foofoo: " << n1 << ", " << n2 << std::endl;
 	}
 };
 
 TEST(SyncTest, Test3)
 {
-	foo f;
-	fes::method<int, int> m(&f, &foo::hello);
+	foofoo f;
+	fes::method<int, int> m(&f, &foofoo::hello);
 	m(1, 2);
 }
 
