@@ -224,22 +224,24 @@ constexpr auto reverse(Tuple t) {
         });
 }
 
+// http://open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3829.pdf
 template <typename Function, typename Tuple>
-constexpr auto apply(Function&& f, Tuple t) {
+constexpr auto apply(Function&& f, Tuple&& t) {
     return index_apply<std::tuple_size<Tuple>{}>(
         [&](auto... Is) {
-            return f( std::move(std::get<Is>(t))... );
+            return std::forward<Function>(f)( std::get<Is>(std::forward<Tuple>(t))... );
         });
 }
 
+// http://talesofcpp.fusionfenix.com/post-14/true-story-moving-past-bind
 template <typename F, typename ...Args>
 auto bind(F&& f, Args&&... args) {
-  return [
-    f = std::forward<F>(f)
-  , args = std::make_tuple(std::forward<Args>(args)...)
-  ]() mutable -> decltype(auto) {
-    return apply(std::move(f), std::move(args));
-  };
+	return [
+		f = std::forward<F>(f)
+		, args = std::make_tuple(std::forward<Args>(args)...)
+	]() mutable -> decltype(auto) {
+		return apply(std::move(f), std::move(args));
+	};
 }
 
 } // end namespace mc
