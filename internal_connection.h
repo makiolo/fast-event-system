@@ -21,6 +21,7 @@ public:
 		;
 	}
 
+	~internal_connection() { ; }
 	internal_connection(const internal_connection& other) = delete;
 	internal_connection& operator=(const internal_connection& other) = delete;
 
