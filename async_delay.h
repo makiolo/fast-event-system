@@ -37,27 +37,27 @@ public:
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
 
-	void operator()(int priority, deltatime delay, const Args&... data)
+	void operator()(int priority, deltatime delay, Args&&... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
-		_queue.emplace_back(priority, delay_point, data...);
+		_queue.emplace_back(priority, delay_point, std::forward<Args>(data)...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 		_sem.notify();
 	}
 
-	void operator()(deltatime delay, const Args&... data)
+	void operator()(deltatime delay, Args&&... data)
 	{
-		operator()(0, delay, data...);
+		operator()(0, delay, std::forward<Args>(data)...);
 	}
 
-	void operator()(int priority, const Args&... data)
+	void operator()(int priority, Args&&... data)
 	{
-		operator()(priority, fes::deltatime(0), data...);
+		operator()(priority, fes::deltatime(0), std::forward<Args>(data)...);
 	}
 
-	inline void operator()(const Args&... data)
+	inline void operator()(Args&&... data)
 	{
-		operator()(0, fes::deltatime(0), data...);
+		operator()(0, fes::deltatime(0), std::forward<Args>(data)...);
 	}
 
 	void update()
@@ -91,11 +91,16 @@ public:
 	}
 
 	template <typename T>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(Args&&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
 
+	inline weak_connection<Args...> connect(typename method<Args...>::function&& method)
+	{
+		return _output.connect(std::move(method));
+	}
+	
 	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
@@ -103,26 +108,26 @@ public:
 
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&callback](const Args&... data)
+		return _output.connect([&callback](Args&&... data)
 			{
-				callback(data...);
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&queue](const Args&... data)
+		return _output.connect([&queue](Args&&... data)
 			{
-				queue(data...);
+				queue(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(
 		int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([&queue, priority, delay](const Args&... data)
+		return _output.connect([&queue, priority, delay](Args&&... data)
 			{
-				queue(priority, delay, data...);
+				queue(priority, delay, std::forward<Args>(data)...);
 			});
 	}
 
