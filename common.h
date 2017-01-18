@@ -217,11 +217,29 @@ constexpr auto tail(Tuple t) {
 
 template <class Tuple>
 constexpr auto reverse(Tuple t) {
-    return index_apply<tuple_size<Tuple>{}>(
+    return index_apply<std::tuple_size<Tuple>{}>(
         [&](auto... Is) {
             return make_tuple(
-                get<tuple_size<Tuple>{} - 1 - Is>(t)...);
+                std::get<std::tuple_size<Tuple>{} - 1 - Is>(t)...);
         });
+}
+
+template <typename Function, typename Tuple>
+constexpr auto apply(Function&& f, Tuple t) {
+    return index_apply<std::tuple_size<Tuple>{}>(
+        [&](auto... Is) {
+            return f( std::move(std::get<Is>(t))... );
+        });
+}
+
+template <typename F, typename ...Args>
+auto bind(F&& f, Args&&... args) {
+  return [
+    f = std::forward<F>(f)
+  , args = std::make_tuple(std::forward<Args>(args)...)
+  ]() mutable -> decltype(auto) {
+    return apply(std::move(f), std::move(args));
+  };
 }
 
 } // end namespace mc
