@@ -11,21 +11,26 @@ template <typename... Args>
 class method
 {
 public:
-	using function = std::function<void(const Args&...)>;
+	using function = std::function<void(Args&&...)>;
 
+	method(function&& m)
+		: _method(std::move(m))
+	{
+	}
+	
 	method(const function& m)
 		: _method(m)
 	{
 	}
 
 	template <typename T>
-	method(T* obj, void (T::*ptr_func)(const Args&...))
+	method(T* obj, void (T::*ptr_func)(Args&&...))
 		: method(obj, ptr_func, make_int_sequence<sizeof...(Args)>{})
 	{
 	}
 
 	template <typename T, int... Is>
-	method(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
+	method(T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
 		: method(std::bind(ptr_func, obj, placeholder_template<Is>{}...))
 	{
 	}
@@ -34,7 +39,7 @@ public:
 	method& operator=(const method& other) = delete;
 	~method() { ; }
 
-	void operator()(const Args&... data) const { _method(data...); }
+	void operator()(Args&&... data) const { _method(std::forward<Args>(data)...); }
 
 protected:
 	function _method;
