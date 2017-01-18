@@ -20,8 +20,8 @@ public:
 	using methods = methods_t<Args...>;
 
 	explicit sync()
-        : _registered()
-        , _conns()
+		: _registered()
+		, _conns()
 	{
 		;
 	}
@@ -31,11 +31,23 @@ public:
 	sync& operator=(const sync& other) = delete;
 
 	template <typename T>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(Args&&...))
 	{
 		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
 
+	inline weak_connection<Args...> connect(typename method<Args...>::function&& fun)
+	{
+		typename methods::iterator it = _registered.emplace(_registered.end(), std::move(fun));
+		shared_connection<Args...> conn
+			= std::make_shared<internal_connection<Args...>>(_registered, [it](methods& registered)
+				{
+					registered.erase(it);
+				});
+		_conns.push_back(conn);
+		return weak_connection<Args...>(conn);
+	}
+	
 	inline weak_connection<Args...> connect(const typename method<Args...>::function& fun)
 	{
 		typename methods::iterator it = _registered.emplace(_registered.end(), fun);
@@ -50,41 +62,41 @@ public:
 
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](const Args&... data)
+		return connect([&callback](Args&&... data)
 			{
-				callback(data...);
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return connect([&queue](const Args&... data)
+		return connect([&queue](Args&&... data)
 			{
-				queue(data...);
+				queue(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(
 		int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return connect([&queue, priority, delay](const Args&... data)
+		return connect([&queue, priority, delay](Args&&... data)
 			{
-				queue(priority, delay, data...);
+				queue(priority, delay, std::forward<Args>(data)...);
 			});
 	}
 
-	void operator()(const Args&... data) const
+	void operator()(Args&&... data) const
 	{
 		for (auto& reg : _registered)
 		{
-			reg(data...);
+			reg(std::forward<Args>(data)...);
 		}
 	}
 
 protected:
 	template <typename T, int... Is>
 	weak_connection<Args...> _connect(
-		T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
+		T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
 	{
 		typename methods::iterator it = _registered.emplace(
 			_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
