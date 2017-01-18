@@ -121,10 +121,10 @@ public:
 	}
 
 protected:
-	template <int... S>
-	inline void get(const std::tuple<Args...>& top, seq<S...>) const
+	template <typename Tuple, int... S>
+	inline void get(Tuple&& top, seq<S...>) const
 	{
-		_output(std::get<S>(top)...);
+		_output(std::get<S>(std::forward<Tuple>(top))...);
 	}
 
 	std::tuple<Args...> _get()
