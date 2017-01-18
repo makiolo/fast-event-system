@@ -44,9 +44,9 @@ public:
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
 
-	void operator()(const Args&... data)
+	void operator()(Args&&... data)
 	{
-		_queue.enqueue(std::make_tuple(data...));
+		_queue.enqueue(std::make_tuple(std::forward<Args>(data)...));
 		_sem.notify();
 	}
 
@@ -81,11 +81,16 @@ public:
 	}
 
 	template <typename T>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(Args&&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
 
+	inline weak_connection<Args...> connect(typename method<Args...>::function&& method)
+	{
+		return _output.connect(std::move(method));
+	}
+	
 	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
 	{
 		return _output.connect(method);
@@ -93,25 +98,25 @@ public:
 
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&callback](const Args&... data)
+		return _output.connect([&callback](Args&&... data)
 			{
-				callback(data...);
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&queue](const Args&... data)
+		return _output.connect([&queue](Args&&... data)
 			{
-				queue(data...);
+				queue(std::forward<Args>(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([&queue, priority, delay](const Args&... data)
+		return _output.connect([&queue, priority, delay](Args&&... data)
 			{
-				queue(priority, delay, data...);
+				queue(priority, delay, std::forward<Args>(data)...);
 			});
 	}
 
@@ -140,4 +145,3 @@ protected:
 }  // end namespace
 
 #endif
-
