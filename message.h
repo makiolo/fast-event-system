@@ -9,46 +9,11 @@ namespace fes {
 template <typename... Args>
 struct message
 {
-	message(int priority, marktime timestamp, const Args&... data)
+	message(int priority, marktime timestamp, Args&&... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		, _data(data...)
+		, _data(std::forward<Args>(data)...)
 	{
-	}
-
-	message(const message& other)
-		: _priority(other._priority)
-		, _timestamp(other._timestamp)
-		, _data(other._data)
-	{
-	}
-
-	message(message&& other) noexcept : _priority(other._priority),
-										_timestamp(other._timestamp),
-										_data(std::move(other._data))
-	{
-	}
-
-	~message() {}
-
-	message& operator=(const message& other)
-	{
-		message(other).swap(*this);
-		return *this;
-	}
-
-	message& operator=(message&& other) noexcept
-	{
-		message(std::move(other)).swap(*this);
-		return *this;
-	}
-
-	void swap(message& other) noexcept
-	{
-		using std::swap;
-		swap(_priority, other._priority);
-		swap(_timestamp, other._timestamp);
-		swap(_data, other._data);
 	}
 
 	int _priority;
