@@ -106,13 +106,9 @@ public:
 TEST(SyncTest, Test4)
 {
 	fes::sync<foo> sync;
-	sync.connect([](const foo& f)
+	sync.connect([](auto&& f)
 		{
-			std::cout << "received f by copy" << std::endl;
-		});
-	sync.connect([](foo&& f)
-		{
-			std::cout << "received f by move" << std::endl;
+			std::cout << "received f by move/copy ?" << std::endl;
 		});
 	sync( foo() );
 }
