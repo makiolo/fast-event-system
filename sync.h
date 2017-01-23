@@ -25,8 +25,8 @@ public:
 	{
 		;
 	}
+	
 	~sync() { ; }
-
 	sync(const sync& other) = delete;
 	sync& operator=(const sync& other) = delete;
 
@@ -35,22 +35,11 @@ public:
 	{
 		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
-
-	inline weak_connection<Args...> connect(typename method<Args...>::function&& fun)
-	{
-		typename methods::iterator it = _registered.emplace(_registered.end(), std::move(fun));
-		shared_connection<Args...> conn
-			= std::make_shared<internal_connection<Args...>>(_registered, [it](methods& registered)
-				{
-					registered.erase(it);
-				});
-		_conns.push_back(conn);
-		return weak_connection<Args...>(conn);
-	}
 	
-	inline weak_connection<Args...> connect(const typename method<Args...>::function& fun)
+	template <typename METHOD>
+	inline weak_connection<Args...> connect(METHOD&& fun)
 	{
-		typename methods::iterator it = _registered.emplace(_registered.end(), fun);
+		typename methods::iterator it = _registered.emplace(_registered.end(), std::forward<METHOD>(fun));
 		shared_connection<Args...> conn
 			= std::make_shared<internal_connection<Args...>>(_registered, [it](methods& registered)
 				{
@@ -76,8 +65,7 @@ public:
 			});
 	}
 
-	inline weak_connection<Args...> connect(
-		int priority, deltatime delay, async_delay<Args...>& queue)
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
 		return connect([&queue, priority, delay](Args&&... data)
 			{
@@ -95,13 +83,12 @@ public:
 
 protected:
 	template <typename T, int... Is>
-	weak_connection<Args...> _connect(
-		T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
+	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
 	{
 		typename methods::iterator it = _registered.emplace(
 			_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
 		shared_connection<Args...> conn
-			= std::make_shared<internal_connection<Args...>>(_registered, [it](methods& registered)
+			= std::make_shared<internal_connection<Args...> >(_registered, [it](methods& registered)
 				{
 					registered.erase(it);
 				});
