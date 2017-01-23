@@ -56,7 +56,10 @@ public:
 	const std::string& get_data() const { return _data; }
 
 protected:
+	// lvalue
 	void on_handler(const std::string& data) { _data = data; }
+	// rvalue
+	void on_handler(std::string&& data) { _data = std::move(data); }
 
 	std::string _data;
 	fes::connection<std::string> _conn;
