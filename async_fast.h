@@ -86,14 +86,10 @@ public:
 		return _output.connect(obj, ptr_func);
 	}
 
-	inline weak_connection<Args...> connect(typename method<Args...>::function&& method)
+	template <typename METHOD>
+	inline weak_connection<Args...> connect(METHOD&& method)
 	{
-		return _output.connect(std::move(method));
-	}
-	
-	inline weak_connection<Args...> connect(const typename method<Args...>::function& method)
-	{
-		return _output.connect(method);
+		return _output.connect(std::forward<METHOD>(method));
 	}
 
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
