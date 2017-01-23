@@ -132,7 +132,7 @@ protected:
 		_sem.wait();
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
-		get(t, gens<sizeof...(Args)>{});
+		get(std::forward<std::tuple<Args...> >(t), gens<sizeof...(Args)>{});
 		return t;
 	}
 
