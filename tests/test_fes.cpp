@@ -21,11 +21,13 @@ public:
 	Producer() {}
 	~Producer() {}
 
-	void operator()(const std::string& data) { _channel(data); }
+	template <typename Data>
+	void operator()(Data&& data) { _channel(std::forward<Data>(data)); }
 
-	void operator()(int priority, fes::deltatime delay, const std::string& data)
+	template <typename Data>
+	void operator()(int priority, fes::deltatime delay, Data&& data)
 	{
-		_channel(priority, delay, data);
+		_channel(priority, delay, std::forward<Data>(data));
 	}
 
 	void update() { _channel.update(); }
