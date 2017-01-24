@@ -40,7 +40,6 @@ public:
 	~method() { ; }
 
 	void operator()(Args&&... data) const { _method(std::move(data)...); }
-	void operator()(const Args&... data) const { _method(data...); }
 
 protected:
 	function _method;
