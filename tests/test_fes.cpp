@@ -56,10 +56,8 @@ public:
 	const std::string& get_data() const { return _data; }
 
 protected:
-	// lvalue
-	void on_handler(const std::string& data) { _data = data; }
-	// rvalue
-	void on_handler(std::string&& data) { _data = std::move(data); }
+	template <typename Data>
+	void on_handler(Data&& data) { _data = std::forward<Data>(data); }
 
 	std::string _data;
 	fes::connection<std::string> _conn;
@@ -119,7 +117,7 @@ TEST(FesTest, Test4)
 	auto c2 = root.connect(0, fes::deltatime(200), node_b);
 
 	static bool called1 = false;
-	auto c3 = node_a.connect([&](const int& data)
+	auto c3 = node_a.connect([&](auto&& data)
 		{
 			std::cout << "A: data = " << data << std::endl;
 			called1 = true;
@@ -127,7 +125,7 @@ TEST(FesTest, Test4)
 		});
 
 	static bool called2 = false;
-	auto c4 = node_b.connect([&](const int& data)
+	auto c4 = node_b.connect([&](auto&& data)
 		{
 			std::cout << "B: data = " << data << std::endl;
 			called2 = true;
