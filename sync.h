@@ -80,6 +80,11 @@ public:
 			reg(std::forward<Args>(data)...);
 		}
 	}
+	
+	bool unique() const
+	{
+		return _registered.size() == 1;
+	}
 
 protected:
 	template <typename T, int... Is>
