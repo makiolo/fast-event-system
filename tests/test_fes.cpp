@@ -56,11 +56,10 @@ public:
 	const std::string& get_data() const { return _data; }
 
 protected:
-	// template <typename Data>
-	// void on_handler(Data&& data) { _data = std::forward<Data>(data); }
-	
-	void on_handler(const std::string& data) { _data = data; }
+	template <typename Data>
+	void on_handler(Data&& data) { _data = std::forward<Data>(data); }
 
+protected:
 	std::string _data;
 	fes::connection<std::string> _conn;
 };
