@@ -108,7 +108,18 @@ TEST(SyncTest, Test4)
 	fes::sync<foo> sync;
 	sync.connect([](auto&& f)
 		{
-			std::cout << "received f by move/copy ?" << std::endl;
+			std::cout << "received rvalue" << std::endl;
 		});
-	sync( foo() );
+	sync(foo());
+}
+
+TEST(SyncTest, Test5)
+{
+	fes::sync<foo> sync;
+	sync.connect([](auto&& f)
+		{
+			std::cout << "received lvalue" << std::endl;
+		});
+	foo f;
+	sync(f);
 }
