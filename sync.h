@@ -85,7 +85,7 @@ public:
 			for (auto& reg : _registered)
 			{
 				// copy
-				reg(data...);
+				reg(Args(data)...);
 			}
 		}
 	}
