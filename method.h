@@ -39,7 +39,7 @@ public:
 	method& operator=(const method& other) = delete;
 	~method() { ; }
 
-	void operator()(Args... data) const { _method(std::forward<DATA>(data)...); }
+	void operator()(Args... data) const { _method(data...); }
 
 protected:
 	function _method;
