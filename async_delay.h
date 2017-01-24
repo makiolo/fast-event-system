@@ -75,7 +75,7 @@ public:
 		}
 	}
 
-	inline std::tuple<Args...> get()
+	inline auto get()
 	{
 		return _get();
 	}
@@ -134,7 +134,7 @@ protected:
 		_output(std::get<S>(std::forward<Tuple>(top))...);
 	}
 
-	std::tuple<Args...> _get()
+	auto _get()
 	{
 		auto& t = _queue.back();
 		_sem.wait();
