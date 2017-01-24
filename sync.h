@@ -77,8 +77,8 @@ public:
 	{
 		if( unique() )
 		{
-			// move
-			_registered.front()(data...);
+			// copy
+			_registered.front()(Args(data)...);
 		}
 		else
 		{
@@ -94,7 +94,7 @@ public:
 	{
 		if( unique() )
 		{
-			// move if is lvalue
+			// move
 			_registered.front()(std::forward<Args>(data)...);
 		}
 		else
