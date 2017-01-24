@@ -37,31 +37,27 @@ public:
 	async_delay(const async_delay&) = delete;
 	async_delay& operator=(const async_delay&) = delete;
 
-	template <typename DATA>
-	void operator()(int priority, deltatime delay, DATA&&... data)
+	void operator()(int priority, deltatime delay, Args&&... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
-		_queue.emplace_back(priority, delay_point, std::forward<DATA>(data)...);
-		std::sort(std::begin(_queue), std::end(_queue), message_comp<DATA...>());
+		_queue.emplace_back(priority, delay_point, std::forward<Args>(data)...);
+		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 		_sem.notify();
 	}
 
-	template <typename DATA>
-	void operator()(deltatime delay, DATA&&... data)
+	void operator()(deltatime delay, Args&&... data)
 	{
-		operator()(0, delay, std::forward<DATA>(data)...);
+		operator()(0, delay, std::forward<Args>(data)...);
 	}
 
-	template <typename DATA>
-	void operator()(int priority, DATA&&... data)
+	void operator()(int priority, Args&&... data)
 	{
-		operator()(priority, fes::deltatime(0), std::forward<DATA>(data)...);
+		operator()(priority, fes::deltatime(0), std::forward<Args>(data)...);
 	}
 
-	template <typename DATA>
-	inline void operator()(DATA&&... data)
+	inline void operator()(Args&&... data)
 	{
-		operator()(0, fes::deltatime(0), std::forward<DATA>(data)...);
+		operator()(0, fes::deltatime(0), std::forward<Args>(data)...);
 	}
 
 	void update()
