@@ -2,9 +2,9 @@
 #include <gtest/gtest.h>
 #include "../async_delay.h"
 
-class DISABLED_AsyncDelayTest : testing::Test { };
+class AsyncDelayTest : testing::Test { };
 
-TEST(DISABLED_AsyncDelayTest, Test1)
+TEST(AsyncDelayTest, Test1)
 {
 	fes::async_delay<int, std::string, double> sync;
 	bool is_dispatched = false;
