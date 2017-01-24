@@ -75,14 +75,14 @@ public:
 
 	void operator()(Args&&... data) const
 	{
-		for (auto& reg : _registered)
+		if( unique() )
 		{
-			if( unique() )
-			{
-				// move
-				reg(std::forward<Args>(data)...);
-			}
-			else
+			// move
+			_registered[0](std::forward<Args>(data)...);
+		}
+		else
+		{
+			for (auto& reg : _registered)
 			{
 				// copy
 				reg(data...);
