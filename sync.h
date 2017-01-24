@@ -73,13 +73,12 @@ public:
 			});
 	}
 
-	template <typename DATA>
-	void operator()(DATA&&... data) const
+	void operator()(Args&&... data) const
 	{
 		if( unique() )
 		{
 			// move
-			_registered.front()(std::forward<DATA>(data)...);
+			_registered.front()(std::forward<Args>(data)...);
 		}
 		else
 		{
