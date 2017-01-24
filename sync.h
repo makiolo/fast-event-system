@@ -77,7 +77,16 @@ public:
 	{
 		for (auto& reg : _registered)
 		{
-			reg(std::forward<Args>(data)...);
+			if( unique() )
+			{
+				// move
+				reg(std::forward<Args>(data)...);
+			}
+			else
+			{
+				// copy
+				reg(data...);
+			}
 		}
 	}
 	
