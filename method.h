@@ -13,13 +13,9 @@ class method
 public:
 	using function = std::function<void(Args&&...)>;
 
-	method(function&& m)
-		: _method(std::move(m))
-	{
-	}
-	
-	method(const function& m)
-		: _method(m)
+	template <typename FUNCTION>
+	method(FUNCTION&& m)
+		: _method(std::forward<FUNCTION>(m))
 	{
 	}
 
@@ -39,7 +35,10 @@ public:
 	method& operator=(const method& other) = delete;
 	~method() { ; }
 
-	void operator()(Args... data) const { _method(data...); }
+	void operator()(Args&&... data) const
+	{
+		_method(std::forward<Args>(data)...);
+	}
 
 protected:
 	function _method;
