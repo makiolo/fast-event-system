@@ -73,11 +73,28 @@ public:
 			});
 	}
 
-	void operator()(Args&&... data) const
+	void operator()(const Args&... data) const
 	{
 		if( unique() )
 		{
 			// move
+			_registered.front()(data...);
+		}
+		else
+		{
+			for (auto& reg : _registered)
+			{
+				// copy
+				reg(Args(data)...);
+			}
+		}
+	}
+	
+	void operator()(Args&&... data) const
+	{
+		if( unique() )
+		{
+			// move if is lvalue
 			_registered.front()(std::forward<Args>(data)...);
 		}
 		else
@@ -118,4 +135,3 @@ protected:
 }
 
 #endif
-
