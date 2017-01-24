@@ -78,7 +78,7 @@ public:
 		if( unique() )
 		{
 			// move
-			_registered[0](std::forward<Args>(data)...);
+			_registered.at(0)(std::forward<Args>(data)...);
 		}
 		else
 		{
