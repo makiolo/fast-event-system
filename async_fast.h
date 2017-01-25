@@ -44,9 +44,10 @@ public:
 	async_fast(const async_fast&) = delete;
 	async_fast& operator=(const async_fast&) = delete;
 
-	void operator()(Args&&... data)
+	template <typename ... ARGS>
+	void operator()(ARGS&&... data)
 	{
-		_queue.enqueue(std::make_tuple(std::forward<Args>(data)...));
+		_queue.enqueue(std::make_tuple(std::forward<ARGS>(data)...));
 		_sem.notify();
 	}
 
