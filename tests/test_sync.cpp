@@ -44,8 +44,7 @@ TEST(SyncTest, Test2)
 
 struct foofoo
 {
-	template <typename PARM>
-	void hello(PARM&& n1, PARM&& n2)
+	void hello(const int& n1, const int& n2)
 	{
 	    std::cout << "hi, from foofoo: " << n1 << ", " << n2 << std::endl;
 	}
