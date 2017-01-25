@@ -9,12 +9,12 @@ namespace fes {
 template <typename... Args>
 struct message
 {
-	message(int priority, marktime timestamp, Args&&... data)
+	template <typename ... ARGS>
+	message(int priority, marktime timestamp, ARGS&&... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
 		, _data(std::forward<Args>(data)...)
-	{
-	}
+	{ ; }
 
 	int _priority;
 	marktime _timestamp;
@@ -44,4 +44,3 @@ struct message_comp
 }
 
 #endif
-
