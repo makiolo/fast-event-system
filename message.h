@@ -13,7 +13,7 @@ struct message
 	message(int priority, marktime timestamp, ARGS&&... data)
 		: _priority(priority)
 		, _timestamp(timestamp)
-		, _data(std::forward<Args>(data)...)
+		, _data(std::forward<ARGS>(data)...)
 	{ ; }
 
 	int _priority;
