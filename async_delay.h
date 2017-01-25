@@ -102,27 +102,30 @@ public:
 		return _output.connect(std::forward<METHOD>(method));
 	}
 
+	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&callback](const Args&... data)
+		return _output.connect([&callback](ARGS&&... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(std::forward<ARGS>(data)...);
 			});
 	}
 
+	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&queue](const Args&... data)
+		return _output.connect([&queue](ARGS&&... data)
 			{
-				queue(std::forward<Args>(data)...);
+				queue(std::forward<ARGS>(data)...);
 			});
 	}
 
+	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([&queue, priority, delay](const Args&... data)
+		return _output.connect([&queue, priority, delay](ARGS&&... data)
 			{
-				queue(priority, delay, std::forward<Args>(data)...);
+				queue(priority, delay, std::forward<ARGS>(data)...);
 			});
 	}
 
