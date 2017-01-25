@@ -35,9 +35,10 @@ public:
 	method& operator=(const method& other) = delete;
 	~method() { ; }
 
-	void operator()(Args&&... data) const
+	template <typename ... PARMS>
+	void operator()(PARMS&&... data) const
 	{
-		_method(std::forward<Args>(data)...);
+		_method(std::forward<PARMS>(data)...);
 	}
 
 protected:
