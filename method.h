@@ -37,6 +37,12 @@ public:
 	{
 		_method(std::forward<PARMS>(data)...);
 	}
+	
+	template <typename ... PARMS>
+	return_type call_copy(PARMS... data) const
+	{
+		_method(std::forward<PARMS>(data)...);
+	}
 
 protected:
 	function _method;
