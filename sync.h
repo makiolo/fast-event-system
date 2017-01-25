@@ -79,24 +79,24 @@ public:
 	template <typename ... PARMS>
 	void operator()(PARMS&&... data) const
 	{
-		if( unique() )
+		auto it = _registered.begin();
+		auto ite = _registered.end();
+		auto itee = --_registered.end();
+		for(; it != ite; ++it)
 		{
-			// move
-			_registered.front()(std::forward<PARMS>(data)...);
-		}
-		else
-		{
-			for (auto& reg : _registered)
+			// is last_iteration ?
+			auto& reg = *it;
+			if(it == itee)
+			{
+				// forward
+				reg(std::forward<PARMS>(data)...);
+			}
+			else
 			{
 				// copy
 				reg.call_copy(data...);
 			}
 		}
-	}
-	
-	bool unique() const
-	{
-		return _registered.size() == 1;
 	}
 
 protected:
