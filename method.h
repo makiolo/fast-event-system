@@ -21,20 +21,16 @@ public:
 	}
 
 	template <typename T, typename ... PARMS>
-	method(T* obj, return_type (T::*ptr_func)(PARMS...))
+	method(T* obj, return_type (T::*ptr_func)(const PARMS&...))
 		: method(obj, ptr_func, make_int_sequence<sizeof...(PARMS)>{})
 	{
 	}
 
 	template <typename T, typename ... PARMS, int... Is>
-	method(T* obj, return_type (T::*ptr_func)(PARMS...), int_sequence<Is...>)
+	method(T* obj, return_type (T::*ptr_func)(const PARMS&...), int_sequence<Is...>)
 		: method(std::bind(ptr_func, obj, placeholder_template<Is>{}...))
 	{
 	}
-
-	method(const method& other) = delete;
-	method& operator=(const method& other) = delete;
-	~method() { ; }
 
 	template <typename ... PARMS>
 	return_type operator()(PARMS&&... data) const
