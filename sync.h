@@ -25,10 +25,6 @@ public:
 	{
 		;
 	}
-	
-	~sync() { ; }
-	sync(const sync& other) = delete;
-	sync& operator=(const sync& other) = delete;
 
 	template <typename T, typename  ... PARMS>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const PARMS&...))
@@ -116,7 +112,7 @@ protected:
 
 protected:
 	methods _registered;
-	std::vector<shared_connection<Args...>> _conns;
+	std::vector<shared_connection<Args...> > _conns;
 };
 
 }
