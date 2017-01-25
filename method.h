@@ -11,7 +11,8 @@ template <typename... Args>
 class method
 {
 public:
-	using function = std::function<void(Args&&...)>;
+	using return_type = void;
+	using function = std::function<return_type(const Args&...)>;
 
 	template <typename FUNCTION>
 	method(FUNCTION&& m)
@@ -19,14 +20,14 @@ public:
 	{
 	}
 
-	template <typename T>
-	method(T* obj, void (T::*ptr_func)(Args&&...))
-		: method(obj, ptr_func, make_int_sequence<sizeof...(Args)>{})
+	template <typename T, typename ... PARMS>
+	method(T* obj, return_type (T::*ptr_func)(PARMS...))
+		: method(obj, ptr_func, make_int_sequence<sizeof...(PARMS)>{})
 	{
 	}
 
-	template <typename T, int... Is>
-	method(T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
+	template <typename T, typename ... PARMS, int... Is>
+	method(T* obj, return_type (T::*ptr_func)(PARMS...), int_sequence<Is...>)
 		: method(std::bind(ptr_func, obj, placeholder_template<Is>{}...))
 	{
 	}
@@ -36,7 +37,7 @@ public:
 	~method() { ; }
 
 	template <typename ... PARMS>
-	void operator()(PARMS&&... data) const
+	return_type operator()(PARMS&&... data) const
 	{
 		_method(std::forward<PARMS>(data)...);
 	}
@@ -44,6 +45,7 @@ public:
 protected:
 	function _method;
 };
+
 
 template <typename... Args>
 using methods_t = std::list<method<Args...>>;
