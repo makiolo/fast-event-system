@@ -30,10 +30,10 @@ public:
 	sync(const sync& other) = delete;
 	sync& operator=(const sync& other) = delete;
 
-	template <typename T>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(Args&&...))
+	template <typename T, typename  ... PARMS>
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const PARMS&...))
 	{
-		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
+		return _connect(obj, ptr_func, make_int_sequence<sizeof...(PARMS)>{});
 	}
 	
 	template <typename METHOD>
@@ -89,7 +89,7 @@ public:
 			for (auto& reg : _registered)
 			{
 				// copy
-				reg(PARMS(data)...);
+				reg.call_copy(data...);
 			}
 		}
 	}
