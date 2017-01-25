@@ -49,60 +49,47 @@ public:
 		return weak_connection<Args...>(conn);
 	}
 
+	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](Args&&... data)
+		return connect([&callback](PARMS&&... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(std::forward<PARMS>(data)...);
 			});
 	}
 
+	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return connect([&queue](Args&&... data)
+		return connect([&queue](PARMS&&... data)
 			{
-				queue(std::forward<Args>(data)...);
+				queue(std::forward<PARMS>(data)...);
 			});
 	}
 
+	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return connect([&queue, priority, delay](Args&&... data)
+		return connect([&queue, priority, delay](PARMS&&... data)
 			{
-				queue(priority, delay, std::forward<Args>(data)...);
+				queue(priority, delay, std::forward<PARMS>(data)...);
 			});
 	}
-
-	void operator()(const Args&... data) const
-	{
-		if( unique() )
-		{
-			// copy
-			_registered.front()(Args(data)...);
-		}
-		else
-		{
-			for (auto& reg : _registered)
-			{
-				// copy
-				reg(Args(data)...);
-			}
-		}
-	}
 	
-	void operator()(Args&&... data) const
+	template <typename ... PARMS>
+	void operator()(PARMS&&... data) const
 	{
 		if( unique() )
 		{
 			// move
-			_registered.front()(std::forward<Args>(data)...);
+			_registered.front()(std::forward<PARMS>(data)...);
 		}
 		else
 		{
 			for (auto& reg : _registered)
 			{
 				// copy
-				reg(Args(data)...);
+				reg(PARMS(data)...);
 			}
 		}
 	}
