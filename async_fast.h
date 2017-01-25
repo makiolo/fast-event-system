@@ -80,8 +80,8 @@ public:
 		return _sem.size();
 	}
 
-	template <typename T>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(Args&&...))
+	template <typename T, typename ... ARGS>
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const ARGS&...))
 	{
 		return _output.connect(obj, ptr_func);
 	}
@@ -92,27 +92,30 @@ public:
 		return _output.connect(std::forward<METHOD>(method));
 	}
 
-	inline weak_connection<Args...> connect(sync<Args...>& callback)
+	template <typename ... ARGS>
+	inline weak_connection<Args...> connect(sync<ARGS...>& callback)
 	{
-		return _output.connect([&callback](Args&&... data)
+		return _output.connect([&callback](ARGS&&... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(std::forward<ARGS>(data)...);
 			});
 	}
 
-	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
+	template <typename ... ARGS>
+	inline weak_connection<Args...> connect(async_fast<ARGS...>& queue)
 	{
-		return _output.connect([&queue](Args&&... data)
+		return _output.connect([&queue](ARGS&&... data)
 			{
-				queue(std::forward<Args>(data)...);
+				queue(std::forward<ARGS>(data)...);
 			});
 	}
 
-	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
+	template <typename ... ARGS>
+	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<ARGS...>& queue)
 	{
-		return _output.connect([&queue, priority, delay](Args&&... data)
+		return _output.connect([&queue, priority, delay](ARGS&&... data)
 			{
-				queue(priority, delay, std::forward<Args>(data)...);
+				queue(priority, delay, std::forward<ARGS>(data)...);
 			});
 	}
 
