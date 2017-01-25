@@ -36,14 +36,6 @@ public:
 		, _queue(initial_allocation)
 	{ ; }
 
-	~async_fast()
-	{
-		;
-	}
-
-	async_fast(const async_fast&) = delete;
-	async_fast& operator=(const async_fast&) = delete;
-
 	template <typename ... ARGS>
 	void operator()(ARGS&&... data)
 	{
