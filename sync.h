@@ -54,7 +54,7 @@ public:
 	{
 		return connect([&callback](const PARMS&... data)
 			{
-				callback(std::forward<PARMS>(data)...);
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
@@ -63,7 +63,7 @@ public:
 	{
 		return connect([&queue](const PARMS&... data)
 			{
-				queue(std::forward<PARMS>(data)...);
+				queue(std::forward<Args>(data)...);
 			});
 	}
 
@@ -72,7 +72,7 @@ public:
 	{
 		return connect([&queue, priority, delay](const PARMS&... data)
 			{
-				queue(priority, delay, std::forward<PARMS>(data)...);
+				queue(priority, delay, std::forward<Args>(data)...);
 			});
 	}
 	
