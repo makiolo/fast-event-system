@@ -41,19 +41,19 @@ public:
 	template <typename ... PARMS>
 	void operator()(deltatime delay, PARMS&&... data)
 	{
-		operator()(0, delay, std::forward<Args>(data)...);
+		operator()(0, delay, data...);
 	}
 
 	template <typename ... PARMS>
 	void operator()(int priority, PARMS&&... data)
 	{
-		operator()(priority, fes::deltatime(0), std::forward<Args>(data)...);
+		operator()(priority, fes::deltatime(0), data...);
 	}
 
 	template <typename ... PARMS>
 	inline void operator()(PARMS&&... data)
 	{
-		operator()(0, fes::deltatime(0), std::forward<Args>(data)...);
+		operator()(0, fes::deltatime(0), data...);
 	}
 
 	void update()
