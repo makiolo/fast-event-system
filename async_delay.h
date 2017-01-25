@@ -29,33 +29,29 @@ public:
 		;
 	}
 
-	~async_delay()
-	{
-		;
-	}
-
-	async_delay(const async_delay&) = delete;
-	async_delay& operator=(const async_delay&) = delete;
-
-	void operator()(int priority, deltatime delay, Args&&... data)
+	template <typename ... PARMS>
+	void operator()(int priority, deltatime delay, PARMS&&... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
-		_queue.emplace_back(priority, delay_point, std::forward<Args>(data)...);
+		_queue.emplace_back(priority, delay_point, data...);
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 		_sem.notify();
 	}
 
-	void operator()(deltatime delay, Args&&... data)
+	template <typename ... PARMS>
+	void operator()(deltatime delay, PARMS&&... data)
 	{
 		operator()(0, delay, std::forward<Args>(data)...);
 	}
 
-	void operator()(int priority, Args&&... data)
+	template <typename ... PARMS>
+	void operator()(int priority, PARMS&&... data)
 	{
 		operator()(priority, fes::deltatime(0), std::forward<Args>(data)...);
 	}
 
-	inline void operator()(Args&&... data)
+	template <typename ... PARMS>
+	inline void operator()(PARMS&&... data)
 	{
 		operator()(0, fes::deltatime(0), std::forward<Args>(data)...);
 	}
