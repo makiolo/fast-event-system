@@ -49,28 +49,25 @@ public:
 		return weak_connection<Args...>(conn);
 	}
 
-	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](const PARMS&... data)
+		return connect([&callback](const Args&... data)
 			{
 				callback(std::forward<Args>(data)...);
 			});
 	}
 
-	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return connect([&queue](const PARMS&... data)
+		return connect([&queue](const Args&... data)
 			{
 				queue(std::forward<Args>(data)...);
 			});
 	}
 
-	template <typename ... PARMS>
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return connect([&queue, priority, delay](const PARMS&... data)
+		return connect([&queue, priority, delay](const Args&... data)
 			{
 				queue(priority, delay, std::forward<Args>(data)...);
 			});
