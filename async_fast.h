@@ -95,7 +95,7 @@ public:
 	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(sync<ARGS...>& callback)
 	{
-		return _output.connect([&callback](ARGS&&... data)
+		return _output.connect([&callback](const ARGS&... data)
 			{
 				callback(std::forward<ARGS>(data)...);
 			});
@@ -104,7 +104,7 @@ public:
 	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(async_fast<ARGS...>& queue)
 	{
-		return _output.connect([&queue](ARGS&&... data)
+		return _output.connect([&queue](const ARGS&... data)
 			{
 				queue(std::forward<ARGS>(data)...);
 			});
@@ -113,7 +113,7 @@ public:
 	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<ARGS...>& queue)
 	{
-		return _output.connect([&queue, priority, delay](ARGS&&... data)
+		return _output.connect([&queue, priority, delay](const ARGS&... data)
 			{
 				queue(priority, delay, std::forward<ARGS>(data)...);
 			});
