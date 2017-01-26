@@ -4,6 +4,8 @@
 
 class AsyncFastAutoConnectTest : testing::Test { };
 
+#if 0
+
 TEST(AsyncFastAutoConnectTest, Test1)
 {
 	const int N = 9;
@@ -22,22 +24,4 @@ TEST(AsyncFastAutoConnectTest, Test1)
 	ASSERT_EQ(counter, N);
 }
 
-/*
-TEST(AsyncFastAutoConnectTest, Test1)
-{
-	const int N = 9;
-	int counter = 0;
-
-	fes::async_fast<void> sync;
-	sync.connect(sync);
-	sync.connect([&counter]() { ++counter; });
-
-	sync();
-	for (int i = 0; i < N; ++i)
-	{
-		sync.get();
-	}
-
-	ASSERT_EQ(counter, N);
-}
-*/
+#endif
