@@ -25,12 +25,12 @@ TEST(AsyncDelayTest, Test1)
 					}
 				}));
 		// lambda must received this
-		sync(5, "hello world", 11.0);
+		sync(0, fes::deltatime(0), 0, "hello world", 11.0);
 		sync.update();
 	}
 	// kill only if autodisconnection failed
 	// TODO: exception here
-	sync(6, "kill", 12.0);
+	sync(0, fes::deltatime(0), 6, "kill", 12.0);
 	sync.update();
 
 	ASSERT_TRUE(is_dispatched);
