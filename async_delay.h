@@ -33,7 +33,8 @@ public:
 	void operator()(int priority, deltatime delay, PARMS&&... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
-		_queue.emplace_back(priority, delay_point, data...);
+		// _queue.emplace_back(priority, delay_point, data...);
+		_queue.push_back(message<PARMS...>(priority, delay_point, data...));
 		std::sort(std::begin(_queue), std::end(_queue), message_comp<Args...>());
 		_sem.notify();
 	}
