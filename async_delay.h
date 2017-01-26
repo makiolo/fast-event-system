@@ -39,6 +39,7 @@ public:
 		_sem.notify();
 	}
 
+	/*
 	template <typename ... PARMS>
 	void operator()(deltatime delay, PARMS&&... data)
 	{
@@ -56,6 +57,7 @@ public:
 	{
 		operator()(0, fes::deltatime(0), data...);
 	}
+	*/
 
 	void update()
 	{
