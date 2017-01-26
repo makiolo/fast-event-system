@@ -39,7 +39,7 @@ public:
 	template <typename ... ARGS>
 	void operator()(ARGS&&... data)
 	{
-		_queue.enqueue(std::make_tuple(std::forward<ARGS>(data)...));
+		_queue.enqueue(std::make_tuple(std::forward<Args>(std::forward<ARGS>(data))...));
 		_sem.notify();
 	}
 
