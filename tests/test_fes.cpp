@@ -12,6 +12,8 @@
 #include "../async_delay.h"
 #include "../async_fast.h"
 
+#if 0
+
 class FesTest : testing::Test { };
 
 template <typename TYPE = fes::sync<std::string>>
@@ -145,3 +147,5 @@ TEST(FesTest, Test4)
 	ASSERT_TRUE(called1);
 	ASSERT_TRUE(called2);
 }
+
+#endif
