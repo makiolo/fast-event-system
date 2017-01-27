@@ -136,12 +136,11 @@ protected:
 
 	auto _get()
 	{
-		auto& t = _queue.back();
 		_sem.wait();
 		/*
 		// bugged ?
 #if 0
-		while(high_resolution_clock() < t._timestamp)
+		while(high_resolution_clock() < _queue.back()._timestamp)
 		{
 #ifndef _WIN32
 			// each 100 ms
@@ -150,6 +149,7 @@ protected:
 		}
 #endif
 		*/
+		auto& t = _queue.back();
 		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});
 		_queue.pop_back();
 		return t._data;
