@@ -119,7 +119,7 @@ protected:
 		_output(std::get<S>(std::forward<Tuple>(top))...);
 	}
 
-	auto _get()
+	inline auto _get() -> std::tuple<Args...>
 	{
 		_sem.wait();
 		std::tuple<Args...> t;
