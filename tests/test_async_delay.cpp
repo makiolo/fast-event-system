@@ -4,7 +4,7 @@
 
 class AsyncDelayTest : testing::Test { };
 
-TEST(AsyncDelayTest, DISABLED_Test1)
+TEST(AsyncDelayTest, Test1)
 {
 	fes::async_delay<int, std::string, double> sync;
 	bool is_dispatched = false;
@@ -82,7 +82,7 @@ public:
 	std::string _str;
 };
 
-TEST(AsyncDelayTest, DISABLED_Test2)
+TEST(AsyncDelayTest, Test2)
 {
 	fes::async_delay<foo> sync;
 	sync.connect([](auto&& f)
@@ -93,7 +93,7 @@ TEST(AsyncDelayTest, DISABLED_Test2)
 	sync.update();
 }
 
-TEST(AsyncDelayTest, DISABLED_Test3)
+TEST(AsyncDelayTest, Test3)
 {
 	fes::async_delay<foo> sync;
 	sync.connect([](auto&& f)
