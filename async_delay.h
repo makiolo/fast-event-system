@@ -138,6 +138,9 @@ protected:
 	{
 		auto& t = _queue.back();
 		_sem.wait();
+		/*
+		// bugged ?
+#if 0
 		while(high_resolution_clock() < t._timestamp)
 		{
 #ifndef _WIN32
@@ -145,6 +148,8 @@ protected:
 			usleep(100);
 #endif
 		}
+#endif
+		*/
 		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});
 		_queue.pop_back();
 		return t._data;
