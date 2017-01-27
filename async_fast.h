@@ -115,25 +115,25 @@ public:
 #else
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return _output.connect([&callback](Args&&... data)
+		return _output.connect([&callback](const Args&... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(std::move(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return _output.connect([&queue](Args&&... data)
+		return _output.connect([&queue](const Args&... data)
 			{
-				queue(std::forward<Args>(data)...);
+				queue(std::move(data)...);
 			});
 	}
 
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return _output.connect([priority, delay, &queue](Args&&... data)
+		return _output.connect([priority, delay, &queue](const Args&... data)
 			{
-				queue(priority, delay, std::forward<Args>(data)...);
+				queue(priority, delay, std::move(data)...);
 			});
 	}
 #endif
