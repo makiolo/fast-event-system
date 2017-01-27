@@ -11,7 +11,7 @@ TEST(AsyncFastAutoConnectTest, Test1)
 
 	fes::async_fast<int> sync;
 	sync.connect(sync);
-	sync.connect([&counter](int) { ++counter; });
+	sync.connect([&counter](auto&) { ++counter; });
 
 	sync(0);
 	for (int i = 0; i < N; ++i)
