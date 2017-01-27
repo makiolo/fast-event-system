@@ -117,7 +117,7 @@ public:
 	{
 		return _output.connect([&callback](Args&&... data)
 			{
-				callback(std::forward<Args>(data...));
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
@@ -125,7 +125,7 @@ public:
 	{
 		return _output.connect([&queue](Args&&... data)
 			{
-				queue(std::forward<Args>(data...));
+				queue(std::forward<Args>(data)...);
 			});
 	}
 
@@ -133,7 +133,7 @@ public:
 	{
 		return _output.connect([priority, delay, &queue](Args&&... data)
 			{
-				queue(priority, delay, std::forward<Args>(data...));
+				queue(priority, delay, std::forward<Args>(data)...);
 			});
 	}
 #endif
