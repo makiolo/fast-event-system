@@ -34,7 +34,7 @@ public:
 	{
 		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, std::forward<PARMS>(data)...);
-		if(_sem.size() > 1)
+		if(_queue.size() > 1)
 		{
 			std::sort(_queue.begin(), _queue.end(), message_comp<Args...>());
 		}
