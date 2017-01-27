@@ -38,26 +38,6 @@ public:
 		_sem.notify();
 	}
 
-	/*
-	template <typename ... PARMS>
-	void operator()(deltatime delay, PARMS&&... data)
-	{
-		operator()(0, delay, data...);
-	}
-
-	template <typename ... PARMS>
-	void operator()(int priority, PARMS&&... data)
-	{
-		operator()(priority, fes::deltatime(0), data...);
-	}
-
-	template <typename ... PARMS>
-	inline void operator()(PARMS&&... data)
-	{
-		operator()(0, fes::deltatime(0), data...);
-	}
-	*/
-
 	void update()
 	{
 		if(!empty())
@@ -137,9 +117,6 @@ protected:
 	inline auto _get() -> std::tuple<Args...>
 	{
 		_sem.wait();
-		/*
-		// bugged ?
-#if 0
 		while(high_resolution_clock() < _queue.back()._timestamp)
 		{
 #ifndef _WIN32
@@ -147,12 +124,10 @@ protected:
 			usleep(100);
 #endif
 		}
-#endif
-		*/
 		auto t = std::move(_queue.back());
 		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});
 		_queue.pop_back();
-		return t._data;
+		return std::move(t._data);
 	}
 
 protected:
