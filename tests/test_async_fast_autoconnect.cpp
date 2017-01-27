@@ -4,8 +4,6 @@
 
 class AsyncFastAutoConnectTest : testing::Test { };
 
-#if 0
-
 TEST(AsyncFastAutoConnectTest, Test1)
 {
 	const int N = 9;
@@ -23,5 +21,3 @@ TEST(AsyncFastAutoConnectTest, Test1)
 
 	ASSERT_EQ(counter, N);
 }
-
-#endif
