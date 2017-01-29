@@ -54,9 +54,6 @@ install:
   - pip install --user poster
 
 script:
-  - ./cmaki/run.sh $MODE
-  - |
-    if [[ $CXX == "g++-4.9" && $MODE == "Release" ]]; then
-        (cd cmaki_generator && ./build github://$TRAVIS_REPO_SLUG -o --server=http://artifacts.myftp.biz:8080)
-    fi
+  - NOCACHE_LOCAL=TRUE MODE=$MODE CC=$CC CXX=$CXX ./cmaki/run.sh
+  - (cd cmaki_generator && ./build github://$TRAVIS_REPO_SLUG -o --server=http://artifacts.myftp.biz:8080)
 

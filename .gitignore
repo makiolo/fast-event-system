@@ -26,6 +26,7 @@
 *.exe
 *.out
 *.app
+
 *.~
 .*~
 **/*.~
@@ -39,4 +40,9 @@ debug/
 html/
 release/
 .clang_complete
+bin/
+gcc/
+clang/
+depends/
+
 
