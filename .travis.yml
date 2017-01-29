@@ -54,6 +54,6 @@ install:
   - pip install --user poster
 
 script:
-  - NOCACHE_LOCAL=TRUE MODE=$MODE CC=$CC CXX=$CXX ./cmaki/run.sh
+  - MODE=$MODE CC=$CC CXX=$CXX ./cmaki/run.sh
   - (cd cmaki_generator && ./build github://$TRAVIS_REPO_SLUG -o --server=http://artifacts.myftp.biz:8080)
 
