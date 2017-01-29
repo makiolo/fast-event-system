@@ -12,9 +12,9 @@
 #include "../async_delay.h"
 #include "../async_fast.h"
 
-#if 0
-
 class FesTest : testing::Test { };
+
+#if 0
 
 template <typename TYPE = fes::sync<std::string>>
 class Producer
@@ -58,8 +58,7 @@ public:
 	const std::string& get_data() const { return _data; }
 
 protected:
-	template <typename Data>
-	void on_handler(Data&& data) { _data = std::forward<Data>(data); }
+	void on_handler(const std::string& data) { _data = data; }
 
 protected:
 	std::string _data;
@@ -149,3 +148,4 @@ TEST(FesTest, Test4)
 }
 
 #endif
+

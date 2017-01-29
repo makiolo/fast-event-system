@@ -85,34 +85,6 @@ public:
 		return _output.connect(std::forward<METHOD>(method));
 	}
 	
-#if 0
-	template <typename ... ARGS>
-	inline weak_connection<Args...> connect(sync<Args...>& callback)
-	{
-		return _output.connect([&callback](ARGS&&... data)
-			{
-				callback(std::forward<Args>(std::forward<ARGS>(data)...));
-			});
-	}
-
-	template <typename ... ARGS>
-	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
-	{
-		return _output.connect([&queue](ARGS&&... data)
-			{
-				queue(std::forward<Args>(std::forward<ARGS>(data)...));
-			});
-	}
-
-	template <typename ... ARGS>
-	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
-	{
-		return _output.connect([&queue, priority, delay](ARGS&&... data)
-			{
-				queue(priority, delay, std::forward<Args>(std::forward<ARGS>(data)...));
-			});
-	}
-#else
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return _output.connect([&callback](Args... data)
@@ -136,7 +108,6 @@ public:
 				queue(priority, delay, std::move(data)...);
 			});
 	}
-#endif
 
 protected:
 	template <typename Tuple, int... S>

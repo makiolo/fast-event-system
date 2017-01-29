@@ -122,3 +122,4 @@ TEST(SyncTest, Test5)
 	foo f;
 	sync(f);
 }
+
