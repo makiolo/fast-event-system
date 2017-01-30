@@ -8,11 +8,7 @@ cmaki_setup()
 cmaki_find_package(boost-headers)
 cmaki_find_package(boost-coroutine2)
 cmaki_find_package(boost-filesystem)
-if(NOT WIN32)
-	cmaki2_library(fes clock.cpp PTHREADS)
-else()
-	cmaki2_library(fes clock.cpp)
-endif()
+
+cmaki2_library(fes clock.cpp PTHREADS)
 
 add_subdirectory(tests)
-
