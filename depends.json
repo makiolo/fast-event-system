@@ -1,12 +1,3 @@
---- 
-boost-atomic: "1.62.0.0"
-boost-chrono: "1.62.0.0"
-boost-context: "1.62.0.0"
-boost-coroutine2: "1.62.0.0"
-boost-filesystem: "1.62.0.0"
-boost-headers: "1.62.0.0"
-boost-regex: "1.62.0.0"
-boost-system: "1.62.0.0"
-boost-thread: "1.62.0.0"
-google-gmock: "0.0.955.555"
-google-gtest: "0.0.955.555"
+{boost-atomic: 1.62.0.0, boost-chrono: 1.62.0.0, boost-context: 1.62.0.0, boost-coroutine2: 1.62.0.0,
+  boost-filesystem: 1.62.0.0, boost-headers: 1.62.0.0, boost-regex: 1.62.0.0, boost-system: 1.62.0.0,
+  boost-thread: 1.62.0.0, google-gmock: 0.0.969.510}
