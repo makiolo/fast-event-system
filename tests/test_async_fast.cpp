@@ -1,7 +1,6 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include "../async_fast.h"
-#include <boost/variant.hpp>
 
 class AsyncFastTest : testing::Test { };
 
