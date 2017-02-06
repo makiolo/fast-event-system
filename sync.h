@@ -80,9 +80,8 @@ public:
 		auto itee = --_registered.end();
 		for(; it != ite; ++it)
 		{
-			// is last_iteration ?
 			auto& reg = *it;
-			if(it == itee)
+			if(it == itee) // is last iteration ?
 			{
 				// forward
 				reg(std::forward<PARMS>(data)...);
