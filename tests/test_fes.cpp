@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <cstdlib>
 #include <gtest/gtest.h>
+#include <atomic>
 #include "../sync.h"
 #include "../async_delay.h"
 #include "../async_fast.h"
@@ -116,16 +117,18 @@ TEST(FesTest, Test4)
 	auto c1 = root.connect(0, fes::deltatime(100), node_a);
 	auto c2 = root.connect(0, fes::deltatime(200), node_b);
 
-	static bool called1 = false;
-	auto c3 = node_a.connect([&](auto&& data)
+	std::atomic<bool> called1;
+	called1 = false;
+	auto c3 = node_a.connect([&](auto& data)
 		{
 			std::cout << "A: data = " << data << std::endl;
 			called1 = true;
 			ASSERT_EQ(data, 111);
 		});
 
-	static bool called2 = false;
-	auto c4 = node_b.connect([&](auto&& data)
+	std::atomic<bool> called2;
+	called2 = false;
+	auto c4 = node_b.connect([&](auto& data)
 		{
 			std::cout << "B: data = " << data << std::endl;
 			called2 = true;
