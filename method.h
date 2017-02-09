@@ -28,7 +28,7 @@ public:
 
 	template <typename T, typename ... PARMS, int... Is>
 	method(T* obj, return_type (T::*ptr_func)(const PARMS&...), int_sequence<Is...>)
-		: method(std::bind(ptr_func, obj, placeholder_template<Is>{}...))
+		: method(std::bind(ptr_func, obj, placeholder_template<Is>()...))
 	{
 	}
 

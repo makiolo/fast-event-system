@@ -99,7 +99,7 @@ protected:
 	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
 		typename methods::iterator it = _registered.emplace(
-			_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));
+			_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>()...));
 		shared_connection<Args...> conn
 			= std::make_shared<internal_connection<Args...> >(_registered, [it](methods& registered)
 				{
