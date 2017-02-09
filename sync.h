@@ -26,10 +26,10 @@ public:
 		;
 	}
 
-	template <typename T, typename  ... PARMS>
-	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const PARMS&...))
+	template <typename T>
+	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const Args&...))
 	{
-		return _connect(obj, ptr_func, make_int_sequence<sizeof...(PARMS)>{});
+		return _connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
 	
 	template <typename METHOD>
@@ -96,7 +96,7 @@ public:
 
 protected:
 	template <typename T, int... Is>
-	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(Args&&...), int_sequence<Is...>)
+	weak_connection<Args...> _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
 	{
 		typename methods::iterator it = _registered.emplace(
 			_registered.end(), std::bind(ptr_func, obj, placeholder_template<Is>{}...));

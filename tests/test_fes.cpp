@@ -14,8 +14,6 @@
 
 class FesTest : testing::Test { };
 
-#if 0
-
 template <typename TYPE = fes::sync<std::string>>
 class Producer
 {
@@ -146,6 +144,4 @@ TEST(FesTest, Test4)
 	ASSERT_TRUE(called1);
 	ASSERT_TRUE(called2);
 }
-
-#endif
 
