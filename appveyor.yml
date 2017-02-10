@@ -4,6 +4,10 @@ platform:
   - x86
   - x64
 
+environment:
+  MODE: Debug
+  MODE: Release
+
 install:
   - cmd: git submodule update --init --recursive
   - cmd: pip install pyyaml
