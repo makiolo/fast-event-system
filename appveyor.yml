@@ -4,9 +4,9 @@ platform:
   - x86
   - x64
 
-environment:
-  MODE: Debug
-  MODE: Release
+configuration:
+  - Debug
+  - Release
 
 install:
   - cmd: git submodule update --init --recursive
