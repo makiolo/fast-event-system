@@ -94,5 +94,5 @@ TEST(AsyncFastTest, Test3)
 	foo f;
 	sync(f);
 	sync.update();
+	std::cout << "f._str = " << f._str << std::endl;
 }
-
