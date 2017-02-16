@@ -94,6 +94,7 @@ TEST(AsyncFastTest, Test3)
 	foo f;
 	// f is moved
 	sync(f);
+	ASSERT_STREQ(f._str.c_str(), "bar");
 	sync.update();
-	ASSERT_STRE(f._str.c_str(), "");
+	ASSERT_STREQ(f._str.c_str(), "");
 }
