@@ -92,9 +92,9 @@ TEST(AsyncFastTest, Test3)
 			std::cout << "<async_fast> received lvalue" << std::endl;
 		});
 	foo f;
-	// f is moved
-	sync(f);
 	ASSERT_STREQ(f._str.c_str(), "bar");
+	sync(f);
+	ASSERT_STREQ(f._str.c_str(), "");
 	sync.update();
 	ASSERT_STREQ(f._str.c_str(), "");
 }
