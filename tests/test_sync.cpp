@@ -127,7 +127,7 @@ TEST(SyncTest, test_sync_chaining)
 {
 	fes::sync<foo> a;
 	fes::sync<foo> b;
-	fes::sync<foo> d;
+	fes::sync<foo> c;
 	a.connect(b);
 	b.connect(c);
 	c.connect([](auto&&)
