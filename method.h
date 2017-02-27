@@ -16,7 +16,7 @@ public:
 
 	template <typename FUNCTION>
 	method(FUNCTION&& m)
-		: _method(m)
+		: _method(std::forward<FUNCTION>(m))
 	{
 	}
 
