@@ -15,19 +15,19 @@ public:
 	using function = std::function<return_type(const Args&...)>;
 
 	template <typename FUNCTION>
-	method(FUNCTION&& m)
+	explicit method(FUNCTION&& m)
 		: _method(std::forward<FUNCTION>(m))
 	{
 	}
 
 	template <typename T, typename ... PARMS>
-	method(T* obj, return_type (T::*ptr_func)(const PARMS&...))
+	explicit method(T* obj, return_type (T::*ptr_func)(const PARMS&...))
 		: method(obj, ptr_func, make_int_sequence<sizeof...(PARMS)>{})
 	{
 	}
 
 	template <typename T, typename ... PARMS, int... Is>
-	method(T* obj, return_type (T::*ptr_func)(const PARMS&...), int_sequence<Is...>)
+	explicit method(T* obj, return_type (T::*ptr_func)(const PARMS&...), int_sequence<Is...>)
 		: method(std::bind(ptr_func, obj, placeholder_template<Is>()...))
 	{
 	}
