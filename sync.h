@@ -45,11 +45,12 @@ public:
 		return weak_connection<Args...>(conn);
 	}
 
+	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](Args&&... data)
+		return connect([&callback](ARGS... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(std::move(data)...);
 			});
 	}
 
