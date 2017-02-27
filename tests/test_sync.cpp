@@ -123,3 +123,17 @@ TEST(SyncTest, Test5)
 	sync(f);
 }
 
+TEST(SyncTest, test_sync_chaining)
+{
+	fes::sync<foo> a;
+	fes::sync<foo> b;
+	fes::sync<foo> d;
+	a.connect(b);
+	b.connect(c);
+	c.connect([](auto&&)
+		{
+			std::cout << "received foo like pipeline" << std::endl;
+		});
+	// send from a
+	a( foo() );
+}
