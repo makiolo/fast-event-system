@@ -49,7 +49,7 @@ public:
 	{
 		return connect([&callback](Args... data)
 			{
-				callback(std::move(data)...);
+				callback(std::forward<Args>(data)...);
 			});
 	}
 
