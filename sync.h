@@ -45,28 +45,25 @@ public:
 		return weak_connection<Args...>(conn);
 	}
 
-	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](ARGS... data)
+		return connect([&callback](Args... data)
 			{
 				callback(std::move(data)...);
 			});
 	}
 
-	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(async_fast<Args...>& queue)
 	{
-		return connect([&queue](ARGS... data)
+		return connect([&queue](Args... data)
 			{
 				queue(std::move(data)...);
 			});
 	}
 
-	template <typename ... ARGS>
 	inline weak_connection<Args...> connect(int priority, deltatime delay, async_delay<Args...>& queue)
 	{
-		return connect([&queue, priority, delay](ARGS... data)
+		return connect([&queue, priority, delay](Args... data)
 			{
 				queue(priority, delay, std::move(data)...);
 			});
