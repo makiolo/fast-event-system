@@ -3,6 +3,7 @@
 #include "../async_fast.h"
 
 using testing::AtLeast;
+using testing::AnyNumber;
 using testing::_;
 
 class AsyncFastTest : testing::Test { };
@@ -116,9 +117,9 @@ TEST(AsyncFastTest, Test3)
 	sync.update();
 	ASSERT_STREQ(f._str.c_str(), "");
 	// 
-	ON_CALL(f, mock_constructor());
-	ON_CALL(f, mock_destructor());
+	EXPECT_CALL(f, mock_constructor()).Times(AnyNumber());
+	EXPECT_CALL(f, mock_destructor()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_copy()).Times(0);
-	ON_CALL(f, mock_move());
-	ON_CALL(f, mock_swap());
+	EXPECT_CALL(f, mock_move()).Times(AnyNumber());
+	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
 }
