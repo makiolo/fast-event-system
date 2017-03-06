@@ -122,7 +122,6 @@ TEST(AsyncDelayTest, Test3)
 	sync.update();
 	// 
 	EXPECT_CALL(f, mock_constructor()).Times(AtLeast(1));
-	EXPECT_CALL(f, mock_destructor()).Times(AtLeast(1));
 	EXPECT_CALL(f, mock_copy()).Times(0);
 	EXPECT_CALL(f, mock_move()).Times(AtLeast(1));
 }
