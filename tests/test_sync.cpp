@@ -1,5 +1,5 @@
 #include <iostream>
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "../sync.h"
 
 using testing::AtLeast;
