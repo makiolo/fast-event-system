@@ -116,5 +116,9 @@ TEST(AsyncFastTest, Test3)
 	sync.update();
 	ASSERT_STREQ(f._str.c_str(), "");
 	// 
+	ON_CALL(f, mock_constructor());
+	ON_CALL(f, mock_destructor());
 	EXPECT_CALL(f, mock_copy()).Times(0);
+	ON_CALL(f, mock_move());
+	ON_CALL(f, mock_swap());
 }
