@@ -1,6 +1,10 @@
 #include <iostream>
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "../async_delay.h"
+
+using namespace tl;
+using testing::AtLeast;
+using testing::_;
 
 class AsyncDelayTest : testing::Test { };
 
@@ -36,30 +40,42 @@ TEST(AsyncDelayTest, Test1)
 	ASSERT_TRUE(is_dispatched);
 }
 
-
 struct foo
-{	
+{
+	MOCK_METHOD0(constructor, constructor());
+	MOCK_METHOD0(destructor, destructor());
+	MOCK_METHOD1(copy, copy(const foo& other));
+	MOCK_METHOD1(move, move(foo&& other));
+	MOCK_METHOD1(swap, swap(foo& other));
+	
 	foo()
 		: _str("bar")
 	{
+		constructor();
 	}
-	
+
 	foo(const foo& other)
 		: _str(other._str)
 	{
+		copy(other);
 		std::cout << "constructor copy foo" << std::endl;
 	}
 
 	foo(foo&& other) noexcept
 		: _str(std::move(other._str))
 	{
+		move(other);
 		std::cout << "constructor move foo" << std::endl;
 	}
 
-	~foo() {}
+	virtual ~foo()
+	{
+		destructor();
+	}
 	
 	void swap(foo& other) noexcept
 	{
+		swap(other);
 		std::cout << "swap foo" << std::endl;
 		using std::swap;
 		std::swap(_str, other._str);
@@ -67,6 +83,7 @@ struct foo
 
 	foo& operator=(const foo& other)
 	{
+		copy(other);
 		std::cout << "operator copy foo" << std::endl;
 		foo(other).swap(*this);
 		return *this;
@@ -74,6 +91,7 @@ struct foo
 
 	foo& operator=(foo&& other) noexcept
 	{
+		move(other);
 		std::cout << "operator move foo" << std::endl;
 		foo(std::move(other)).swap(*this);
 		return *this;
@@ -103,5 +121,9 @@ TEST(AsyncDelayTest, Test3)
 	foo f;
 	sync(0, fes::deltatime(0), f);
 	sync.update();
+	// 
+	EXPECT_CALL(f, constructor()).Times(AtLeast(1));
+	EXPECT_CALL(f, destructor()).Times(AtLeast(1));
+	EXPECT_CALL(f, copy(_)).Times(0);
+	EXPECT_CALL(f, move(_)).Times(AtLeast(1));
 }
-
