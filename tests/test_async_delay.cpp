@@ -43,9 +43,9 @@ struct foo
 {
 	MOCK_METHOD0(mock_constructor, void());
 	MOCK_METHOD0(mock_destructor, void());
-	MOCK_METHOD1(mock_copy, void());
-	MOCK_METHOD1(mock_move, void());
-	MOCK_METHOD1(mock_swap, void());
+	MOCK_METHOD0(mock_copy, void());
+	MOCK_METHOD0(mock_move, void());
+	MOCK_METHOD0(mock_swap, void());
 	
 	foo()
 		: _str("bar")
