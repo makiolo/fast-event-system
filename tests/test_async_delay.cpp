@@ -3,6 +3,7 @@
 #include "../async_delay.h"
 
 using testing::AtLeast;
+using testing::AnyNumber;
 using testing::_;
 
 class AsyncDelayTest : testing::Test { };
@@ -121,9 +122,9 @@ TEST(AsyncDelayTest, Test3)
 	sync(0, fes::deltatime(0), f);
 	sync.update();
 	// 
-	ON_CALL(f, mock_constructor());
-	ON_CALL(f, mock_destructor());
+	EXPECT_CALL(f, mock_constructor()).Times(AnyNumber());
+	EXPECT_CALL(f, mock_destructor()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_copy()).Times(0);
-	ON_CALL(f, mock_move());
-	ON_CALL(f, mock_swap());
+	EXPECT_CALL(f, mock_move()).Times(AnyNumber());
+	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
 }
