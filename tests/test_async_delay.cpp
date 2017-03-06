@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 #include "../async_delay.h"
 
-using namespace tl;
 using testing::AtLeast;
 using testing::_;
 
