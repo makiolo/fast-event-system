@@ -63,7 +63,7 @@ struct foo
 	foo(foo&& other) noexcept
 		: _str(std::move(other._str))
 	{
-		mock_move(other);
+		mock_move(std::move(other));
 		std::cout << "constructor move foo" << std::endl;
 	}
 
@@ -90,7 +90,7 @@ struct foo
 
 	foo& operator=(foo&& other) noexcept
 	{
-		mock_move(other);
+		mock_move(std::move(other));
 		std::cout << "operator move foo" << std::endl;
 		foo(std::move(other)).swap(*this);
 		return *this;
