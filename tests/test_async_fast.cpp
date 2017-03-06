@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 #include "../async_fast.h"
 
-using namespace tl;
 using testing::AtLeast;
 using testing::_;
 
