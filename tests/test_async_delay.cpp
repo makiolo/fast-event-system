@@ -43,9 +43,9 @@ struct foo
 {
 	MOCK_METHOD0(mock_constructor, void());
 	MOCK_METHOD0(mock_destructor, void());
-	MOCK_METHOD1(mock_copy, void(const foo& other));
-	MOCK_METHOD1(mock_move, void(foo&& other));
-	MOCK_METHOD1(mock_swap, void(foo& other));
+	MOCK_METHOD1(mock_copy, void());
+	MOCK_METHOD1(mock_move, void());
+	MOCK_METHOD1(mock_swap, void());
 	
 	foo()
 		: _str("bar")
@@ -56,14 +56,14 @@ struct foo
 	foo(const foo& other)
 		: _str(other._str)
 	{
-		mock_copy(other);
+		mock_copy();
 		std::cout << "constructor copy foo" << std::endl;
 	}
 
 	foo(foo&& other) noexcept
 		: _str(std::move(other._str))
 	{
-		mock_move(std::move(other));
+		mock_move();
 		std::cout << "constructor move foo" << std::endl;
 	}
 
@@ -74,7 +74,7 @@ struct foo
 	
 	void swap(foo& other) noexcept
 	{
-		mock_swap(other);
+		mock_swap();
 		std::cout << "swap foo" << std::endl;
 		using std::swap;
 		std::swap(_str, other._str);
@@ -82,7 +82,7 @@ struct foo
 
 	foo& operator=(const foo& other)
 	{
-		mock_copy(other);
+		mock_copy();
 		std::cout << "operator copy foo" << std::endl;
 		foo(other).swap(*this);
 		return *this;
@@ -90,7 +90,7 @@ struct foo
 
 	foo& operator=(foo&& other) noexcept
 	{
-		mock_move(std::move(other));
+		mock_move();
 		std::cout << "operator move foo" << std::endl;
 		foo(std::move(other)).swap(*this);
 		return *this;
@@ -123,6 +123,6 @@ TEST(AsyncDelayTest, Test3)
 	// 
 	EXPECT_CALL(f, constructor()).Times(AtLeast(1));
 	EXPECT_CALL(f, destructor()).Times(AtLeast(1));
-	EXPECT_CALL(f, copy(_)).Times(0);
-	EXPECT_CALL(f, move(_)).Times(AtLeast(1));
+	EXPECT_CALL(f, copy()).Times(0);
+	EXPECT_CALL(f, move()).Times(AtLeast(1));
 }
