@@ -33,11 +33,11 @@ TEST(AsyncFastTest, Test1)
 
 struct foo
 {
-	MOCK_METHOD0(constructor, constructor());
-	MOCK_METHOD0(destructor, destructor());
-	MOCK_METHOD1(copy, copy(const foo& other));
-	MOCK_METHOD1(move, move(foo&& other));
-	MOCK_METHOD1(swap, swap(foo& other));
+	MOCK_METHOD0(constructor, void());
+	MOCK_METHOD0(destructor, void());
+	MOCK_METHOD1(copy, void(const foo& other));
+	MOCK_METHOD1(move, void(foo&& other));
+	MOCK_METHOD1(swap, void(foo& other));
 	
 	foo()
 		: _str("bar")
