@@ -47,9 +47,9 @@ public:
 
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
-		return connect([&callback](Args... data)
+		return connect([&callback](const Args&... data)
 			{
-				callback(std::forward<Args>(data)...);
+				callback(data...);
 			});
 	}
 

@@ -1,10 +1,12 @@
 #include <iostream>
 #include <gmock/gmock.h>
 #include "../sync.h"
+#include "../async_fast.h"
+#include "../async_delay.h"
 
-using testing::AtLeast;
-using testing::AnyNumber;
-using testing::_;
+using ::testing::AtLeast;
+using ::testing::AnyNumber;
+using ::testing::_;
 
 class SyncTest : testing::Test { };
 
@@ -63,8 +65,6 @@ TEST(SyncTest, Test3)
 
 struct foo
 {
-	MOCK_METHOD0(mock_constructor, void());
-	MOCK_METHOD0(mock_destructor, void());
 	MOCK_METHOD0(mock_copy, void());
 	MOCK_METHOD0(mock_move, void());
 	MOCK_METHOD0(mock_swap, void());
@@ -72,7 +72,6 @@ struct foo
 	foo()
 		: _str("bar")
 	{
-		mock_constructor();
 	}
 
 	foo(const foo& other)
@@ -82,19 +81,18 @@ struct foo
 		std::cout << "constructor copy foo" << std::endl;
 	}
 
-	foo(foo&& other) noexcept
+	foo(foo&& other)
 		: _str(std::move(other._str))
 	{
 		mock_move();
 		std::cout << "constructor move foo" << std::endl;
 	}
 
-	virtual ~foo()
+	~foo()
 	{
-		mock_destructor();
 	}
 	
-	void swap(foo& other) noexcept
+	void swap(foo& other)
 	{
 		mock_swap();
 		std::cout << "swap foo" << std::endl;
@@ -110,7 +108,7 @@ struct foo
 		return *this;
 	}
 
-	foo& operator=(foo&& other) noexcept
+	foo& operator=(foo&& other)
 	{
 		mock_move();
 		std::cout << "operator move foo" << std::endl;
@@ -131,7 +129,7 @@ TEST(SyncTest, Test4)
 	sync(foo());
 }
 
-TEST(SyncTest, Test5)
+TEST(SyncTest, TestCopyOrMove)
 {
 	fes::sync<foo> sync;
 	sync.connect([](auto&& f)
@@ -140,25 +138,44 @@ TEST(SyncTest, Test5)
 		});
 	foo f;
 	sync(f);
-	// 
-	EXPECT_CALL(f, mock_constructor()).Times(AnyNumber());
-	EXPECT_CALL(f, mock_destructor()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_copy()).Times(0);
 	EXPECT_CALL(f, mock_move()).Times(AnyNumber());
-	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
 }
 
-TEST(SyncTest, test_sync_chaining)
+TEST(SyncTest, test_connect_sync)
 {
 	fes::sync<foo> a;
 	fes::sync<foo> b;
 	fes::sync<foo> c;
 	a.connect(b);
-	b.connect(c);
-	c.connect([](auto&&)
-		{
-			std::cout << "received foo like pipeline" << std::endl;
-		});
-	// send from a
+	a.connect(c);
 	a( foo() );
 }
+
+TEST(SyncTest, test_connect_async_fast)
+{
+	fes::sync<foo> a;
+	fes::async_fast<foo> b;
+	fes::async_fast<foo> c;
+	a.connect(b);
+	a.connect(c);
+	a( foo() );
+
+	b.update();
+	c.update();
+}
+
+TEST(SyncTest, test_connect_delay)
+{
+	fes::sync<foo> a;
+	fes::async_delay<foo> b;
+	fes::async_delay<foo> c;
+	a.connect(0, fes::deltatime(0), b);
+	a.connect(0, fes::deltatime(0), c);
+	a( foo() );
+
+	b.update();
+	c.update();
+}
+
+

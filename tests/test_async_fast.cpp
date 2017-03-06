@@ -1,6 +1,8 @@
 #include <iostream>
 #include <gmock/gmock.h>
+#include "../sync.h"
 #include "../async_fast.h"
+#include "../async_delay.h"
 
 using testing::AtLeast;
 using testing::AnyNumber;
@@ -53,19 +55,19 @@ struct foo
 		std::cout << "constructor copy foo" << std::endl;
 	}
 
-	foo(foo&& other) noexcept
+	foo(foo&& other)
 		: _str(std::move(other._str))
 	{
 		mock_move();
 		std::cout << "constructor move foo" << std::endl;
 	}
 
-	virtual ~foo()
+	~foo()
 	{
 		mock_destructor();
 	}
 	
-	void swap(foo& other) noexcept
+	void swap(foo& other)
 	{
 		mock_swap();
 		std::cout << "swap foo" << std::endl;
@@ -81,7 +83,7 @@ struct foo
 		return *this;
 	}
 
-	foo& operator=(foo&& other) noexcept
+	foo& operator=(foo&& other)
 	{
 		mock_move();
 		std::cout << "operator move foo" << std::endl;
@@ -111,15 +113,58 @@ TEST(AsyncFastTest, Test3)
 			std::cout << "<async_fast> received lvalue" << std::endl;
 		});
 	foo f;
-	ASSERT_STREQ(f._str.c_str(), "bar");
-	sync(f);
-	ASSERT_STREQ(f._str.c_str(), "");
-	sync.update();
-	ASSERT_STREQ(f._str.c_str(), "");
 	// 
 	EXPECT_CALL(f, mock_constructor()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_destructor()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_copy()).Times(0);
 	EXPECT_CALL(f, mock_move()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
+	//
+	ASSERT_STREQ(f._str.c_str(), "bar");
+	sync(f);
+	ASSERT_STREQ(f._str.c_str(), "");
+	sync.update();
+	ASSERT_STREQ(f._str.c_str(), "");
 }
+
+TEST(AsyncFastTest, test_connect_sync)
+{
+	fes::async_fast<foo> a;
+	fes::sync<foo> b;
+	fes::sync<foo> c;
+	a.connect(b);
+	a.connect(c);
+	a( foo() );
+
+	a.update();
+}
+
+TEST(AsyncFastTest, test_connect_async_fast)
+{
+	fes::async_fast<foo> a;
+	fes::async_fast<foo> b;
+	fes::async_fast<foo> c;
+	a.connect(b);
+	a.connect(c);
+	a( foo() );
+
+	a.update();
+	b.update();
+	c.update();
+}
+
+TEST(AsyncFastTest, test_connect_delay)
+{
+	fes::async_fast<foo> a;
+	fes::async_delay<foo> b;
+	fes::async_delay<foo> c;
+	a.connect(0, fes::deltatime(0), b);
+	a.connect(0, fes::deltatime(0), c);
+	a( foo() );
+
+	a.update();
+	b.update();
+	c.update();
+}
+
+
