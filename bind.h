@@ -9,6 +9,8 @@
 namespace fes {
 
 template <typename... Args>
+class sync;
+template <typename... Args>
 class async_delay;
 template <typename... Args>
 class async_fast;
