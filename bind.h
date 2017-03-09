@@ -94,7 +94,7 @@ protected:
 				});
     if(_conns.size() > 0)
     {
-      // exception, only one can be registered
+		throw std::runtime_error("this bind is already connected!");
     }
 		_conns.push_back(conn);
 		return weak_connection<Args...>(conn);
