@@ -65,9 +65,9 @@ We can use .update() for dispatching, now have a parameter for config timeout:
 key_A.update(fes::deltatime(5000));
 ```
 Previous line, wait 5000 ms or finish when one message is dispatched. For default, timeout is 16ms.
-For dispatching a fixed time(dispathing multiples messages), you can use .update_while():
+For dispatching a fixed time(dispathing multiples messages), you can use .fortime():
 ```cpp
-key_A.update_while(fes::deltatime(5000));
+key_A.fortime(fes::deltatime(5000));
 ```
 ### Documentation under construction
 
