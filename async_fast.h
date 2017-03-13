@@ -63,6 +63,7 @@ public:
 		return _get();
 	}
 
+	/*
 	inline bool empty() const
 	{
 		return (_sem.size() <= 0);
@@ -72,6 +73,7 @@ public:
 	{
 		return _sem.size();
 	}
+	*/
 
 	template <typename T, typename ... ARGS>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const ARGS&...))
