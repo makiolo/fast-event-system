@@ -26,12 +26,12 @@ class async_fast
 public:
 	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...>>;
 
-	async_fast()
+	explicit async_fast()
 		: _output()
 		, _queue()
 	{ ; }
 
-	async_fast(size_t initial_allocation)
+	explicit async_fast(size_t initial_allocation)
 		: _output()
 		, _queue(initial_allocation)
 	{ ; }
