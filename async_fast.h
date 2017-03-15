@@ -43,18 +43,24 @@ public:
 		_sem.notify();
 	}
 
-	void update()
+	void update(fes::deltatime tmax = fes::deltatime(16))
 	{
-		if(!empty())
-			get();
+		fes::marktime timeout = fes::high_resolution_clock() + tmax;
+		bool has_next = true;
+		while(has_next && (fes::high_resolution_clock() <= timeout))
+		{
+			has_next = (_sem.size() > 0);
+			if(has_next)
+				get();
+		}
 	}
 
-	void fortime(deltatime time = fes::deltatime(16))
+	void fortime(fes::deltatime time = fes::deltatime(16))
 	{
 		auto mark = fes::high_resolution_clock() + time;
-		while (fes::high_resolution_clock() <= mark)
+		while(fes::high_resolution_clock() <= mark)
 		{
-			update();
+			get();
 		}
 	}
 
@@ -62,18 +68,6 @@ public:
 	{
 		return _get();
 	}
-
-	/*
-	inline bool empty() const
-	{
-		return (_sem.size() <= 0);
-	}
-
-	inline size_t size() const
-	{
-		return _sem.size();
-	}
-	*/
 
 	template <typename T, typename ... ARGS>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const ARGS&...))
