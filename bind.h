@@ -33,10 +33,9 @@ public:
 		{
 			throw std::runtime_error("bind already connected!");
 		}
-		_reg = method(std::bind(ptr_func, obj, placeholder_template<Is>()...));
-		_connected = true;
+		_connect(obj, ptr_func, make_int_sequence<sizeof...(Args)>{});
 	}
-	
+
 	template <typename METHOD>
 	inline void connect(METHOD&& fun)
 	{
@@ -71,11 +70,18 @@ public:
 				queue(priority, delay, std::move(data)...);
 			});
 	}
-	
+
 	template <typename ... PARMS>
 	void operator()(PARMS&&... data) const
 	{
 		(_reg)(std::forward<PARMS>(data)...);
+	}
+
+protected:
+	template <typename T, int... Is>
+	void _connect(T* obj, void (T::*ptr_func)(const Args&...), int_sequence<Is...>)
+	{
+		_reg = std::bind(ptr_func, obj, placeholder_template<Is>()...);
 	}
 
 protected:
