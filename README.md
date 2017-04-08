@@ -1,5 +1,7 @@
 # Fast Event System
 
+Coverage: [![codecov](https://codecov.io/gh/makiolo/fast-event-system/branch/master/graph/badge.svg)](https://codecov.io/gh/makiolo/fast-event-system)
+
 gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/fast-event-system.svg?branch=master)](https://travis-ci.org/makiolo/fast-event-system)
 
 MSVC 2015: [![Build status](https://ci.appveyor.com/api/projects/status/oatw9c59rlbwa98t?svg=true)](https://ci.appveyor.com/project/makiolo/fast-event-system)
