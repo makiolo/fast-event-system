@@ -110,6 +110,7 @@ TEST(AsyncDelayTest, Test2)
 			std::cout << "<async_delay> received rvalue" << std::endl;
 		});
 	sync(0, fes::deltatime(0), foo());
+	sync(0, fes::deltatime(0), foo());
 	sync.update();
 }
 
@@ -129,6 +130,7 @@ TEST(AsyncDelayTest, Test3)
 	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
 	//
 	sync(0, fes::deltatime(0), f);
+	sync(0, fes::deltatime(0), f);
 	sync.update();
 }
 
@@ -140,7 +142,7 @@ TEST(AsyncDelayTest, test_connect_sync)
 	a.connect(b);
 	a.connect(c);
 	a( 0, fes::deltatime(0), foo() );
-
+	a( 0, fes::deltatime(0), foo() );
 	a.update();
 }
 
@@ -152,7 +154,7 @@ TEST(AsyncDelayTest, test_connect_async_fast)
 	a.connect(b);
 	a.connect(c);
 	a( 0, fes::deltatime(0), foo() );
-
+	a( 0, fes::deltatime(0), foo() );
 	a.update();
 	b.update();
 	c.update();
@@ -166,10 +168,8 @@ TEST(AsyncDelayTest, test_connect_delay)
 	a.connect(0, fes::deltatime(0), b);
 	a.connect(0, fes::deltatime(0), c);
 	a( 0, fes::deltatime(0), foo() );
-
+	a( 0, fes::deltatime(0), foo() );
 	a.update();
 	b.update();
 	c.update();
 }
-
-
