@@ -44,5 +44,5 @@ bin/
 gcc/
 clang/
 depends/
-
+coverage/
 
