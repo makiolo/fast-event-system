@@ -72,4 +72,3 @@ For dispatching a fixed time(dispathing multiples messages), you can use .fortim
 key_A.fortime(fes::deltatime(5000));
 ```
 ### Documentation under construction
-
