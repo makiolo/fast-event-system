@@ -1,12 +1,3 @@
 [submodule "concurrentqueue"]
 	path = concurrentqueue
 	url = https://github.com/cameron314/concurrentqueue.git
-[submodule "metacommon"]
-	path = metacommon
-	url = https://github.com/makiolo/metacommon.git
-[submodule "cmaki"]
-	path = cmaki
-	url = https://github.com/makiolo/cmaki.git
-[submodule "cmaki_generator"]
-	path = cmaki_generator
-	url = https://github.com/makiolo/cmaki_generator.git
