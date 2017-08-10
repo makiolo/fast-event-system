@@ -52,23 +52,13 @@ matrix:
         - CXX=clang++-3.6 CC=clang-3.6 MODE=Release
 
 install:
-  # python deps
   - pip install --user pyyaml
   - pip install --user poster
   - pip install --user codecov
-  # Installing lcov
-  # - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz
-  # - tar xf lcov_1.13.orig.tar.gz
-  # - (cd lcov-1.13/ && sudo make install && rm -Rf lcov-1.13/)
 
 script:
-  - set -e
-  - (cd cmaki && git pull origin master)
-  - ./cmaki/run.sh
-  - export NOCACHE_LOCAL=TRUE
-  - export NOCACHE_REMOTE=FALSE
-  - (cd cmaki_generator && ./build github://$TRAVIS_REPO_SLUG -o --server=http://artifacts.myftp.biz:8080)
-  - set +e
+  - npm install
+  - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=FALSE ./node_modules/cmaki/upload.sh
 
 notifications:
   webhooks: http://artifacts.myftp.biz:3000/api/webhooks
@@ -77,3 +67,4 @@ notifications:
   on_failure: always # default: always
   on_error: always # default: always
   on_cancel: always # default: always
+
