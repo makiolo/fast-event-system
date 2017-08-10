@@ -1,8 +1,8 @@
 #include <iostream>
 #include <gmock/gmock.h>
-#include "../sync.h"
-#include "../async_fast.h"
-#include "../async_delay.h"
+#include <sync.h>
+#include <async_fast.h>
+#include <async_delay.h>
 
 using ::testing::AtLeast;
 using ::testing::AnyNumber;
