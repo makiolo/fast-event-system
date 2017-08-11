@@ -1,4 +1,4 @@
-# Fast Event System [![npm version](https://badge.fury.io/js/fast-event-system.svg)](https://badge.fury.io/js/fast-event-system)
+# Fast Event System [![npm version](https://badge.fury.io/js/fast-event-system.svg)](https://badge.fury.io/js/fast-event-system) [![state dependencies](https://david-dm.org/makiolo/fast-event-system.svg)](https://david-dm.org/makiolo/fast-event-system.svg) [![state dev dependencies](https://david-dm.org/makiolo/fast-event-system/dev-status.svg)](https://david-dm.org/makiolo/fast-event-system/dev-status.svg)
 
 Coverage: [![codecov](https://codecov.io/gh/makiolo/fast-event-system/branch/master/graph/badge.svg)](https://codecov.io/gh/makiolo/fast-event-system)
 
