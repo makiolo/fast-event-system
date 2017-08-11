@@ -19,6 +19,3 @@ build_script:
 
 test_script:
   - cmd: npm test
-
-on_success:
-  - cmd: node_modules\cmaki\upload.cmd
