@@ -61,7 +61,8 @@ script:
   - npm-check-updates -u
   - npm install
   - npm test
-  - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=FALSE ./node_modules/cmaki/upload.sh
+  # need update cmaki_generator
+  # - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=FALSE ./node_modules/cmaki/upload.sh
 
 notifications:
   webhooks: http://artifacts.myftp.biz:3000/api/webhooks
