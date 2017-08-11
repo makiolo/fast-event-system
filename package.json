@@ -1,15 +1,15 @@
 {
   "name": "fast-event-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "main": "index.cpp",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "prepublishOnly": "bash ./node_modules/cmaki/clean.sh",
-    "install": "bash ./node_modules/cmaki/clean.sh && bash ./node_modules/cmaki/setup.sh && bash ./node_modules/cmaki/compile.sh",
-    "test": "bash ./cmaki/tests.sh"
+    "prepublishOnly": "node node_modules/cmaki/call.js clean",
+    "install": "node node_modules/cmaki/call.js clean && node node_modules/cmaki/call.js setup && node node_modules/cmaki/call.js compile",
+    "test": "node node_modules/cmaki/call.js tests"
   },
   "repository": {
     "type": "git",
@@ -25,11 +25,11 @@
     "url": "https://github.com/makiolo/fast-event-system/issues"
   },
   "homepage": "https://github.com/makiolo/fast-event-system#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "metacommon": "^1.0.0",
     "cmaki": "^1.0.1",
     "cmaki_generator": "^1.0.0"
-  },
-  "dependencies": {
-    "metacommon": "^1.0.0"
   }
 }
+
