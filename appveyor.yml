@@ -21,5 +21,4 @@ test_script:
   - cmd: npm test
 
 on_success:
-    - cmd: echo APPVEYOR_REPO_NAME = %APPVEYOR_REPO_NAME%
-    - cmd: cd cmaki_generator && build github://makiolo/fast-event-system -o --server=http://artifacts.myftp.biz:8080 && cd ..
+    - cmd: node_modules\cmaki\upload.cmd
