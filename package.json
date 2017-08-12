@@ -1,6 +1,6 @@
 {
   "name": "fast-event-system",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
     "clean": "node node_modules/cmaki/call.js clean",
