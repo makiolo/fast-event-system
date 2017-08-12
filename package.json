@@ -1,11 +1,12 @@
 {
   "name": "fast-event-system",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
-    "clean": "node node_modules/cmaki/call.js clean",
-    "install": "node node_modules/cmaki/call.js install",
-    "test": "node node_modules/cmaki/call.js tests"
+	"preinstall": "curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/bootstrap.sh | bash",
+	"clean": "node node_modules/cmaki/call.js clean",
+	"install": "node node_modules/cmaki/call.js install",
+	"test": "node node_modules/cmaki/call.js tests"
   },
   "repository": {
     "type": "git",
