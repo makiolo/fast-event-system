@@ -3,7 +3,7 @@
   "version": "1.0.6",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
-	"preinstall": "curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/bootstrap.sh | bash",
+	"preinstall": "env | sort",
 	"clean": "node node_modules/cmaki/call.js clean",
 	"install": "node node_modules/cmaki/call.js install",
 	"test": "node node_modules/cmaki/call.js tests"
