@@ -3,10 +3,9 @@
   "version": "1.0.6",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
-	"preinstall": "env | sort",
-	"clean": "node node_modules/cmaki/call.js clean",
-	"install": "node node_modules/cmaki/call.js install",
-	"test": "node node_modules/cmaki/call.js tests"
+    "clean": "call clean",
+    "install": "call install",
+    "test": "call tests"
   },
   "repository": {
     "type": "git",
@@ -25,11 +24,11 @@
   "directories": {
     "test": "tests"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cmaki": "^1.0.23"
+  },
   "dependencies": {
     "metacommon": "^1.0.0",
-    "cmaki": "^1.0.16",
     "cmaki_generator": "^1.0.0"
   }
 }
-
