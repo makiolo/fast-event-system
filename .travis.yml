@@ -71,12 +71,19 @@ install:
   - pip install --user poster
   - pip install --user codecov
   - npm install -g npm-check-updates
-  - npm install -g cmaki
 
 script:
-  - npm-check-updates -u
-  - npm install
+  - ncu -u
+  - CMAKI_PWD=$(pwd) npm install
   - npm test
+  - npm run upload
+
+deploy:
+  provider: npm
+  email: "makiolo@gmail.com"
+  api_key: "token encrypted with 'travis encrypt YOUR_AUTH_TOKEN --add deploy.api_key'"
+  on:
+    tags: true
 
 notifications:
   webhooks: http://artifacts.myftp.biz:3000/api/webhooks
