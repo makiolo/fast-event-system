@@ -1,6 +1,6 @@
 {
   "name": "fast-event-system",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
     "clean": "call clean",
@@ -25,7 +25,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "^1.0.23"
+    "cmaki": "^1.0.25"
   },
   "dependencies": {
     "metacommon": "^1.0.0",
