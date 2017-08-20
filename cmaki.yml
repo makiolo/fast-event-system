@@ -10,6 +10,9 @@
         - ./*.h include/fast-event-system/
         - ./concurrentqueue/*.h include/fast-event-system/concurrentqueue/
         - ./metacommon/*.h include/fast-event-system/metacommon/
+    build:
+        |
+            npm install
     mode: dr
     source: https://github.com/makiolo/fast-event-system.git
     targets:
