@@ -9,9 +9,10 @@ MSVC 2015: [![Build status](https://ci.appveyor.com/api/projects/status/oatw9c59
 
 # quick-start
 ```bash
-$ git clone --recursive https://github.com/makiolo/fast-event-system.git fes
+$ git clone --recursive git@github.com:makiolo/fast-event-system.git fes
 $ cd fes
-$ ./cmaki/run.sh
+$ npm install
+$ npm test
 ```
 
 # Very simple to use
