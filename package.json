@@ -1,10 +1,10 @@
 {
   "name": "fast-event-system",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
     "clean": "call clean",
-    "install": "CMAKI_PWD=$(pwd) call install",
+    "install": "call install",
     "test": "call tests",
     "upload": "call upload"
   },
