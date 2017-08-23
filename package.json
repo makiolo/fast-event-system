@@ -26,11 +26,11 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "https://github.com/makiolo/cmaki",
-    "cmaki_generator": "https://github.com/makiolo/cmaki_generator"
+    "cmaki": "makiolo/cmaki",
+    "cmaki_generator": "makiolo/cmaki_generator"
   },
   "dependencies": {
     "metacommon": "^1.0.1",
-    "concurrentqueue": "https://github.com/cameron314/concurrentqueue"
+    "concurrentqueue": "cameron314/concurrentqueue"
   }
 }
