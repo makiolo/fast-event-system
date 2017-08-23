@@ -173,3 +173,19 @@ TEST(AsyncDelayTest, test_connect_delay)
 	b.update();
 	c.update();
 }
+
+TEST(AsyncDelayTest, test_sort_messages)
+{
+	fes::async_delay<foo> a;
+	fes::async_delay<foo> b;
+	fes::async_delay<foo> c;
+	a.connect(0, fes::deltatime(0), b);
+	a.connect(0, fes::deltatime(0), c);
+	a( 0, fes::deltatime(100), foo() );
+	a( 0, fes::deltatime(200), foo() );
+	a( 0, fes::deltatime(50), foo() );
+	a( 0, fes::deltatime(500), foo() );
+	a.fortime(2000);
+	b.fortime(2000);
+	c.fortime(2000);
+}
