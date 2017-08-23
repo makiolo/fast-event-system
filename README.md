@@ -58,18 +58,18 @@ key_A.update();  // notify to subscribers
 ```
 ## async_delay
 Works equal than async_fast but data can send delayed.
-The time delayed is specified in first parameter of operator() with help of fes::deltatime():
+The time delayed is specified in second parameter of operator():
+First parameter is priority (more high, is more urgent):
 ```cpp
-key_A(fes::deltatime(2000), true);  // saved in queue (with your delayed time)
+key_A(0, 2000, true);  // saved in queue (with your delayed time)
 ```
-We can use .update() for dispatching, now have a parameter for config timeout:
+We can use .get() / .update() / .fortime() for dispatching:
 ```cpp
-// 2000 ms after, message is notify to subscribers
-key_A.update(fes::deltatime(5000));
+// receive message with blocking:
+auto one = key_A.get();
 ```
-Previous line, wait 5000 ms or finish when one message is dispatched. For default, timeout is 16ms.
 For dispatching a fixed time(dispathing multiples messages), you can use .fortime():
 ```cpp
-key_A.fortime(fes::deltatime(5000));
+// dispatching for 5 seconds
+key_A.fortime(5000);
 ```
-### Documentation under construction
