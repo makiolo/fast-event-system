@@ -39,11 +39,10 @@ key_A(true);  // notify to subscribers
 ```
 All objetcs in fes, use variadic templates, new interfaces can be created in compile time:
 ```cpp
-fes::sync<std::string, int, std::string> civiian;
-civiian.connect([](const std::string& name, int age, const std::string& country)
+fes::sync<std::string, int, std::string> civilian;
+civilian.connect([](const std::string& name, int age, const std::string& country)
 	{
-		// process input ...
-		std::cout << "new civiian registered" << std::endl;
+		std::cout << "new civilian registered" << std::endl;
 	});
 ```
 ## async_fast
