@@ -30,6 +30,7 @@
     "cmaki_generator": "https://github.com/makiolo/cmaki_generator"
   },
   "dependencies": {
-    "metacommon": "^1.0.1"
+    "metacommon": "^1.0.1",
+    "concurrentqueue": "https://github.com/cameron314/concurrentqueue"
   }
 }
