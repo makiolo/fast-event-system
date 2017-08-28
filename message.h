@@ -27,15 +27,15 @@ struct message_comp
 {
 	bool operator()(const message<Args...>& one, const message<Args...>& other)
 	{
-		if (one._timestamp < other._timestamp)
-			return false;
-		else if (one._timestamp > other._timestamp)
-			return true;
-
 		if (one._priority < other._priority)
 			return true;
 		else if (one._priority > other._priority)
 			return false;
+		
+		if (one._timestamp < other._timestamp)
+			return false;
+		else if (one._timestamp > other._timestamp)
+			return true;
 
 		return false;
 	}
