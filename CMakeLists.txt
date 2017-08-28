@@ -13,6 +13,8 @@ cmaki_find_package(boost-headers)
 cmaki_find_package(boost-coroutine2)
 cmaki_find_package(boost-filesystem)
 
+include_directories(concurrentqueue)
+
 cmaki2_library(fes clock.cpp PTHREADS)
 
 add_subdirectory(tests)

@@ -3,7 +3,10 @@
   "version": "1.0.11",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
+    "ci": "cmaki ci",
     "clean": "cmaki clean",
+    "setup": "cmaki setup",
+    "compile": "cmaki compile",
     "install": "cmaki install",
     "test": "cmaki tests",
     "upload": "cmaki upload"
@@ -30,7 +33,6 @@
     "cmaki_generator": "makiolo/cmaki_generator"
   },
   "dependencies": {
-    "metacommon": "^1.0.1",
-    "concurrentqueue": "cameron314/concurrentqueue"
+    "metacommon": "makiolo/metacommon"
   }
 }
