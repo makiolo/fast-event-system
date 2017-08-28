@@ -59,9 +59,5 @@ matrix:
       env: CXX=clang++ CC=clang MODE=Release
       osx_image: xcode7.3
 
-install:
-  - git clone https://github.com/cameron314/concurrentqueue
-
 script:
   - bash <(curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/ci.sh)
-
