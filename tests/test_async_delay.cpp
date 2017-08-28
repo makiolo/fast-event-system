@@ -185,6 +185,9 @@ TEST(AsyncDelayTest, test_sort_messages)
 	a( 0, fes::deltatime(200), foo() );
 	a( 0, fes::deltatime(50), foo() );
 	a( 0, fes::deltatime(500), foo() );
+	a( 10, fes::deltatime(500), foo() );
+	a( 40, fes::deltatime(500), foo() );
+	a( 0, fes::deltatime(500), foo() );
 	a.fortime(fes::deltatime(2000));
 	a.fortime(fes::deltatime(2000));
 	a.fortime(fes::deltatime(2000));
