@@ -1,11 +1,11 @@
 # Fast Event System
 [![npm version](https://badge.fury.io/js/fast-event-system.svg)](https://badge.fury.io/js/fast-event-system) [![state dependencies](https://david-dm.org/makiolo/fast-event-system.svg)](https://david-dm.org/makiolo/fast-event-system) [![state dev dependencies](https://david-dm.org/makiolo/fast-event-system/dev-status.svg)](https://david-dm.org/makiolo/fast-event-system?type=dev)
 
-Coverage: [![codecov](https://codecov.io/gh/makiolo/fast-event-system/branch/master/graph/badge.svg)](https://codecov.io/gh/makiolo/fast-event-system)
-
 gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/fast-event-system.svg?branch=master)](https://travis-ci.org/makiolo/fast-event-system)
 
 MSVC 2015: [![Build status](https://ci.appveyor.com/api/projects/status/oatw9c59rlbwa98t?svg=true)](https://ci.appveyor.com/project/makiolo/fast-event-system)
+
+Quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2e9ae48a56e946e3b91c891f06eeb7b9)](https://www.codacy.com/app/makiolo/fast-event-system?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=makiolo/fast-event-system&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/makiolo/fast-event-system/branch/master/graph/badge.svg)](https://codecov.io/gh/makiolo/fast-event-system)
 
 # quick-start
 ```bash
