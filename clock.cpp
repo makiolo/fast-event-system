@@ -18,7 +18,7 @@ static double accuracy = 1000.0;
 bool init_clock()
 {
 	LARGE_INTEGER li;
-	if (!QueryPerformanceFrequency(&li))
+	if (not QueryPerformanceFrequency(&li))
 	{
 		std::cerr << "QueryPerformanceFrequency failed!\n";
 	}
