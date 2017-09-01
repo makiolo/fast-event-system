@@ -181,21 +181,21 @@ TEST(AsyncDelayTest, test_sort_messages)
 	fes::async_delay<foo> c;
 	a.connect(0, fes::deltatime(0), b);
 	a.connect(0, fes::deltatime(0), c);
-	a( 0, fes::marktime(100), foo() );
-	a( 0, fes::marktime(200), foo() );
-	a( 0, fes::marktime(50), foo() );
-	a( 4, fes::marktime(500), foo() );
-	a( 3, fes::marktime(500), foo() );
-	a( 2, fes::marktime(500), foo() );
-	a( 1, fes::marktime(500), foo() );
-	a( 2, fes::marktime(500), foo() );
-	a( 3, fes::marktime(500), foo() );
-	a( 4, fes::marktime(500), foo() );
-	a( 3, fes::marktime(500), foo() );
-	a( 0, fes::marktime(0), foo() );
-	a( 0, fes::marktime(0), foo() );
+	auto mark = fes::high_resolution_clock();
+	a( 0, mark + fes::marktime(100), foo() );
+	a( 0, mark + fes::marktime(200), foo() );
+	a( 0, mark + fes::marktime(50), foo() );
+	a( 4, mark + fes::marktime(500), foo() );
+	a( 3, mark + fes::marktime(500), foo() );
+	a( 2, mark + fes::marktime(500), foo() );
+	a( 1, mark + fes::marktime(500), foo() );
+	a( 2, mark + fes::marktime(500), foo() );
+	a( 3, mark + fes::marktime(500), foo() );
+	a( 4, mark + fes::marktime(500), foo() );
+	a( 3, mark + fes::marktime(500), foo() );
+	a( 0, mark + fes::marktime(0), foo() );
+	a( 0, mark + fes::marktime(0), foo() );
 	a.fortime(fes::deltatime(2000));
 	a.fortime(fes::deltatime(2000));
 	a.fortime(fes::deltatime(2000));
 }
-
