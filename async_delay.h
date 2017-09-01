@@ -44,7 +44,7 @@ public:
 	void operator()(int priority, deltatime delay, PARMS&&... data)
 	{
 		marktime delay_point = high_resolution_clock() + delay;
-		operator()(priority, delay_point, std::forward<PARMS>(data))...);
+		operator()(priority, delay_point, std::forward<PARMS>(data)...);
 	}
 
 	void update()
