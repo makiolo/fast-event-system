@@ -28,17 +28,23 @@ public:
 	{
 		;
 	}
-
+	
 	template <typename ... PARMS>
-	void operator()(int priority, deltatime delay, PARMS&&... data)
+	void operator()(int priority, marktime delay_point, PARMS&&... data)
 	{
-		marktime delay_point = high_resolution_clock() + delay;
 		_queue.emplace_back(priority, delay_point, std::forward<Args>(std::forward<PARMS>(data))...);
 		if(_queue.size() > 1)
 		{
 			std::sort(_queue.begin(), _queue.end(), message_comp<Args...>());
 		}
 		_sem.notify();
+	}
+
+	template <typename ... PARMS>
+	void operator()(int priority, deltatime delay, PARMS&&... data)
+	{
+		marktime delay_point = high_resolution_clock() + delay;
+		operator()(priority, delay_point, std::forward<PARMS>(data))...);
 	}
 
 	void update()
