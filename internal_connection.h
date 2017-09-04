@@ -13,13 +13,11 @@ class internal_connection
 public:
 	using deleter_t = std::function<void(methods_t<Args...>&)>;
 
-	internal_connection(methods_t<Args...>& registered, const deleter_t& deleter)
+	explicit internal_connection(methods_t<Args...>& registered, const deleter_t& deleter)
 		: _deleter(deleter)
 		, _connected(true)
 		, _registered(registered)
-	{
-		;
-	}
+	{ ; }
 
 	~internal_connection() { ; }
 	internal_connection(const internal_connection& other) = delete;
@@ -43,4 +41,3 @@ protected:
 }
 
 #endif
-
