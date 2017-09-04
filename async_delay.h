@@ -6,6 +6,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
+#include <coroutine/coroutine.h>
 #include "message.h"
 #include "connection.h"
 #include "sem.h"
@@ -47,12 +48,6 @@ public:
 		operator()(priority, delay_point, std::forward<PARMS>(data)...);
 	}
 
-	void update()
-	{
-		if(!empty())
-			get();
-	}
-
 	void fortime(deltatime time = fes::deltatime(16))
 	{
 		auto mark = fes::high_resolution_clock() + time;
@@ -62,9 +57,35 @@ public:
 		}
 	}
 
+	void fortime(cu::yield_type& yield, deltatime time = fes::deltatime(16))
+	{
+		auto mark = fes::high_resolution_clock() + time;
+		while (fes::high_resolution_clock() <= mark)
+		{
+			update(yield);
+		}
+	}
+
+	void update()
+	{
+		if(!empty())
+			get();
+	}
+	
+	void update(cu::yield_type& yield)
+	{
+		if(!empty())
+			get(yield);
+	}
+
 	inline auto get() -> std::tuple<Args...>
 	{
 		return _get();
+	}
+	
+	inline auto get(cu::yield_type& yield) -> std::tuple<Args...>
+	{
+		return _get(yield);
 	}
 
 	inline bool empty() const
@@ -126,9 +147,22 @@ protected:
 		while(high_resolution_clock() < _queue.back()._timestamp)
 		{
 #ifndef _WIN32
-			// each 100 ms
+			// for avoid sleeps, use coroutines
 			usleep(100);
 #endif
+		}
+		auto t = std::move(_queue.back());
+		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});
+		_queue.pop_back();
+		return std::move(t._data);
+	}
+	
+	inline auto _get(cu::yield_type& yield) -> std::tuple<Args...>
+	{
+		_sem.wait();
+		while(high_resolution_clock() < _queue.back()._timestamp)
+		{
+			yield();
 		}
 		auto t = std::move(_queue.back());
 		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});
