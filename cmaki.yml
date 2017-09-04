@@ -4,19 +4,20 @@
     version_manager: git
     cmake_target: null
     depends:
+        - metacommon
         - boost-coroutine2
         - boost-filesystem
     post_install:
         - ./*.h include/fast-event-system/
         - ./concurrentqueue/*.h include/fast-event-system/concurrentqueue/
-        - ./metacommon/*.h include/fast-event-system/metacommon/
-    build:
-        |
-            npm install
     mode: dr
     source: https://github.com/makiolo/fast-event-system.git
+    build:
+        |
+            #!/bin/bash
+            source find.script
+            CMAKI_PWD=$(pwd) CMAKI_INSTALL=$SELFHOME/.. npm install
     targets:
         - fes:
             info:
                 <<: *library_dynamic_exact
-
