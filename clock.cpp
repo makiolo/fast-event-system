@@ -18,7 +18,7 @@ static double accuracy = 1000.0;
 bool init_clock()
 {
 	LARGE_INTEGER li;
-	if (not QueryPerformanceFrequency(&li))
+	if (QueryPerformanceFrequency(&li) == false)
 	{
 		std::cerr << "QueryPerformanceFrequency failed!\n";
 	}
@@ -45,5 +45,5 @@ fes::marktime high_resolution_clock()
 }
 
 #endif
-}
 
+}
