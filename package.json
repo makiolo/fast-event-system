@@ -30,12 +30,12 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "makiolo/cmaki",
-    "cmaki_generator": "makiolo/cmaki_generator",
-    "cmaki_identifier": "makiolo/cmaki_identifier"
+    "cmaki": "github:makiolo/cmaki",
+    "cmaki_generator": "github:makiolo/cmaki_generator",
+    "cmaki_identifier": "github:makiolo/cmaki_identifier"
   },
   "dependencies": {
-    "metacommon": "https://github.com/makiolo/metacommon.git",
-    "coroutine": "https://github.com/makiolo/coroutine.git"
+    "metacommon": "github:makiolo/metacommon,
+    "coroutine": "github:makiolo/coroutine"
   }
 }
