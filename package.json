@@ -35,7 +35,7 @@
     "cmaki_identifier": "makiolo/cmaki_identifier"
   },
   "dependencies": {
-    "metacommon": "makiolo/metacommon",
-    "coroutine": "makiolo/coroutine"
+    "metacommon": "https://github.com/makiolo/metacommon.git",
+    "coroutine": "https://github.com/makiolo/coroutine.git"
   }
 }
