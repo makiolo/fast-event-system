@@ -1,7 +1,6 @@
 sudo: required
 dist: trusty
 language: c
-cache: ccache
 services: docker
 
 matrix:
@@ -62,4 +61,3 @@ matrix:
 
 script:
   - bash <(curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/ci.sh)
-  
