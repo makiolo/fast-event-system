@@ -7,7 +7,7 @@
     "clean": "cmaki clean",
     "setup": "cmaki setup",
     "compile": "cmaki compile",
-    "preinstall": "git clone -q https://github.com/cameron314/concurrentqueue",
+    "preinstall": "cmaki preinstall",
     "install": "cmaki install",
     "test": "cmaki tests",
     "upload": "cmaki upload"
@@ -30,9 +30,10 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "github:makiolo/cmaki",
-    "cmaki_generator": "github:makiolo/cmaki_generator",
-    "cmaki_identifier": "github:makiolo/cmaki_identifier"
+    "cmaki": "makiolo/cmaki",
+    "cmaki_generator": "makiolo/cmaki_generator",
+    "cmaki_scripts": "makiolo/cmaki_scripts",
+    "cmaki_identifier": "makiolo/cmaki_identifier"
   },
   "dependencies": {
     "metacommon": "github:makiolo/metacommon",
