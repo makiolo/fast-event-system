@@ -4,7 +4,9 @@
     version_manager: git
     cmake_target: null
     depends:
+        # code or artifacts
         - metacommon
+        - coroutine
         - boost-coroutine2
         - boost-filesystem
     post_install:
