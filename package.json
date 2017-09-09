@@ -31,9 +31,9 @@
   },
   "devDependencies": {
     "cmaki": "makiolo/cmaki",
-    "cmaki_generator": "makiolo/cmaki_generator",
-    "cmaki_scripts": "makiolo/cmaki_scripts",
-    "cmaki_identifier": "makiolo/cmaki_identifier"
+    "cmaki_generator": "github:makiolo/cmaki_generator",
+    "cmaki_scripts": "github:makiolo/cmaki_scripts",
+    "cmaki_identifier": "github:makiolo/cmaki_identifier"
   },
   "dependencies": {
     "metacommon": "github:makiolo/metacommon",
