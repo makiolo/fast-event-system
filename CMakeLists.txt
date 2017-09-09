@@ -2,11 +2,7 @@ PROJECT(FAST-EVENT-SYSTEM CXX)
 cmake_minimum_required(VERSION 3.0)
 
 set(CMAKI_REPOSITORY "http://artifacts.myftp.biz:8080")
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../node_modules/cmaki")
-	include("${CMAKE_CURRENT_LIST_DIR}/../../node_modules/cmaki/cmaki.cmake")
-else()
-	include("${CMAKE_CURRENT_LIST_DIR}/node_modules/cmaki/cmaki.cmake")
-endif()
+include("$ENV{CMAKI_PWD}/node_modules/cmaki/cmaki.cmake")
 cmaki_setup()
 
 cmaki_find_package(boost-headers)
@@ -18,4 +14,3 @@ include_directories(concurrentqueue)
 cmaki2_library(fes clock.cpp PTHREADS)
 
 add_subdirectory(tests)
-
