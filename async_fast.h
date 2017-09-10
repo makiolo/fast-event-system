@@ -49,7 +49,7 @@ public:
 		bool has_next = true;
 		while(has_next && (fes::high_resolution_clock() <= timeout))
 		{
-			has_next = (_sem.size() > 0);
+			has_next = !empty();
 			if(has_next)
 				get();
 		}
@@ -68,6 +68,17 @@ public:
 	{
 		return _get();
 	}
+
+	inline bool empty() const
+	{
+		return (_sem.size() <= 0);
+	}
+
+	inline size_t size() const
+	{
+		return _sem.size();
+	}
+
 
 	template <typename T, typename ... ARGS>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const ARGS&...))
