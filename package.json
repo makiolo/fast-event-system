@@ -30,7 +30,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "makiolo/cmaki",
+    "cmaki": "github:makiolo/cmaki",
     "cmaki_generator": "github:makiolo/cmaki_generator",
     "cmaki_scripts": "github:makiolo/cmaki_scripts",
     "cmaki_identifier": "github:makiolo/cmaki_identifier"
