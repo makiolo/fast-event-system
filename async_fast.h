@@ -3,6 +3,7 @@
 
 #include <tuple>
 #include <atomic>
+#include <coroutine/coroutine.h>
 #include "concurrentqueue/blockingconcurrentqueue.h"
 #include "sem.h"
 #include "connection.h"
@@ -45,13 +46,13 @@ public:
 
 	void update(fes::deltatime tmax = fes::deltatime(16))
 	{
-		fes::marktime timeout = fes::high_resolution_clock() + tmax;
-		bool has_next = true;
-		while(has_next && (fes::high_resolution_clock() <= timeout))
+		auto timeout = fes::high_resolution_clock() + tmax;
+		while(fes::high_resolution_clock() <= timeout)
 		{
-			has_next = !empty();
-			if(has_next)
+			if(!empty())
 				get();
+			else
+				break;
 		}
 	}
 
@@ -78,7 +79,6 @@ public:
 	{
 		return _sem.size();
 	}
-
 
 	template <typename T, typename ... ARGS>
 	inline weak_connection<Args...> connect(T* obj, void (T::*ptr_func)(const ARGS&...))

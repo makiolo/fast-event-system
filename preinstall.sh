@@ -4,3 +4,7 @@ if [ -d "concurrentqueue" ]; then
 fi
 git clone -q https://github.com/cameron314/concurrentqueue
 
+if [ -d "readerwriterqueue" ]; then
+	rm -Rf readerwriterqueue
+fi
+git clone -q https://github.com/cameron314/readerwriterqueue
