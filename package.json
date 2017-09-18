@@ -3,7 +3,7 @@
   "version": "1.0.11",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
   "scripts": {
-	"ci": "curl -s https://raw.githubusercontent.com/makiolo/cmaki_scripts/master/ci.sh | INSTALL_DEPENDS=FALSE bash",
+    "ci": "curl -s https://raw.githubusercontent.com/makiolo/cmaki_scripts/master/ci.sh | INSTALL_DEPENDS=FALSE bash",
     "clean": "cmaki clean",
     "setup": "cmaki setup",
     "compile": "cmaki compile",
