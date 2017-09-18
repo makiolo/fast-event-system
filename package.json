@@ -10,7 +10,7 @@
     "preinstall": "cmaki preinstall",
     "install": "cmaki setup && cmaki compile",
     "test": "cmaki tests",
-    "upload": "cmaki upload"
+    "upload": "cmaki upload -e INSTALL_DEPENDS=FALSE"
   },
   "repository": {
     "type": "git",
