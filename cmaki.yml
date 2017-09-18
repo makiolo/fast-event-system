@@ -1,10 +1,6 @@
 - fast-event-system:
     <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
-    # cmake_target: null
     depends:
-        # code or artifacts
         - metacommon
         - coroutine
         - boost-coroutine2
@@ -12,7 +8,6 @@
     post_install:
         - ./*.h include/fast-event-system/
         - ./concurrentqueue/*.h include/fast-event-system/concurrentqueue/
-    mode: dr
     source: https://github.com/makiolo/fast-event-system.git
     build:
         |
