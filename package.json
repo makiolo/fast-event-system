@@ -8,7 +8,7 @@
     "setup": "cmaki setup",
     "compile": "cmaki compile",
     "preinstall": "cmaki preinstall",
-    "install": "cmaki install",
+    "install": "cmaki setup && cmaki compile",
     "test": "cmaki tests",
     "upload": "cmaki upload"
   },
@@ -40,4 +40,3 @@
     "coroutine": "github:makiolo/coroutine"
   }
 }
-
