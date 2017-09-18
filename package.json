@@ -9,7 +9,7 @@
     "compile": "cmaki compile",
     "preinstall": "cmaki preinstall",
     "install": "cmaki setup && cmaki compile",
-    "test": "cmaki tests",
+    "test": "cmaki test",
     "upload": "cmaki upload"
   },
   "repository": {
@@ -30,13 +30,13 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cmaki": "github:makiolo/cmaki",
-    "cmaki_generator": "github:makiolo/cmaki_generator",
-    "cmaki_scripts": "github:makiolo/cmaki_scripts",
-    "cmaki_identifier": "github:makiolo/cmaki_identifier"
+    "cmaki": "git+https://github.com/makiolo/cmaki.git",
+    "cmaki_generator": "git+https://github.com/makiolo/cmaki_generator.git",
+    "cmaki_identifier": "git+https://github.com/makiolo/cmaki_identifier.git",
+    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git"
   },
   "dependencies": {
-    "metacommon": "github:makiolo/metacommon",
-    "coroutine": "github:makiolo/coroutine"
+    "metacommon": "git+https://github.com/makiolo/metacommon.git",
+    "coroutine": "git+https://github.com/makiolo/coroutine.git"
   }
 }

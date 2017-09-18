@@ -2,7 +2,7 @@
     <<: *thirdparty_defaults
     version: 0.0.0.0
     version_manager: git
-    cmake_target: null
+    # cmake_target: null
     depends:
         # code or artifacts
         - metacommon
@@ -17,9 +17,9 @@
     build:
         |
             #!/bin/bash
-            source find.script
-            CMAKI_PWD=$(pwd) CMAKI_INSTALL=$SELFHOME/.. npm install
+            CMAKI_INSTALL=$SELFHOME npm install
     targets:
         - fes:
             info:
                 <<: *library_dynamic_exact
+
