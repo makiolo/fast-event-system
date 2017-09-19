@@ -8,7 +8,6 @@ cmaki_find_package(boost-filesystem)
 
 include_directories(concurrentqueue)
 
-cmaki2_library(fes clock.cpp PTHREADS)
+cmaki_library(fes clock.cpp PTHREADS)
 
 add_subdirectory(tests)
-
