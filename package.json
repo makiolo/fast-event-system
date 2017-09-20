@@ -8,7 +8,7 @@
     "clean": "cmaki clean",
     "setup": "cmaki setup",
     "compile": "cmaki compile",
-    "preinstall": "cmaki preinstall",
+    "preinstall": "./preinstall.sh || call preinstall.cmd",
     "install": "cmaki setup && cmaki compile",
     "test": "cmaki test",
     "upload": "cmaki upload"
