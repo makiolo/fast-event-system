@@ -7,6 +7,6 @@ env:
   - IMAGE=windows-x64
   # - IMAGE=linux-x86
   - IMAGE=android-arm
-  # - IMAGE=browser-asmjs
+  - IMAGE=browser-asmjs
 script:
   - npm run docker
