@@ -8,7 +8,8 @@
     "clean": "cmaki clean",
     "setup": "cmaki setup",
     "compile": "cmaki compile",
-    "install": "cmaki preinstall && cmaki setup && cmaki compile",
+    "preinstall": "./preinstall.sh || call preinstall.cmd",
+    "install": "cmaki setup && cmaki compile",
     "test": "cmaki test",
     "upload": "cmaki upload"
   },
@@ -29,13 +30,11 @@
   "directories": {
     "test": "tests"
   },
-  "devDependencies": {
+  "dependencies": {
     "cmaki": "git+https://github.com/makiolo/cmaki.git",
     "cmaki_generator": "git+https://github.com/makiolo/cmaki_generator.git",
     "cmaki_identifier": "git+https://github.com/makiolo/cmaki_identifier.git",
-    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git"
-  },
-  "dependencies": {
+    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git",
     "metacommon": "git+https://github.com/makiolo/metacommon.git",
     "coroutine": "git+https://github.com/makiolo/coroutine.git"
   }
