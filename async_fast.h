@@ -44,18 +44,7 @@ public:
 		_sem.notify();
 	}
 
-	void update(fes::deltatime tmax = fes::deltatime(16))
-	{
-		auto timeout = fes::high_resolution_clock() + tmax;
-		while(fes::high_resolution_clock() <= timeout)
-		{
-			if(!empty())
-				get();
-			else
-				break;
-		}
-	}
-
+	// sleep in case of blocking
 	void wait(fes::deltatime timeout = fes::deltatime(0))
 	{
 		if(timeout > fes::deltatime(0))
@@ -76,9 +65,44 @@ public:
 		}
 	}
 
+	// yield in case of blocking
+	void wait(cu::yield_type& yield, fes::deltatime timeout = fes::deltatime(0))
+	{
+		if(timeout > fes::deltatime(0))
+		{
+			auto mark = fes::high_resolution_clock() + timeout;
+			while(fes::high_resolution_clock() <= mark)
+			{
+				if(!empty())
+				{
+					get(yield);
+					break;
+				}
+			}
+		}
+		else
+		{
+			get(yield);
+		}
+	}
+
+	// non-blocking
+	void update()
+	{
+		if(!empty())
+			get();
+	}
+
+	// sleep in case of blocking
 	inline auto get() -> std::tuple<Args...>
 	{
 		return _get();
+	}
+
+	// yield in case of blocking
+	inline auto get(cu::yield_type& yield) -> std::tuple<Args...>
+	{
+		return _get(yield);
 	}
 
 	inline bool empty() const
@@ -102,7 +126,7 @@ public:
 	{
 		return _output.connect(std::forward<METHOD>(method));
 	}
-	
+
 	inline weak_connection<Args...> connect(sync<Args...>& callback)
 	{
 		return _output.connect([&callback](Args... data)
@@ -136,6 +160,19 @@ protected:
 
 	inline auto _get() -> std::tuple<Args...>
 	{
+		_sem.wait();
+		std::tuple<Args...> t;
+		_queue.wait_dequeue(t);
+		get(std::forward<std::tuple<Args...> >(t), gens<sizeof...(Args)>{});
+		return std::move(t);
+	}
+
+	inline auto _get(cu::yield_type& yield) -> std::tuple<Args...>
+	{
+		while(_sem.size() == 0)
+		{
+			yield();
+		}
 		_sem.wait();
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
