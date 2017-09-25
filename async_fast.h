@@ -56,10 +56,21 @@ public:
 		}
 	}
 
-	void fortime(fes::deltatime time = fes::deltatime(16))
+	void wait(fes::deltatime timeout = fes::deltatime(0))
 	{
-		auto mark = fes::high_resolution_clock() + time;
-		while(fes::high_resolution_clock() <= mark)
+		if(timeout > fes::deltatime(0))
+		{
+			auto mark = fes::high_resolution_clock() + timeout;
+			while(fes::high_resolution_clock() <= mark)
+			{
+				if(!empty())
+				{
+					get();
+					break;
+				}
+			}
+		}
+		else
 		{
 			get();
 		}
