@@ -48,41 +48,62 @@ public:
 		operator()(priority, delay_point, std::forward<PARMS>(data)...);
 	}
 
-	void fortime(deltatime time = fes::deltatime(16))
+	// sleep in case of blocking
+	void wait(fes::deltatime timeout = fes::deltatime(0))
 	{
-		auto mark = fes::high_resolution_clock() + time;
-		while (fes::high_resolution_clock() <= mark)
+		if(timeout > fes::deltatime(0))
 		{
-			update();
+			auto mark = fes::high_resolution_clock() + timeout;
+			while(fes::high_resolution_clock() <= mark)
+			{
+				if(!empty())
+				{
+					get();
+					break;
+				}
+			}
+		}
+		else
+		{
+			get();
+		}
+	}
+	
+	// yield in case of blocking
+	void wait(cu::yield_type& yield, fes::deltatime timeout = fes::deltatime(0))
+	{
+		if(timeout > fes::deltatime(0))
+		{
+			auto mark = fes::high_resolution_clock() + timeout;
+			while(fes::high_resolution_clock() <= mark)
+			{
+				if(!empty())
+				{
+					get(yield);
+					break;
+				}
+			}
+		}
+		else
+		{
+			get(yield);
 		}
 	}
 
-	void fortime(cu::yield_type& yield, deltatime time = fes::deltatime(16))
-	{
-		auto mark = fes::high_resolution_clock() + time;
-		while (fes::high_resolution_clock() <= mark)
-		{
-			update(yield);
-		}
-	}
-
+	// non-blocking
 	void update()
 	{
 		if(!empty())
 			get();
 	}
-	
-	void update(cu::yield_type& yield)
-	{
-		if(!empty())
-			get(yield);
-	}
 
+	// sleep in case of blocking
 	inline auto get() -> std::tuple<Args...>
 	{
 		return _get();
 	}
 	
+	// yield in case of blocking
 	inline auto get(cu::yield_type& yield) -> std::tuple<Args...>
 	{
 		return _get(yield);
