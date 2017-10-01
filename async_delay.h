@@ -183,7 +183,7 @@ protected:
 		_sem.wait();
 		while(high_resolution_clock() < _queue.back()._timestamp)
 		{
-			yield();
+			yield( cu::control_type{} );
 		}
 		auto t = std::move(_queue.back());
 		get(std::forward<std::tuple<Args...> >(t._data), gens<sizeof...(Args)>{});

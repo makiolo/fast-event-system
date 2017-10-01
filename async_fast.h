@@ -171,7 +171,7 @@ protected:
 	{
 		while(_sem.size() == 0)
 		{
-			yield();
+			yield( cu::control_type{} );
 		}
 		_sem.wait();
 		std::tuple<Args...> t;
