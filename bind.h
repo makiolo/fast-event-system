@@ -19,7 +19,7 @@ template <typename... Args>
 class bind
 {
 public:
-	using method = method<Args...>;
+	using method_t = method<Args...>;
 
 	explicit bind() : _connected(false)
 	{
@@ -43,7 +43,7 @@ public:
 		{
 			throw std::runtime_error("bind already connected!");
 		}
-		_reg = method(std::forward<METHOD>(fun));
+		_reg = method_t(std::forward<METHOD>(fun));
 		_connected = true;
 	}
 
@@ -85,7 +85,7 @@ protected:
 	}
 
 protected:
-	method _reg;
+	method_t _reg;
 	bool _connected;
 };
 

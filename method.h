@@ -15,6 +15,7 @@ public:
 	using function = std::function<return_type(const Args&...)>;
 
 	explicit method()
+		: _method([](const Args& ...){})
 	{
 	}
 	
