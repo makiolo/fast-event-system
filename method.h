@@ -14,6 +14,10 @@ public:
 	using return_type = void;
 	using function = std::function<return_type(const Args&...)>;
 
+	explicit method()
+	{
+	}
+	
 	template <typename FUNCTION>
 	explicit method(FUNCTION&& m)
 		: _method(std::forward<FUNCTION>(m))
