@@ -169,11 +169,11 @@ protected:
 
 	inline auto _get(cu::yield_type& yield) -> std::tuple<Args...>
 	{
+		_sem.wait();
 		while(_sem.size() == 0)
 		{
 			yield( cu::control_type{} );
 		}
-		_sem.wait();
 		std::tuple<Args...> t;
 		_queue.wait_dequeue(t);
 		get(std::forward<std::tuple<Args...> >(t), gens<sizeof...(Args)>{});
