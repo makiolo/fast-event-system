@@ -1,10 +1,5 @@
 language: c
 services: docker
 os: linux
-env:
-  - IMAGE=linux-x64 MODE=Debug
-  - IMAGE=linux-x64 MODE=Release
-  - IMAGE=linux-armv7 MODE=Debug
-  - IMAGE=linux-armv7 MODE=Release
 script:
   - npm run docker
