@@ -2,5 +2,4 @@ language: c
 services: docker
 os: linux
 script:
-  - npm run ci
-
+  - INSTALL_DEPENDS=TRUE npm run ci
