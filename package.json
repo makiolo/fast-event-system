@@ -2,6 +2,55 @@
   "name": "fast-event-system",
   "version": "1.0.11",
   "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
+  "npm-mas-mas": {
+	  "dependencies": {
+		  "boost-atomic": "1.65.0.0",
+		  "boost-chrono": "1.65.0.0",
+		  "boost-context": "1.65.0.0",
+		  "boost-coroutine2": "1.65.0.0",
+		  "boost-filesystem": "1.65.0.0",
+		  "boost-headers": "1.65.0.0",
+		  "boost-system": "1.65.0.0",
+		  "boost-thread": "1.65.0.0",
+		  "google-gmock": "0.0.1468494938.1354555194"
+	  },
+	  "install": [
+		  "./*.h include/fast-event-system/",
+		  "./concurrentqueue/*.h include/fast-event-system/concurrentqueue/"
+	  ],
+	  # CXXFLAGS
+	  # LDFLAGS
+	  # INCLUDES
+	  # DEFINITIONS
+	  "targets": {
+		  "public": [
+			  {
+				  # CXXFLAGS
+				  # LDFLAGS
+				  # INCLUDES
+				  # DEFINITIONS
+				  "shared": "test_fes tests/test_fes.cpp DEPENDS fes"
+			  }
+		  ],
+		  "private": [
+			  {
+				  "gtest": "test_fes tests/test_fes.cpp DEPENDS fes"
+			  },
+			  {
+				  "gtest": "test_sync tests/test_sync.cpp DEPENDS fes"
+			  },
+			  {
+				  "gtest": "test_async_fast tests/test_async_fast.cpp DEPENDS fes"
+			  },
+			  {
+				  "gtest": "test_async_fast_autoconnect tests/test_async_fast_autoconnect.cpp DEPENDS fes"
+			  },
+			  {
+				  "gtest": "test_async_delay tests/test_async_delay.cpp DEPENDS fes"
+			  }
+		  ]
+	  }
+  },
   "scripts": {
     "ci": "curl -s https://raw.githubusercontent.com/makiolo/cmaki_scripts/master/ci.sh | bash",
     "docker": "curl -s https://raw.githubusercontent.com/makiolo/cmaki_scripts/master/docker.sh | bash",
