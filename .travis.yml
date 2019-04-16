@@ -1,8 +1,10 @@
 language: c
 services: docker
 os: linux
+env:
+    - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Debug
+    - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Release
 script:
-  - gcc -v
   - npm install
   - npm test
 
