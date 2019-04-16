@@ -2,4 +2,7 @@ language: c
 services: docker
 os: linux
 script:
-  - npm run docker
+  - gcc -v
+  - npm install
+  - npm test
+
