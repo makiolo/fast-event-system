@@ -1,18 +1,19 @@
 language: c
 services: docker
+# https://docs.travis-ci.com/user/languages/cpp/
 os: linux
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
     packages:
-      - g++-7
+      - clang-5.0
 install:
   - pip install --user conan==1.9.1
   - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 env:
-  - MODE=Debug COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
-  - MODE=Release COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
+  - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11 CC=clang-5.0 CXX=clang++-5.0
+  - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11 CC=clang-5.0 CXX=clang++-5.0
 script:
   - npm install
   - npm test
