@@ -16,6 +16,7 @@ endif()
 find_package(Boost COMPONENTS system context atomic chrono thread coroutine filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(concurrentqueue)
+include_directories(${CONAN_INCLUDE_DIRS})
 install(DIRECTORY ${CONAN_LIB_DIRS_BOOST}/ DESTINATION ${CMAKE_BUILD_TYPE})
 
 cmaki_library(fes clock.cpp PTHREADS DEPENDS ${Boost_LIBRARIES})
