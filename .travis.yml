@@ -11,9 +11,8 @@ install:
   - pip install --user conan==1.9.1
   - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 env:
-  - COMPILER_VERSION=5.0 CC=gcc CXX=g++ MODE=Debug
-  - COMPILER_VERSION=5.0 CC=gcc CXX=g++ MODE=Release
+  - MODE=Debug COMPILER=gcc COMPILER_VERSION=5.0 CC=gcc-5 CXX=g++-5
+  - MODE=Release COMPILER=gcc COMPILER_VERSION=5.0 CC=gcc-5 CXX=g++-5
 script:
-  - gcc -v
   - npm install
   - npm test
