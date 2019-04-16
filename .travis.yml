@@ -1,9 +1,12 @@
 language: c
 services: docker
 os: linux
+install:
+  - pip install conan
+  - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 env:
-    - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Debug
-    - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Release
+  - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Debug
+  - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Release
 script:
   - npm install
   - npm test
