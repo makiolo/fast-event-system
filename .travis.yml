@@ -2,7 +2,7 @@ language: c
 services: docker
 os: linux
 install:
-  - pip install conan==1.6.1
+  - pip install --user conan==1.9.1
   - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 env:
   - COMPILER_VERSION=4.8 CC=gcc CXX=g++ MODE=Debug
