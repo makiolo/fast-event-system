@@ -1,5 +1,3 @@
 coverage:
   ignore:
     - tests/*
-    - cmaki/*
-    - cmaki_generator/*
