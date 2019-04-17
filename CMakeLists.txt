@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-# CMaki
+# cmaki
 include("$ENV{CMAKI_PWD}/node_modules/npm-mas-mas/cmaki/cmaki.cmake")
 
 # Conan
@@ -31,8 +31,8 @@ include_directories(${CONAN_INCLUDE_DIRS})
 
 cmaki_library(fes clock.cpp PTHREADS DEPENDS ${Boost_LIBRARIES})
 
-cmaki_google_test(test_fes tests/test_fes.cpp DEPENDS fes ${Boost_LIBRARIES} ${CONAN_LIBS})
-cmaki_google_test(test_sync tests/test_sync.cpp DEPENDS fes ${Boost_LIBRARIES} ${CONAN_LIBS})
-cmaki_google_test(test_async_fast tests/test_async_fast.cpp DEPENDS fes ${Boost_LIBRARIES} ${CONAN_LIBS})
-cmaki_google_test(test_async_fast_autoconnect tests/test_async_fast_autoconnect.cpp DEPENDS fes ${Boost_LIBRARIES} ${CONAN_LIBS})
-cmaki_google_test(test_async_delay tests/test_async_delay.cpp DEPENDS fes ${Boost_LIBRARIES} ${CONAN_LIBS})
+cmaki_google_test(test_fes tests/test_fes.cpp DEPENDS fes ${CONAN_LIBS})
+cmaki_google_test(test_sync tests/test_sync.cpp DEPENDS fes ${CONAN_LIBS})
+cmaki_google_test(test_async_fast tests/test_async_fast.cpp DEPENDS fes ${CONAN_LIBS})
+cmaki_google_test(test_async_fast_autoconnect tests/test_async_fast_autoconnect.cpp DEPENDS fes ${CONAN_LIBS})
+cmaki_google_test(test_async_delay tests/test_async_delay.cpp DEPENDS fes ${CONAN_LIBS})
