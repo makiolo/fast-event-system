@@ -11,7 +11,7 @@ Quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2e9ae48a56e
 ```bash
 $ git clone https://github.com/makiolo/fast-event-system.git
 $ cd fast-event-system
-$ npm install
+$ COMPILER=gcc COMPILER_VERSION=5.4 COMPILER_LIBCXX=libstdc++11 npm install
 $ npm test
 ```
 
