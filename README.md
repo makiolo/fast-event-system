@@ -9,8 +9,8 @@ Quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2e9ae48a56e
 
 # quick-start
 ```bash
-$ git clone --recursive git@github.com:makiolo/fast-event-system.git fes
-$ cd fes
+$ git clone https://github.com/makiolo/fast-event-system.git
+$ cd fast-event-system
 $ npm install
 $ npm test
 ```
