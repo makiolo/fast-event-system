@@ -1,6 +1,6 @@
 {
  "name": "fast-event-system",
- "version": "1.0.12",
+ "version": "1.0.15",
  "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
  "scripts": {
   "clean": "cmaki clean",
@@ -8,8 +8,7 @@
   "compile": "cmaki compile",
   "preinstall": "./preinstall.sh || call preinstall.cmd",
   "install": "cmaki setup && cmaki compile",
-  "test": "cmaki test",
-  "upload": "cmaki upload"
+  "test": "cmaki test"
  },
  "repository": {
   "type": "git",
