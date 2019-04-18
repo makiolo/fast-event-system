@@ -1,7 +1,7 @@
 import os
 from conans import ConanFile, tools
 
-class FastEventSystem(ConanFile):
+class NpmMasMas(ConanFile):
     name = "fast-event-system"
     version = "1.0.15"
     license = "Attribution 4.0 International"
@@ -17,7 +17,7 @@ class FastEventSystem(ConanFile):
         # self.options["boost"].without_test = True
 
     def requirements(self):
-        self.requires('boost/1.69.0@conan/stable')
+        self.requires('boost/1.70.0@conan/stable')
         self.requires('gtest/1.8.1@bincrafters/stable')
 
     def source(self):
