@@ -20,9 +20,13 @@ env:
 script:
   - env | sort
   # Comopile gtest becuase is missing
-  - conan install gtest/1.8.1@bincrafters/stable --build missing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+  - conan install gtest/1.8.1@bincrafters/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+  # Compile boost because yes
+  - conan install boost/1.70.0@conan/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
   # Crear package
   - conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
-  # Upload package
+  # Upload packages
+  - conan upload gtest/1.8.1@bincrafters/stable -r npm-mas-mas --all -c
+  - conan upload boost/1.70.0@conan/stable -r npm-mas-mas --all -c
   - conan upload fast-event-system/*@npm-mas-mas/testing -r npm-mas-mas --all -c
 
