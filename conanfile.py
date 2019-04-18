@@ -26,7 +26,7 @@ class NpmMasMas(ConanFile):
         self.run("cd {} && npm install && npm test".format(self.name))
 
     def package(self):
-        self.copy("{}/include/*.h".format(self.name), dst=".")
+        self.copy("{}/include/*.h".format(self.name), dst=self.name, keep_path=False)
         self.copy("{}/bin/{}/*.lib".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
         self.copy("{}/bin/{}/*.dll".format(self.name, self.settings.build_type), dst="bin", keep_path=False)
         self.copy("{}/bin/{}/*.so".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
