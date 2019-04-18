@@ -15,8 +15,8 @@ install:
   - conan remote add npm-mas-mas "https://api.bintray.com/conan/npm-mas-mas/testing"
   - conan user -p $CONAN_TOKEN -r npm-mas-mas makiolo
 env:
-  - MODE=Debug COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++11 CC=clang-4.0 CXX=clang++-4.0
-  - MODE=Release COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++11 CC=clang-4.0 CXX=clang++-4.0
+  - MODE=Debug COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++ CC=clang-4.0 CXX=clang++-4.0
+  - MODE=Release COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++ CC=clang-4.0 CXX=clang++-4.0
 script:
   - env | sort
   # Comopile gtest becuase is missing
