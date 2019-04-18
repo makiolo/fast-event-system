@@ -2,5 +2,5 @@ language: c
 services: docker
 os: linux
 script:
-  - docker-compose build --force-rm --no-cache
+  - docker-compose build --no-cache --pull
 

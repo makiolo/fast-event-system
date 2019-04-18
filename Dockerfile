@@ -19,7 +19,6 @@ ENV CXX=${CXX}
 ENV PACKAGE=${PACKAGE}
 ENV CONAN_TOKEN=${CONAN_TOKEN}
 
-RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
@@ -30,4 +29,8 @@ RUN sudo apt-get install -y nodejs
 RUN conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 RUN conan remote add npm-mas-mas "https://api.bintray.com/conan/npm-mas-mas/testing"
 RUN conan user -p $CONAN_TOKEN -r npm-mas-mas makiolo
+
+ADD . /code
+RUN ls -ltr
+RUN bash -c /code/docker_entrypoint.sh
 
