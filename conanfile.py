@@ -3,7 +3,7 @@ from conans import ConanFile, tools
 
 class NpmMasMas(ConanFile):
     name = "fast-event-system"
-    version = "1.0.17"
+    version = "1.0.18"
     license = "Attribution 4.0 International"
     url = "https://github.com/makiolo/fast-event-system"
     description = "This fast event system allows calls between two interfaces decoupled (sync or async)"

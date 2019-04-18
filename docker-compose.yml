@@ -3,6 +3,9 @@ version: '3'
 services:
 
     gcc8_debug:
+        command: ./docker_entrypoint.sh
+        volumes:
+            - gcc8_debug_data:/code
         build:
             context: .
             args:
@@ -15,10 +18,11 @@ services:
                 CC: gcc-8
                 CXX: g++-8
                 CONAN_TOKEN: ${CONAN_TOKEN}
-        volumes:
-            - .:/code
 
     gcc8_release:
+        command: ./docker_entrypoint.sh
+        volumes:
+            - gcc8_release_data:/code
         build:
             context: .
             args:
@@ -31,6 +35,8 @@ services:
                 CC: gcc-8
                 CXX: g++-8
                 CONAN_TOKEN: ${CONAN_TOKEN}
-        volumes:
-            - .:/code
+
+volumes:
+    gcc8_debug_data:
+    gcc8_release_data:
 

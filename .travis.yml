@@ -2,5 +2,5 @@ language: c
 services: docker
 os: linux
 script:
-  - docker-compose build --parallel --force-rm
+  - docker-compose build --parallel --force-rm --no-cache
 
