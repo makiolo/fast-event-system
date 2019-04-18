@@ -2,34 +2,34 @@ version: '3'
 
 services:
 
-    gcc7_debug:
+    gcc8_debug:
         build:
             context: .
             args:
                 PACKAGE: fast-event-system
-                IMAGE: conanio/gcc7
+                IMAGE: conanio/gcc8
                 MODE: Debug
                 COMPILER: gcc
-                COMPILER_VERSION: 7
+                COMPILER_VERSION: 8
                 COMPILER_LIBCXX: libstdc++11
-                CC: gcc-7
-                CXX: g++-7
+                CC: gcc-8
+                CXX: g++-8
                 CONAN_TOKEN: ${CONAN_TOKEN}
         volumes:
             - .:/code
 
-    gcc7_release:
+    gcc8_release:
         build:
             context: .
             args:
                 PACKAGE: fast-event-system
-                IMAGE: conanio/gcc7
+                IMAGE: conanio/gcc8
                 MODE: Release
                 COMPILER: gcc
-                COMPILER_VERSION: 7
+                COMPILER_VERSION: 8
                 COMPILER_LIBCXX: libstdc++11
-                CC: gcc-7
-                CXX: g++-7
+                CC: gcc-8
+                CXX: g++-8
                 CONAN_TOKEN: ${CONAN_TOKEN}
         volumes:
             - .:/code
