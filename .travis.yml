@@ -2,5 +2,5 @@ language: c
 services: docker
 os: linux
 script:
-  - docker-compose run
+  - docker-compose build
 
