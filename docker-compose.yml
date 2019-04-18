@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+    gcc7_debug:
+        build:
+            context: .
+            args:
+                PACKAGE: fast-event-system
+                IMAGE: conanio/gcc7
+                MODE: Debug
+                COMPILER: gcc
+                COMPILER_VERSION: 7
+                COMPILER_LIBCXX: libstdc++11
+                CC: gcc-7
+                CXX: g++-7
+                CONAN_TOKEN: ${CONAN_TOKEN}
+        volumes:
+            - .:/code
+
+    gcc7_release:
+        build:
+            context: .
+            args:
+                PACKAGE: fast-event-system
+                IMAGE: conanio/gcc7
+                MODE: Release
+                COMPILER: gcc
+                COMPILER_VERSION: 7
+                COMPILER_LIBCXX: libstdc++11
+                CC: gcc-7
+                CXX: g++-7
+                CONAN_TOKEN: ${CONAN_TOKEN}
+        volumes:
+            - .:/code
+

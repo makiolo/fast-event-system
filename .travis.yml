@@ -1,37 +1,6 @@
 language: c
 services: docker
-# https://docs.travis-ci.com/user/languages/cpp/
 os: linux
-compiler: clang
-addons:
-  apt:
-    sources:
-      # - llvm-toolchain-trusty-7.0
-      - ubuntu-toolchain-r-test
-    packages:
-      # - clang-7.0
-      - g++-7
-install:
-  - pip install --user conan==1.9.1
-  - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-  - conan remote add npm-mas-mas "https://api.bintray.com/conan/npm-mas-mas/testing"
-  - conan user -p $CONAN_TOKEN -r npm-mas-mas makiolo
-env:
-  - MODE=Debug COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
-  - MODE=Release COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
 script:
-
-  # Deserialize compilation
-  - conan install . -r npm-mas-mas -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-
-  # Comopile gtest if is missing
-  - conan install gtest/1.8.1@bincrafters/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-  # Compile boost if is missing
-  - conan install boost/1.70.0@conan/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-
-  # Crear package
-  - conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
-
-  # Serialize compilation
-  - conan upload "*" -r npm-mas-mas --all -c
+  - docker-compose run
 
