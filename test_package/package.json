@@ -1,0 +1,36 @@
+{
+ "name": "fast-event-system",
+ "version": "1.0.15",
+ "description": "This fast event system allows calls between two interfaces decoupled (sync or async)",
+ "scripts": {
+  "clean": "cmaki clean",
+  "setup": "cmaki setup",
+  "compile": "cmaki compile",
+  "install": "cmaki setup -e BUILD_DIR=/home/makiolo/dev/fast-event-system/test_package/build/8fa738d5aefe2f5fa5cae7e8b7c446af3b18eaa4 && cmaki compile -e BUILD_DIR=/home/makiolo/dev/fast-event-system/test_package/build/8fa738d5aefe2f5fa5cae7e8b7c446af3b18eaa4",
+  "test": "cmaki test -e BUILD_DIR=/home/makiolo/dev/fast-event-system/test_package/build/8fa738d5aefe2f5fa5cae7e8b7c446af3b18eaa4"
+ },
+ "repository": {
+  "type": "git",
+  "url": "git+https://github.com/makiolo/fast-event-system.git"
+ },
+ "keywords": [
+  "c++",
+  "signal"
+ ],
+ "author": "Ricardo Marmolejo García",
+ "license": "MIT",
+ "bugs": {
+  "url": "https://github.com/makiolo/fast-event-system/issues"
+ },
+ "homepage": "https://github.com/makiolo/fast-event-system#readme",
+ "directories": {
+  "test": "tests"
+ },
+ "devDependencies": {
+  "npm-mas-mas": "git+https://github.com/makiolo/npm-mas-mas.git"
+ },
+ "dependencies": {
+  "coroutine": "git+https://github.com/makiolo/coroutine.git",
+  "metacommon": "git+https://github.com/makiolo/metacommon.git"
+ }
+}
