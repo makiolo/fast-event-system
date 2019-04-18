@@ -9,9 +9,9 @@
 #include <cstdlib>
 #include <gtest/gtest.h>
 #include <atomic>
-#include <fast-event-system/sync.h>
-#include <fast-event-system/async_delay.h>
-#include <fast-event-system/async_fast.h>
+#include <sync.h>
+#include <async_delay.h>
+#include <async_fast.h>
 
 class FesTest : testing::Test { };
 
