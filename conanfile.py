@@ -14,7 +14,6 @@ class FastEventSystem(ConanFile):
 
     def configure(self):
         self.options["boost"].shared = True
-        # self.options["boost"].without_test = True
 
     def requirements(self):
         self.requires('boost/1.69.0@conan/stable')
