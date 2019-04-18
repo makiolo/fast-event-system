@@ -3,7 +3,7 @@ from conans import ConanFile, tools
 
 class NpmMasMas(ConanFile):
     name = "fast-event-system"
-    version = "1.0.16"
+    version = "1.0.17"
     license = "Attribution 4.0 International"
     url = "https://github.com/makiolo/fast-event-system"
     description = "This fast event system allows calls between two interfaces decoupled (sync or async)"
@@ -26,10 +26,9 @@ class NpmMasMas(ConanFile):
         self.run("cd {} && npm install && npm test".format(self.name))
 
     def package(self):
-        self.copy("{}/include/*.h".format(self.name), dst="include", excludes=["{}/node_modules".format(self.name), "{}/readerwriterqueue".format(self.name)])
+        self.copy("{}/include/*.h".format(self.name), dst=".")
         self.copy("{}/bin/{}/*.lib".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
         self.copy("{}/bin/{}/*.dll".format(self.name, self.settings.build_type), dst="bin", keep_path=False)
-        self.copy("{}/bin/{}/*_unittest".format(self.name, self.settings.build_type), dst="unittest", keep_path=False)
         self.copy("{}/bin/{}/*.so".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
         self.copy("{}/bin/{}/*.dylib".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
         self.copy("{}/bin/{}/*.a".format(self.name, self.settings.build_type), dst="lib", keep_path=False)

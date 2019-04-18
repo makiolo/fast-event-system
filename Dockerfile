@@ -23,12 +23,14 @@ RUN conan remote add npm-mas-mas "https://api.bintray.com/conan/npm-mas-mas/test
 RUN conan user -p $CONAN_TOKEN -r npm-mas-mas makiolo
 
 # force recompile
-# RUN conan install gtest/1.8.1@bincrafters/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-# RUN conan install boost/1.70.0@conan/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-# RUN conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
-# RUN conan upload '*' -r npm-mas-mas --all -c
+RUN conan install gtest/1.8.1@bincrafters/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+RUN conan install boost/1.70.0@conan/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+# RUN conan install . --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+RUN conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
+RUN conan upload '*' -r npm-mas-mas --all -c
 
 # compile only $PACKAGE
-RUN conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
-RUN conan upload $PACKAGE/*@npm-mas-mas/testing -r npm-mas-mas --all -c
+# RUN conan install . --build never -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+# RUN conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
+# RUN conan upload $PACKAGE/*@npm-mas-mas/testing -r npm-mas-mas --all -c
 
