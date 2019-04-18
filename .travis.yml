@@ -12,10 +12,13 @@ addons:
 install:
   - pip install --user conan==1.9.1
   - conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+  - conan remote add npm-mas-mas "https://api.bintray.com/conan/npm-mas-mas/testing"
 env:
   - MODE=Debug COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++11 CC=clang-4.0 CXX=clang++-4.0
   - MODE=Release COMPILER=clang COMPILER_VERSION=4.0 COMPILER_LIBCXX=libstdc++11 CC=clang-4.0 CXX=clang++-4.0
 script:
-  - npm install
-  - npm test
+  - env | sort
+  - conan user -p $CONAN_TOKEN -r npm-mas-mas makiolo
+  - conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
+  - conan upload fast-event-system/*@npm-mas-mas/testing -r npm-mas-mas --all -c
 
