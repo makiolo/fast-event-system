@@ -18,15 +18,18 @@ env:
   - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++ CC=clang-5.0 CXX=clang++-5.0
   - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++ CC=clang-5.0 CXX=clang++-5.0
 script:
-  - env | sort
-  # Comopile gtest becuase is missing
-  - conan install gtest/1.8.1@bincrafters/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-  # Compile boost because yes
-  - conan install boost/1.70.0@conan/stable --build -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+
+  # Deserialize compilation
+  - conan install . -r npm-mas-mas -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+
+  # Comopile gtest if is missing
+  - conan install gtest/1.8.1@bincrafters/stable --build missing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+  # Compile boost if is missing
+  - conan install boost/1.70.0@conan/stable --build mssing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
+
   # Crear package
   - conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
-  # Upload packages
-  - conan upload gtest/1.8.1@bincrafters/stable -r npm-mas-mas --all -c
-  - conan upload boost/1.70.0@conan/stable -r npm-mas-mas --all -c
-  - conan upload fast-event-system/*@npm-mas-mas/testing -r npm-mas-mas --all -c
+
+  # Serialize compilation
+  - conan upload "*" -r npm-mas-mas --all -c
 
