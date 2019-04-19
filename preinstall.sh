@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# mkdir -p include
-# cd include
-
 if [ -d "concurrentqueue" ]; then
 	rm -Rf concurrentqueue
 fi
