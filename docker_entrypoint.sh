@@ -13,7 +13,7 @@ fi
 
 # force recompile
 conan install . --build missing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION
-conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
+conan create . npm-mas-mas/testing --build $PACKAGE -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
 conan upload $PACKAGE/*@npm-mas-mas/testing -r npm-mas-mas --all -c
 
 # compile only $PACKAGE
