@@ -3,12 +3,10 @@
 if [ -d "concurrentqueue" ]; then
 	rm -Rf concurrentqueue
 fi
-git clone https://github.com/cameron314/concurrentqueue
+git clone -q https://github.com/cameron314/concurrentqueue
 
 if [ -d "readerwriterqueue" ]; then
 	rm -Rf readerwriterqueue
 fi
-git clone https://github.com/cameron314/readerwriterqueue
-
-ls -ltr
+git clone -q https://github.com/cameron314/readerwriterqueue
 
