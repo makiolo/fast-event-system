@@ -14,6 +14,7 @@ cmaki_git_clone(
 	GIT_BRANCH      master
 	DIRECTORY		${CMAKE_SOURCE_DIR}
 )
+cmaki_find_package_boost()
 include_directories(include)
 cmaki_library(fes src/clock.cpp PTHREADS)
 cmaki_google_test(test_fes tests/test_fes.cpp DEPENDS fes)
