@@ -2,7 +2,18 @@ PROJECT(fast-event-system CXX)
 cmake_minimum_required(VERSION 3.5)
 include("$ENV{CMAKI_PWD}/node_modules/npm-mas-mas/cmaki/cmaki.cmake")
 cmaki_setup()
-include_directories(${CMAKE_SOURCE_DIR})
+cmaki_git_clone(
+	PROJECT_NAME    concurrentqueue
+	GIT_URL         https://github.com/cameron314/concurrentqueue
+	GIT_BRANCH      master
+	DIRECTORY		${CMAKE_SOURCE_DIR}
+)
+cmaki_git_clone(
+	PROJECT_NAME    readerwriterqueue
+	GIT_URL         https://github.com/cameron314/readerwriterqueue
+	GIT_BRANCH      master
+	DIRECTORY		${CMAKE_SOURCE_DIR}
+)
 include_directories(include)
 cmaki_library(fes src/clock.cpp PTHREADS)
 cmaki_google_test(test_fes tests/test_fes.cpp DEPENDS fes)

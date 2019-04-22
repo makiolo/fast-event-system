@@ -6,7 +6,6 @@
   "clean": "cmaki clean",
   "setup": "cmaki setup",
   "compile": "cmaki compile",
-  "preinstall": "./preinstall.sh || call preinstall.cmd",
   "install": "cmaki setup && cmaki compile",
   "test": "cmaki test"
  },
