@@ -8,12 +8,6 @@ cmaki_git_clone(
 	GIT_BRANCH      master
 	DIRECTORY		${CMAKE_SOURCE_DIR}
 )
-cmaki_git_clone(
-	PROJECT_NAME    readerwriterqueue
-	GIT_URL         https://github.com/cameron314/readerwriterqueue
-	GIT_BRANCH      master
-	DIRECTORY		${CMAKE_SOURCE_DIR}
-)
 cmaki_find_package_boost()
 include_directories(.)
 include_directories(include)
