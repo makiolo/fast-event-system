@@ -8,7 +8,6 @@ configuration:
   - Debug
   - Release
 
-build: off
 install:
   - cmd: pip install conan
   - cmd: cmake --help
