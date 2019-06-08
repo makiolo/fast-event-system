@@ -8,6 +8,9 @@ configuration:
   - Debug
   - Release
 
+environment:
+  GENERATOR: Visual Studio 14 2015
+
 install:
   - cmd: pip install conan
   - cmd: cmake --help
