@@ -28,7 +28,7 @@ public:
 	template <typename Data>
 	void operator()(int priority, fes::deltatime delay, Data&& data)
 	{
-		_channel(priority, delay, std::forward<Data>(data));
+		_channel(priority, fes::high_resolution_clock() + delay, std::forward<Data>(data));
 	}
 
 	void update() { _channel.update(); }
