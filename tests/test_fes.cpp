@@ -26,9 +26,9 @@ public:
 	void operator()(Data&& data) { _channel(std::forward<Data>(data)); }
 
 	template <typename Data>
-	void operator()(int priority, fes::deltatime delay, Data&& data)
+	void operator()(int priority, fes::marktime point, Data&& data)
 	{
-		_channel(priority, fes::high_resolution_clock() + delay, std::forward<Data>(data));
+		_channel(priority, point, std::forward<Data>(data));
 	}
 
 	void update() { _channel.update(); }
@@ -101,7 +101,7 @@ TEST(FesTest, Test3)
 	{
 		c1.connect(p);
 		c2.connect(p);
-		p(0, fes::deltatime(0), "data");
+		p(0, fes::high_resolution_clock() + fes::deltatime(0), "data");
 		p.update();
 		ASSERT_STREQ(c1.get_data().c_str(), "data");
 		ASSERT_STREQ(c2.get_data().c_str(), "data");
@@ -147,4 +147,3 @@ TEST(FesTest, Test4)
 	ASSERT_TRUE(called1);
 	ASSERT_TRUE(called2);
 }
-

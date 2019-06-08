@@ -1,15 +1,4 @@
 language: c
-os: linux
-compiler:
-  - clang
-
-install:
-  - pip install --user conan
-
-env:
-  - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++ CC=clang CXX=clang++
-  - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++ CC=clang CXX=clang++
-
+services: docker
 script:
-  - npm install
-  - npm test
+  - docker-compose up --build --abort-on-container-exit

@@ -41,15 +41,6 @@ public:
 		_sem.notify();
 	}
 
-	/*
-	template <typename ... PARMS>
-	void operator()(int priority, deltatime delay, PARMS&&... data)
-	{
-		marktime delay_point = high_resolution_clock() + delay;
-		operator()(priority, delay_point, std::forward<PARMS>(data)...);
-	}
-	*/
-
 	// sleep in case of blocking
 	void wait(fes::deltatime timeout = fes::deltatime(0))
 	{
@@ -153,7 +144,7 @@ public:
 	{
 		return _output.connect([&queue, priority, delay](Args... data)
 			{
-				queue(priority, delay, std::move(data)...);
+				queue(priority, fes::high_resolution_clock() + delay, std::move(data)...);
 			});
 	}
 
