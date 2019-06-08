@@ -2,4 +2,5 @@ language: c
 services: docker
 os: linux
 script:
-  - docker-compose up --build
+  # - docker-compose up --build
+  - curl -s https://raw.githubusercontent.com/makiolo/npm-mas-mas/master/cmaki_scripts/ci.sh | bash
