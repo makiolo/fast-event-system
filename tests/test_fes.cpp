@@ -135,7 +135,7 @@ TEST(FesTest, Test4)
 			ASSERT_EQ(data, 111);
 		});
 
-	root(0, fes::deltatime(10), 111);
+	root(0, fes::high_resolution_clock() + fes::deltatime(10), 111);
 
 	auto t1 = fes::high_resolution_clock() + fes::deltatime(600);
 	while (fes::high_resolution_clock() < t1)
