@@ -81,7 +81,7 @@ struct foo
 		std::cout << "constructor copy foo" << std::endl;
 	}
 
-	foo(foo&& other)
+	foo(foo&& other) noexcept
 		: _str(std::move(other._str))
 	{
 		mock_move();
@@ -108,7 +108,7 @@ struct foo
 		return *this;
 	}
 
-	foo& operator=(foo&& other)
+	foo& operator=(foo&& other) noexcept
 	{
 		mock_move();
 		std::cout << "operator move foo" << std::endl;

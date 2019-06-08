@@ -74,9 +74,9 @@ public:
 	{
 		auto it = _registered.begin();
 		auto ite = _registered.end();
-		auto itee = --_registered.end();
 		for(; it != ite; ++it)
 		{
+			auto itee = --_registered.end();
 			auto& reg = *it;
 			if(it == itee) // is last iteration ?
 			{
