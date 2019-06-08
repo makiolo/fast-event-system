@@ -3,6 +3,9 @@ services: docker
 os: linux
 install:
   - pip install --user conan
+env:
+  - MODE=Debug COMPILER=gcc COMPILER_VERSION=4.8 COMPILER_LIBCXX=libstdc++
+  - MODE=Release COMPILER=gcc COMPILER_VERSION=4.8 COMPILER_LIBCXX=libstdc++
 script:
   - npm install
   - npm test
