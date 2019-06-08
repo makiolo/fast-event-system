@@ -14,6 +14,9 @@ class NpmMasMas(ConanFile):
 
     def configure(self):
         self.options["boost"].shared = True
+        self.options["gtest"].shared = False
+        self.options["gtest"].fPIC = True
+        self.options["gtest"].no_main = False
 
     def requirements(self):
         self.requires('boost/1.70.0@conan/stable')
