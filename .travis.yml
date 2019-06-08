@@ -7,10 +7,10 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
+            - g++-7
       env:
-        - MODE=Debug COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
-        - MODE=Release COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
+        - MODE=Debug COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
+        - MODE=Release COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++11 CC=gcc-7 CXX=g++-7
 
 install:
   - pip install --user conan
