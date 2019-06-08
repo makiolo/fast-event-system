@@ -22,7 +22,7 @@ class async_delay;
  * Los clientes se conectan usando el metodo *connect()*
  */
 template <typename... Args>
-class async_fast
+class async_slow
 {
 public:
 	using container_type = moodycamel::BlockingConcurrentQueue<std::tuple<Args...>>;
