@@ -10,6 +10,7 @@ configuration:
 
 environment:
   GENERATOR: Visual Studio 14 2015
+  COMPILER_VERSION: 14
 
 install:
   - cmd: pip install conan
