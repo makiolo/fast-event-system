@@ -10,6 +10,7 @@ configuration:
 
 build: off
 install:
-  - cmd: pip install --user conan
+  - cmd: pip install conan
+  - cmd: cmake --help
   - cmd: npm install
   - cmd: npm test
