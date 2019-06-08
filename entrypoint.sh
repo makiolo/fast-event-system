@@ -13,5 +13,5 @@ fi
 
 conan create . npm-mas-mas/testing -s compiler=$COMPILER -s build_type=$MODE -s compiler.libcxx=$COMPILER_LIBCXX -s compiler.version=$COMPILER_VERSION -tf None
 
-:: upload package
-:: conan upload '*' -r npm-mas-mas --all -c
+# upload package
+# conan upload '*' -r npm-mas-mas --all -c
