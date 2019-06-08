@@ -1,5 +1,4 @@
 # Fast Event System
-[![npm version](https://badge.fury.io/js/fast-event-system.svg)](https://badge.fury.io/js/fast-event-system) [![state dependencies](https://david-dm.org/makiolo/fast-event-system.svg)](https://david-dm.org/makiolo/fast-event-system) [![state dev dependencies](https://david-dm.org/makiolo/fast-event-system/dev-status.svg)](https://david-dm.org/makiolo/fast-event-system?type=dev)
 
 gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/fast-event-system.svg?branch=master)](https://travis-ci.org/makiolo/fast-event-system)
 
