@@ -2,14 +2,13 @@ language: c
 os: linux
 compiler:
   - clang
-  - gcc
+
 install:
   - pip install --user conan
-env:
-  - MODE=Debug
-  - MODE=Release
 
-# COMPILER=gcc COMPILER_VERSION=4.8 COMPILER_LIBCXX=libstdc++
+env:
+  - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11
+  - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11
 
 script:
   - npm install
