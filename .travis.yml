@@ -1,20 +1,4 @@
 language: c
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env:
-        - MODE=Debug COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++ CC=gcc-7 CXX=g++-7
-        - MODE=Release COMPILER=gcc COMPILER_VERSION=7 COMPILER_LIBCXX=libstdc++ CC=gcc-7 CXX=g++-7
-
-install:
-  - pip install --user conan
-
+services: docker
 script:
-  - npm install
-  - npm test
+  - docker-compose up --build
