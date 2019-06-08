@@ -65,7 +65,7 @@ public:
 	{
 		return connect([&queue, priority, delay](Args... data)
 			{
-				queue(priority, delay, std::move(data)...);
+				queue(priority, fes::high_resolution_clock() + delay, std::move(data)...);
 			});
 	}
 	
