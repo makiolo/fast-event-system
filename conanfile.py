@@ -38,4 +38,5 @@ class NpmMasMas(ConanFile):
     def package_info(self):
         self.cpp_info.libs = [lib for lib in tools.collect_libs(self)]
         self.cpp_info.includedirs.append('include')
+        self.cpp_info.includedirs.append('concurrentqueue')
 
