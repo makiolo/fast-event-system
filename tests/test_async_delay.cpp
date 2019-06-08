@@ -31,12 +31,12 @@ TEST(AsyncDelayTest, Test1)
 					}
 				}));
 		// lambda must received this
-		sync(0, fes::deltatime(0), 0, "hello world", 11.0);
+		sync(0, fes::high_resolution_clock() + fes::deltatime(0), 0, "hello world", 11.0);
 		sync.update();
 	}
 	// kill only if autodisconnection failed
 	// TODO: exception here
-	sync(0, fes::deltatime(0), 6, "kill", 12.0);
+	sync(0, fes::high_resolution_clock() + fes::deltatime(0), 6, "kill", 12.0);
 	sync.update();
 
 	ASSERT_TRUE(is_dispatched);
@@ -109,8 +109,8 @@ TEST(AsyncDelayTest, Test2)
 		{
 			std::cout << "<async_delay> received rvalue" << std::endl;
 		});
-	sync(0, fes::deltatime(0), foo());
-	sync(0, fes::deltatime(0), foo());
+	sync(0, fes::high_resolution_clock() + fes::deltatime(0), foo());
+	sync(0, fes::high_resolution_clock() + fes::deltatime(0), foo());
 	sync.update();
 }
 
@@ -129,8 +129,8 @@ TEST(AsyncDelayTest, Test3)
 	EXPECT_CALL(f, mock_move()).Times(AnyNumber());
 	EXPECT_CALL(f, mock_swap()).Times(AnyNumber());
 	//
-	sync(0, fes::deltatime(0), f);
-	sync(0, fes::deltatime(0), f);
+	sync(0, fes::high_resolution_clock() + fes::deltatime(0), f);
+	sync(0, fes::high_resolution_clock() + fes::deltatime(0), f);
 	sync.update();
 }
 
@@ -141,8 +141,8 @@ TEST(AsyncDelayTest, test_connect_sync)
 	fes::sync<foo> c;
 	a.connect(b);
 	a.connect(c);
-	a( 0, fes::deltatime(0), foo() );
-	a( 0, fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
 	a.update();
 }
 
@@ -153,8 +153,8 @@ TEST(AsyncDelayTest, test_connect_async_fast)
 	fes::async_fast<foo> c;
 	a.connect(b);
 	a.connect(c);
-	a( 0, fes::deltatime(0), foo() );
-	a( 0, fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
 	a.update();
 	b.update();
 	c.update();
@@ -167,8 +167,8 @@ TEST(AsyncDelayTest, test_connect_delay)
 	fes::async_delay<foo> c;
 	a.connect(0, fes::deltatime(0), b);
 	a.connect(0, fes::deltatime(0), c);
-	a( 0, fes::deltatime(0), foo() );
-	a( 0, fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
+	a( 0, fes::high_resolution_clock() + fes::deltatime(0), foo() );
 	a.update();
 	b.update();
 	c.update();
