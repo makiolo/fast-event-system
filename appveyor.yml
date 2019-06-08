@@ -12,8 +12,8 @@ environment:
   GENERATOR: Visual Studio 14 2015
   COMPILER_VERSION: 14
 
+build: off
 install:
   - cmd: pip install conan
-  - cmd: cmake --help
   - cmd: npm install
   - cmd: npm test
