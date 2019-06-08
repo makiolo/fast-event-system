@@ -9,14 +9,11 @@ matrix:
           packages:
             - g++-5
       env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+        - MODE=Debug COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
+        - MODE=Release COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
 
 install:
   - pip install --user conan
-
-env:
-  - MODE=Debug COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
-  - MODE=Release COMPILER=gcc COMPILER_VERSION=5 COMPILER_LIBCXX=libstdc++11 CC=gcc-5 CXX=g++-5
 
 script:
   - npm install
