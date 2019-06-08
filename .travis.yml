@@ -7,8 +7,8 @@ install:
   - pip install --user conan
 
 env:
-  - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11
-  - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++11
+  - MODE=Debug COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++
+  - MODE=Release COMPILER=clang COMPILER_VERSION=5.0 COMPILER_LIBCXX=libstdc++
 
 script:
   - npm install
