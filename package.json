@@ -7,7 +7,7 @@
   "setup": "cmaki setup",
   "compile": "cmaki compile",
   "install": "cmaki create_package",
-  "test": "cmaki test",
+  "test": "cmaki test"
  },
  "repository": {
   "type": "git",
