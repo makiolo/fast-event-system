@@ -6,7 +6,7 @@
   "clean": "cmaki clean",
   "setup": "cmaki setup",
   "compile": "cmaki compile",
-  "install": "cmaki setup && cmaki compile",
+  "install": "cmaki create_package",
   "test": "cmaki test",
   "create_package": "cmaki create_package"
  },
