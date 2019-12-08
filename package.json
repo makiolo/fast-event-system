@@ -8,7 +8,6 @@
   "compile": "cmaki compile",
   "install": "cmaki create_package",
   "test": "cmaki test",
-  "create_package": "cmaki create_package"
  },
  "repository": {
   "type": "git",
