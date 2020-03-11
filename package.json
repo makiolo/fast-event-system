@@ -6,8 +6,9 @@
   "clean": "cmaki clean",
   "setup": "cmaki setup",
   "compile": "cmaki compile",
-  "install": "cmaki create_package",
-  "test": "cmaki test"
+  "install": "cmaki setup && cmaki compile",
+  "test": "cmaki test",
+  "pack": "cmaki create_package"
  },
  "repository": {
   "type": "git",
