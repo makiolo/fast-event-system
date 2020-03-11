@@ -11,7 +11,6 @@ class FastEventSystem(ConanFile):
     options = {"shared": [True, False]}
     default_options = {"shared": True}
     generators = "cmake"
-    short_paths = True
 
     def configure(self):
         self.options["boost"].shared = True

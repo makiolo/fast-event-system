@@ -2,12 +2,12 @@ PROJECT(fast-event-system CXX)
 cmake_minimum_required(VERSION 3.5)
 include("$ENV{CMAKI_PWD}/node_modules/npm-mas-mas/cmaki/cmaki.cmake")
 cmaki_setup()
-cmaki_git_clone(
-	PROJECT_NAME    concurrentqueue
-	GIT_URL         https://github.com/cameron314/concurrentqueue
-	GIT_BRANCH      master
-	DIRECTORY		${CMAKE_SOURCE_DIR}
-)
+# cmaki_git_clone(
+# 	PROJECT_NAME    concurrentqueue
+# 	GIT_URL         https://github.com/cameron314/concurrentqueue
+# 	GIT_BRANCH      master
+# 	DIRECTORY		${CMAKE_SOURCE_DIR}
+# )
 cmaki_find_package_boost()
 include_directories(.)
 include_directories(include)
