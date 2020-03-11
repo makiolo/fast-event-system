@@ -6,5 +6,4 @@ envs:
     - COMPILER=clang50 MODE=debug
     - COMPILER=clang50 MODE=release
 script:
-  - docker-compose up --build --abort-on-container-exit $COMPILER_$MODE
-
+  - docker-compose up --build --abort-on-container-exit "${COMPILER}_${MODE}"
