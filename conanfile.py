@@ -1,7 +1,7 @@
 import os
 from conans import ConanFile, tools
 
-class FastEventSystem(ConanFile):
+class NpmMasMas(ConanFile):
     name = "fast-event-system"
     version = "1.0.20"
     license = "Attribution 4.0 International"
