@@ -3,7 +3,7 @@ from conans import ConanFile, tools
 
 class NpmMasMas(ConanFile):
     name = "fast-event-system"
-    version = "1.0.21"
+    version = "1.0.22"
     license = "Attribution 4.0 International"
     url = "https://github.com/makiolo/fast-event-system"
     description = "This fast event system allows calls between two interfaces decoupled (sync or async)"
@@ -23,19 +23,19 @@ class NpmMasMas(ConanFile):
         self.run("git clone {}".format(self.url))
 
     def build(self):
-        self.run("cd {} && npm install && npm test".format(self.name))
+        self.run("cd {} && CMAKI_INSTALL={} npm install && npm test".format(self.name, self.package_folder))
 
     def package(self):
-        self.copy("{}/include/*.h".format(self.name), dst=os.path.join('include', self.name), keep_path=False)
-        self.copy("{}/concurrentqueue/*.h".format(self.name), dst=os.path.join('include', 'concurrentqueue'), keep_path=False)
-        self.copy("{}/bin/{}/*.lib".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
-        self.copy("{}/bin/{}/*.dll".format(self.name, self.settings.build_type), dst="bin", keep_path=False)
-        self.copy("{}/bin/{}/*.so".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
-        self.copy("{}/bin/{}/*.dylib".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
-        self.copy("{}/bin/{}/*.a".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
+        self.copy(pattern="*.h", src="{}/include".format(self.name), dst=os.path.join('include', self.name), keep_path=False)
+        self.copy(pattern="*.h", src="{}/concurrentqueue".format(self.name), dst=os.path.join('include', 'concurrentqueue'), keep_path=False)
+        self.copy(pattern="*.lib", src="{}/bin/{}".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
+        self.copy(pattern="*.dll", src="{}/bin/{}".format(self.name, self.settings.build_type), dst="bin", keep_path=False)
+        self.copy(pattern="*.so", src="{}/bin/{}".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
+        self.copy(pattern="*.dylib", src="{}/bin/{}".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
+        self.copy(pattern="*.a", src="{}/bin/{}".format(self.name, self.settings.build_type), dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = [lib for lib in tools.collect_libs(self)]
-        self.cpp_info.includedirs.append('include')
-        self.cpp_info.includedirs.append('concurrentqueue')
+        self.cpp_info.includedirs = ['include', ]
+        self.cpp_info.libdirs = ["Debug", ]
+        self.cpp_info.libs = tools.collect_libs(self)
 
